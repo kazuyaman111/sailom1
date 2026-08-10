@@ -1,0 +1,3451 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>กระถางใจ — ตอบคำถาม เลี้ยงวิญญาณ</title>
+<meta name="theme-color" content="#101b22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Trirong:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d161c;
+  --deep:#152430;
+  --panel:#1b303c;
+  --line:rgba(190,222,210,.14);
+  --glaze:#7cae9b;
+  --glaze-dk:#42705f;
+  --glaze-lt:#a8d3c2;
+  --gold:#d8b04a;
+  --lacquer:#a03b45;
+  --mist:#e6efe9;
+  --dim:#8ba69c;
+  --ok:#7cae9b;
+  --warn:#d8b04a;
+  --bad:#c26a6a;
+  --r:14px;
+  --tabh:64px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(120% 80% at 50% -10%, #1d3441 0%, transparent 60%),
+    var(--ink);
+  color:var(--mist);
+  font-family:'IBM Plex Sans Thai',system-ui,sans-serif;
+  font-weight:400;
+  font-size:15px;
+  line-height:1.55;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body.night{--glaze:#6f9db1;}
+h1,h2,h3,.disp{font-family:'Trirong',serif;font-weight:600;letter-spacing:.01em;margin:0}
+.mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+
+/* ---------- shell ---------- */
+#app{max-width:900px;margin:0 auto;padding:0 14px calc(var(--tabh) + 26px);}
+header.top{
+  position:sticky;top:0;z-index:30;
+  margin:0 -14px 12px;padding:10px 14px 10px;
+  background:linear-gradient(180deg,rgba(13,22,28,.96) 70%,rgba(13,22,28,0));
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;gap:10px;
+}
+.brand{display:flex;align-items:baseline;gap:8px;flex:1;min-width:0}
+.brand b{font-family:'Trirong',serif;font-size:20px;font-weight:700;letter-spacing:.02em}
+.brand span{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.purse{display:flex;gap:6px;flex-shrink:0}
+.coin{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.05);border:1px solid var(--line);
+  border-radius:999px;padding:4px 10px;font-size:13px;
+}
+.coin i{width:9px;height:9px;border-radius:50%;display:block}
+.coin.g i{background:var(--gold);box-shadow:0 0 8px rgba(216,176,74,.5)}
+.coin.c i{background:var(--glaze-lt);box-shadow:0 0 8px rgba(168,211,194,.5)}
+
+/* ---------- cards ---------- */
+.card{
+  background:linear-gradient(180deg,var(--panel),var(--deep));
+  border:1px solid var(--line);border-radius:var(--r);
+  padding:14px;margin-bottom:12px;
+}
+.card h2{font-size:17px;margin-bottom:2px}
+.sub{font-size:12px;color:var(--dim)}
+.eyebrow{
+  font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--glaze);font-family:'IBM Plex Mono',monospace;margin-bottom:6px;
+}
+.row{display:flex;gap:10px;align-items:center}
+.row.wrap{flex-wrap:wrap}
+.spread{justify-content:space-between}
+.grow{flex:1;min-width:0}
+
+/* ---------- buttons ---------- */
+button{font-family:inherit;font-size:14px;color:inherit;cursor:pointer;border:none;background:none}
+.btn{
+  background:rgba(255,255,255,.05);border:1px solid var(--line);
+  border-radius:10px;padding:10px 14px;color:var(--mist);
+  transition:background .15s,border-color .15s,transform .08s;
+}
+.btn:hover{background:rgba(255,255,255,.09)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.pri{background:var(--glaze-dk);border-color:var(--glaze);color:#f2fbf6;font-weight:500}
+.btn.pri:hover{background:#4f8471}
+.btn.gold{background:rgba(216,176,74,.16);border-color:rgba(216,176,74,.5);color:#f0dda6}
+.btn.danger{border-color:rgba(194,106,106,.45);color:#e8b4b4}
+.btn.sm{padding:6px 10px;font-size:12.5px;border-radius:8px}
+.btn.on{background:var(--glaze-dk);border-color:var(--glaze)}
+.btn.block{width:100%;display:block}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* ---------- pot stage ---------- */
+.stage{position:relative;display:flex;justify-content:center;padding:6px 0 0}
+#pot{width:100%;max-width:420px;height:auto;display:block;touch-action:manipulation}
+.stagelabel{
+  position:absolute;left:50%;transform:translateX(-50%);bottom:-2px;
+  font-size:11px;color:var(--dim);letter-spacing:.14em;font-family:'IBM Plex Mono',monospace;
+}
+
+/* ---------- meters ---------- */
+.meters{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 14px;margin-top:12px}
+.meter .lab{display:flex;justify-content:space-between;font-size:11.5px;color:var(--dim);margin-bottom:3px}
+.bar{height:6px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:3px;transition:width .4s ease}
+.bar.hp>i{background:linear-gradient(90deg,#8fbfae,#c9e3d6)}
+.bar.hu>i{background:linear-gradient(90deg,#c9a24a,#e6cf8b)}
+.bar.mo>i{background:linear-gradient(90deg,#7fa8c9,#b4d4ea)}
+.bar.af>i{background:linear-gradient(90deg,#a0555f,#d2909a)}
+.bar.xp>i{background:linear-gradient(90deg,var(--glaze-dk),var(--glaze-lt))}
+
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px;text-align:center}
+.stat{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:9px;padding:6px 2px}
+.stat b{display:block;font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:500}
+.stat span{font-size:9.5px;color:var(--dim);letter-spacing:.1em}
+
+/* ---------- focus ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;
+  background:rgba(255,255,255,.03);transition:all .15s;
+}
+.chip.on{background:var(--glaze-dk);border-color:var(--glaze);color:#f2fbf6}
+#clock{font-family:'IBM Plex Mono',monospace;font-size:52px;font-weight:300;letter-spacing:-.02em;line-height:1;text-align:center;margin:4px 0 2px}
+#clocknote{text-align:center;font-size:12px;color:var(--dim);min-height:18px}
+.drift{color:var(--warn)}
+.focusing #tabs{opacity:.35;pointer-events:none}
+
+/* ---------- ตอบคำถาม ---------- */
+.qmeta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--dim);margin-bottom:8px}
+.qtext{font-size:18px;line-height:1.6;font-family:'Trirong',serif;font-weight:600;margin:2px 0 14px}
+.choices{display:flex;flex-direction:column;gap:8px}
+.ch{
+  display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;
+  background:rgba(255,255,255,.04);border:1px solid var(--line);
+  border-radius:11px;padding:12px 13px;font-size:15px;line-height:1.45;
+  transition:background .15s,border-color .15s;
+}
+.ch:hover:not(:disabled){background:rgba(255,255,255,.08)}
+.ch .k{
+  flex:none;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;
+  background:rgba(255,255,255,.07);border:1px solid var(--line);
+  font-family:'IBM Plex Mono',monospace;font-size:12px;margin-top:1px;
+}
+.ch.right{background:rgba(124,174,155,.20);border-color:var(--glaze)}
+.ch.right .k{background:var(--glaze-dk);border-color:var(--glaze)}
+.ch.wrong{background:rgba(194,106,106,.16);border-color:var(--bad)}
+.ch.wrong .k{background:rgba(194,106,106,.35);border-color:var(--bad)}
+.ch:disabled{opacity:.55}
+.ch.right:disabled,.ch.wrong:disabled{opacity:1}
+.expl{
+  margin-top:12px;padding:11px 13px;border-radius:10px;font-size:13.5px;line-height:1.6;
+  background:rgba(255,255,255,.04);border-left:3px solid var(--glaze);
+}
+#qclock{font-family:'IBM Plex Mono',monospace;font-size:15px}
+#qclock.low{color:var(--bad)}
+.combo{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:13px}
+.dots{display:flex;gap:4px}
+.dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.14);display:block}
+.dots i.ok{background:var(--glaze)}
+.dots i.no{background:var(--bad)}
+.dots i.now{background:var(--gold);transform:scale(1.35)}
+.eggbar{height:9px;border-radius:5px;background:rgba(255,255,255,.07);overflow:hidden}
+.eggbar>i{display:block;height:100%;background:linear-gradient(90deg,var(--glaze-dk),var(--gold));transition:width .5s}
+.odds{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.odd{display:flex;align-items:center;gap:8px;font-size:12px}
+.odd .nm{width:74px;flex:none;color:var(--dim)}
+.odd .tr{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden}
+.odd .tr>i{display:block;height:100%;border-radius:3px}
+.odd .pc{width:44px;text-align:right;font-family:'IBM Plex Mono',monospace}
+.fld{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);
+  background:rgba(255,255,255,.05);color:var(--mist);font-family:inherit;font-size:15px;margin-bottom:8px}
+textarea.fld{min-height:76px;resize:vertical;line-height:1.5}
+select.fld{appearance:none}
+
+/* ---------- สรุปผลสัมฤทธิ์ ---------- */
+.prow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--line)}
+.prow:last-child{border-bottom:none}
+.prow .lab{flex:1;min-width:0}
+.prow .lab b{display:block;font-size:13.5px;font-weight:500}
+.prow .lab .tiny{font-size:11px}
+.prow .num{font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-align:right;width:78px;flex:none}
+.pbar{height:7px;border-radius:4px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:5px}
+.pbar>i{display:block;height:100%;border-radius:4px}
+.trend{font-size:11px;font-family:'IBM Plex Mono',monospace;width:56px;flex:none;text-align:right}
+.trend.up{color:var(--ok)} .trend.down{color:var(--bad)} .trend.flat{color:var(--dim)}
+.bigstat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.bigstat div{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:9px 4px}
+.bigstat b{display:block;font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:500}
+.bigstat span{font-size:10.5px;color:var(--dim)}
+
+/* ---------- lists ---------- */
+.list{display:flex;flex-direction:column;gap:8px}
+.item{
+  display:flex;gap:10px;align-items:center;
+  background:rgba(255,255,255,.04);border:1px solid var(--line);
+  border-radius:11px;padding:10px 12px;
+}
+.item .ic{
+  width:38px;height:38px;flex:none;border-radius:9px;
+  background:rgba(255,255,255,.05);border:1px solid var(--line);
+  display:grid;place-items:center;font-size:19px;
+}
+.item b{display:block;font-size:14px;font-weight:500}
+.item .sub{font-size:11.5px}
+.qty{font-family:'IBM Plex Mono',monospace;color:var(--glaze-lt);font-size:13px}
+
+/* ---------- room ---------- */
+#room{
+  position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);
+  background:linear-gradient(180deg,#20323d 0%,#20323d 58%,#2b3a3a 58%,#243231 100%);
+  aspect-ratio:16/10;
+}
+#room.lit{background:linear-gradient(180deg,#31485a 0%,#31485a 58%,#3d5350 58%,#334744 100%)}
+.slots{position:absolute;inset:8%;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:4px}
+.slot{
+  border:1px dashed rgba(190,222,210,.16);border-radius:8px;
+  display:grid;place-items:center;font-size:26px;line-height:1;
+  transition:background .15s;
+}
+.slot:hover{background:rgba(255,255,255,.05)}
+.slot.filled{border-style:solid;border-color:rgba(190,222,210,.22)}
+
+/* ---------- book ---------- */
+.book{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.bcard{
+  border:1px solid var(--line);border-radius:11px;padding:8px 6px;text-align:center;
+  background:rgba(255,255,255,.04);font-size:11px;
+}
+.bcard.locked{opacity:.32}
+.bcard .nm{font-size:11.5px;font-weight:500;margin-top:4px;line-height:1.3}
+.bcard .st{font-size:9.5px;color:var(--dim);font-family:'IBM Plex Mono',monospace}
+.sigil{margin:0 auto;display:block;border-radius:5px;background:rgba(0,0,0,.25)}
+
+/* ---------- tabs ---------- */
+#tabs{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;height:var(--tabh);
+  padding-bottom:env(safe-area-inset-bottom);
+  background:rgba(13,22,28,.94);backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);
+  display:flex;transition:opacity .2s;
+}
+#tabs button{
+  flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:9.5px;color:var(--dim);letter-spacing:0;white-space:nowrap;
+}
+#tabs button .g{font-size:19px;line-height:1;filter:grayscale(1) opacity(.7)}
+#tabs button.on{color:var(--glaze-lt)}
+#tabs button.on .g{filter:none}
+#tabs button .dot{position:absolute;margin:-14px 0 0 20px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+
+/* ---------- modal / toast ---------- */
+#veil{position:fixed;inset:0;z-index:60;background:rgba(5,10,13,.72);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center}
+#veil.show{display:flex}
+#sheet{
+  width:100%;max-width:520px;max-height:86vh;overflow-y:auto;
+  background:linear-gradient(180deg,#1f3543,#152430);
+  border:1px solid var(--line);border-bottom:none;
+  border-radius:18px 18px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));
+  animation:rise .22s ease;
+}
+@keyframes rise{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+#toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + 16px);
+  z-index:70;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:92%;max-width:420px;
+}
+.tst{
+  background:rgba(21,36,48,.97);border:1px solid var(--glaze-dk);
+  border-radius:999px;padding:8px 16px;font-size:13px;
+  animation:pop .2s ease;box-shadow:0 6px 20px rgba(0,0,0,.4);
+}
+.tst.gold{border-color:var(--gold);color:#f0dda6}
+.tst.bad{border-color:var(--bad);color:#e8b4b4}
+@keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+
+.hide{display:none !important}
+.tiny{font-size:11.5px;color:var(--dim)}
+.gap{height:8px}
+hr.sep{border:none;border-top:1px solid var(--line);margin:12px 0}
+.pill{font-size:10.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;border:1px solid var(--line);border-radius:999px;padding:2px 8px;color:var(--dim)}
+
+@media(min-width:760px){
+  #app{padding-bottom:24px}
+  #tabs{position:sticky;bottom:0;border-radius:14px;margin-bottom:14px;border:1px solid var(--line)}
+  .meters{grid-template-columns:repeat(4,1fr)}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header class="top">
+    <div class="brand">
+      <b>กระถางใจ</b>
+      <span id="petline">— กำลังเปิดกระถาง…</span>
+    </div>
+    <div class="purse">
+      <div class="coin g"><i></i><span class="mono" id="coins">0</span></div>
+      <div class="coin c"><i></i><span class="mono" id="crys">0</span></div>
+    </div>
+  </header>
+
+  <main id="view"></main>
+</div>
+
+<nav id="tabs">
+  <button data-tab="pot" class="on"><span class="g">🪴</span>กระถาง</button>
+  <button data-tab="quiz"><span class="g">❓</span>ตอบคำถาม</button>
+  <button data-tab="explore"><span class="g">🧭</span>สำรวจ</button>
+  <button data-tab="bag"><span class="g">🎒</span>กระเป๋า</button>
+  <button data-tab="home"><span class="g">🏠</span>บ้าน</button>
+  <button data-tab="book"><span class="g">📖</span>สมุด</button>
+  <button data-tab="sum"><span class="g">📊</span>สรุปผล</button>
+</nav>
+
+<div id="veil"><div id="sheet"></div></div>
+<div id="toast"></div>
+
+<script>
+/* ===========================================================
+   กระถางใจ (Krathang Jai) — v2.0
+   เกมเลี้ยงวิญญาณที่เติบโตจากคำถามที่คุณตอบได้
+   =========================================================== */
+
+const VERSION = '2.0';
+const SAVEKEY = 'krathangjai:save:v1';
+
+/* ===================== ธาตุ ===================== */
+const ELEMENTS = {
+  wood:  {n:'ไม้',     g:'🌿', main:'VIT', h:152, s:30, l:56},
+  water: {n:'น้ำ',     g:'💧', main:'INT', h:205, s:38, l:60},
+  fire:  {n:'ไฟ',      g:'🔥', main:'STR', h:14,  s:52, l:60},
+  wind:  {n:'ลม',      g:'🌬️', main:'AGI', h:96,  s:12, l:70},
+  earth: {n:'ดิน',     g:'⛰️', main:'VIT', h:28,  s:26, l:50},
+  bolt:  {n:'สายฟ้า',  g:'⚡', main:'AGI', h:268, s:34, l:62},
+  light: {n:'แสง',     g:'✨', main:'LUK', h:46,  s:56, l:64},
+  shade: {n:'เงา',     g:'🌑', main:'INT', h:232, s:22, l:44},
+};
+const EL_KEYS = Object.keys(ELEMENTS);
+
+/* ===================== ระดับความหายาก ===================== */
+const RARITY = [
+  null,
+  {n:'ธรรมดา',    star:'★',    statMul:1.00, hungerMul:1.00, c:'#9fb6ac'},
+  {n:'ไม่ธรรมดา', star:'★★',   statMul:1.09, hungerMul:1.06, c:'#7fb6c9'},
+  {n:'หายาก',     star:'★★★',  statMul:1.20, hungerMul:1.16, c:'#c9a24a'},
+  {n:'ในตำนาน',   star:'★★★★', statMul:1.34, hungerMul:1.28, c:'#c98ad4'},
+];
+
+/* ===================== รายชื่อสายพันธุ์ 32 ชนิด ===================== */
+// [id, ชื่อ, ธาตุ, ความหายาก, ค่าสถานะรอง, คำบรรยาย]
+const SP_RAW = [
+  ['rukkha',   'รุกขา',       'wood',  1, 'STR', 'วิญญาณรากไม้ธรรมดา อดทนและซื่อ'],
+  ['praiwan',  'ไพรวัลย์',    'wood',  1, 'AGI', 'เถาวัลย์เลื้อยเร็ว ชอบปีนป่ายทุกอย่าง'],
+  ['phakamas', 'ผกามาศ',      'wood',  2, 'LUK', 'ดอกไม้ที่บานเฉพาะตอนเจ้าของตั้งใจจริง'],
+  ['takian',   'ตะเคียนเฒ่า', 'wood',  3, 'INT', 'อยู่มาก่อนเมืองนี้ พูดน้อยแต่ไม่เคยล้ม'],
+
+  ['waree',    'วารี',        'water', 1, 'AGI', 'หยดน้ำใสที่จำทุกอย่างที่ไหลผ่าน'],
+  ['chonlatan','ชลธาร',       'water', 2, 'VIT', 'สายธารเย็น ยิ่งไหลนานยิ่งลึก'],
+  ['mukda',    'มุกดา',       'water', 2, 'LUK', 'ไข่มุกน้ำจืด เปล่งแสงตอนอารมณ์ดี'],
+  ['nakhin',   'นาคินทร์',    'water', 4, 'STR', 'พญานาคน้อยจากใต้คลอง เกล็ดสะท้อนฟ้า'],
+
+  ['akkhi',    'อัคคี',       'fire',  1, 'AGI', 'เปลวไฟดวงเล็กที่ไม่ยอมดับ'],
+  ['thanthao', 'ถ่านเถ้า',    'fire',  1, 'VIT', 'ถ่านที่ยังอุ่น ค่อยๆ ให้ความร้อนไปทั้งคืน'],
+  ['phloeng',  'เพลิงพราย',   'fire',  2, 'INT', 'ไฟสีเขียวที่ลอยเหนือพื้น เย็นเมื่อสัมผัส'],
+  ['suriyan',  'สุริยัน',     'fire',  3, 'LUK', 'เศษเสี้ยวของตะวันเที่ยง ร้อนแต่ใจดี'],
+
+  ['wayu',     'วายุ',        'wind',  1, 'INT', 'ลมหายใจที่มีรูปร่าง ว่องไวกว่าที่คิด'],
+  ['lomwao',   'ลมว่าว',      'wind',  1, 'LUK', 'ลมหน้าหนาวที่พาว่าวขึ้นฟ้าได้เสมอ'],
+  ['mekhin',   'เมฆิน',       'wind',  2, 'VIT', 'ก้อนเมฆที่หลงมาต่ำ นุ่มจนอยากกอด'],
+  ['krut',     'ครุฑน้อย',    'wind',  4, 'STR', 'ลูกครุฑที่เพิ่งหัดบิน ปีกยังใหญ่เกินตัว'],
+
+  ['sila',     'ศิลา',        'earth', 1, 'STR', 'ก้อนหินที่ตื่นขึ้นมาเพราะมีคนเรียกชื่อ'],
+  ['dinphao',  'ดินเผา',      'earth', 1, 'INT', 'ตุ๊กตาดินเผาจากเตาเก่า ผิวยังอุ่น'],
+  ['pathaphi', 'ปฐพี',        'earth', 2, 'STR', 'ดินชั้นล่างสุด หนักแน่นและเงียบ'],
+  ['khunkhao', 'ขุนเขา',      'earth', 3, 'STR', 'ยอดเขาที่ย่อส่วนลงมาอยู่ในกระถาง'],
+
+  ['atsani',   'อัสนี',       'bolt',  1, 'STR', 'ประกายไฟฟ้าที่กระโดดไปมาไม่หยุด'],
+  ['prakaifa', 'ประกายฟ้า',   'bolt',  2, 'INT', 'สายฟ้าเส้นบางที่ค้างอยู่กลางอากาศ'],
+  ['fakhamram','ฟ้าคำราม',    'bolt',  3, 'VIT', 'เสียงฟ้าร้องที่กลายร่างได้ ดังแต่ขี้อาย'],
+  ['wachira',  'วชิระ',       'bolt',  4, 'LUK', 'สายฟ้าที่แข็งเป็นเพชร ผ่าอะไรก็ได้'],
+
+  ['saengngoen','แสงเงิน',    'light', 1, 'INT', 'แสงแรกของเช้า จางแต่ไม่เคยขาด'],
+  ['thonguarai','ทองอุไร',    'light', 2, 'VIT', 'ดอกไม้สีทองที่บานรับแดดบ่าย'],
+  ['prakai',   'ประกาย',      'light', 2, 'AGI', 'เศษแสงที่กระเด็นออกมาแล้วไม่ยอมกลับ'],
+  ['rungarun', 'รุ่งอรุณ',    'light', 3, 'STR', 'ขอบฟ้าตอนตีห้า อบอุ่นจนคนตื่นเอง'],
+
+  ['ngaowai',  'เงาไหว',      'shade', 1, 'AGI', 'เงาของใครสักคนที่หลุดออกมาเดินเอง'],
+  ['mokklum',  'หมอกคลุ้ม',   'shade', 2, 'VIT', 'หมอกเช้าที่ไม่ยอมจางแม้แดดออก'],
+  ['ratri',    'ราตรี',       'shade', 2, 'LUK', 'ความเงียบตอนตีสาม เป็นเพื่อนที่ดีกว่าที่คิด'],
+  ['asunngao', 'อสูรเงา',     'shade', 3, 'STR', 'อะไรบางอย่างในซากเจดีย์ที่ยอมตามคุณกลับบ้าน'],
+];
+
+/* ---- แปลงเป็นข้อมูลเต็ม พร้อมสีและลักษณะที่สุ่มคงที่ ---- */
+const BODY_SHAPES = ['round','tall','tear','chunky'];
+const HORNS  = ['none','pair','single','curved','antler'];
+const EARS   = ['none','leaf','long','fin'];
+const TAILS  = ['none','wisp','plume','curl'];
+const MARKS  = ['none','spots','stripes','veins'];
+
+function clampN(v,a,b){ return Math.max(a, Math.min(b, v)); }
+function _hsl(h, s, l){ return `hsl(${((Math.round(h)%360)+360)%360}, ${clampN(Math.round(s),6,92)}%, ${clampN(Math.round(l),8,94)}%)`; }
+function _hsla(h, s, l, a){ return `hsla(${((Math.round(h)%360)+360)%360}, ${clampN(Math.round(s),6,92)}%, ${clampN(Math.round(l),8,94)}%, ${a})`; }
+
+const SPECIES = {};
+const SP_KEYS = [];
+SP_RAW.forEach(row => {
+  const [id, name, elk, rar, sub, desc] = row;
+  const E = ELEMENTS[elk];
+  const idxInEl = SP_RAW.filter(r => r[2] === elk).findIndex(r => r[0] === id);
+  const r = rngFrom(hashStr('sp:' + id));
+
+  const h = E.h + [-16, 0, 14, 30][idxInEl] + Math.round((r() - .5) * 10);
+  const s = E.s + Math.round((r() - .3) * 14) + (rar - 1) * 5;
+  const l = E.l + Math.round((r() - .5) * 12) - (rar === 4 ? 4 : 0);
+
+  SPECIES[id] = {
+    id, name, elk, el: E.n, g: E.g,
+    main: E.main, sub, rarity: rar, desc,
+    hue: h, sat: s, lum: l,
+    c1:     _hsl(h, s, l),
+    c2:     _hsl(h + 6, s + 8, l - 20),
+    accent: _hsl(h - 6, s - 6, l + 22),
+    dim:    _hsla(h, s, l, .30),
+    a: al => _hsla(h - 6, s - 6, l + 22, al),
+    traits: {
+      body: BODY_SHAPES[Math.floor(r() * BODY_SHAPES.length)],
+      horn: rar >= 3 ? HORNS[1 + Math.floor(r() * (HORNS.length - 1))] : HORNS[Math.floor(r() * HORNS.length)],
+      ear:  EARS[Math.floor(r() * EARS.length)],
+      tail: rar >= 2 ? TAILS[1 + Math.floor(r() * (TAILS.length - 1))] : TAILS[Math.floor(r() * TAILS.length)],
+      mark: MARKS[Math.floor(r() * MARKS.length)],
+      halo: rar >= 4,
+    }
+  };
+  SP_KEYS.push(id);
+});
+
+const SP_BY_RARITY = r => SP_KEYS.filter(k => SPECIES[k].rarity === r);
+const SP_BY_EL = e => SP_KEYS.filter(k => SPECIES[k].elk === e);
+
+/* ===================== ขั้นการเติบโต ===================== */
+const BRANCHES = { body:'กายา', mind:'ฌาน', play:'ระบำ' };
+const STAGE_NAMES = ['เมล็ด','หน่อ','ผลิใบ','','',''];
+const STAGE_LV    = [1, 5, 12, 22, 35, 50];
+const STAGE3_NAME = { body:'ร่างกายา', mind:'ร่างฌาน', play:'ร่างระบำ' };
+const STAGE4_NAME = { body:'ผู้พิทักษ์', mind:'ผู้ตื่นรู้', play:'ผู้ร่ายรำ' };
+const STAGE5_NAME = 'ร่างโบราณ';
+
+function formId(sp, stage, branch){
+  return stage <= 2 ? `${sp}:${stage}` : `${sp}:${stage}:${branch}`;
+}
+function formName(sp, stage, branch){
+  const b = SPECIES[sp].name;
+  if (stage <= 2) return `${b} ${STAGE_NAMES[stage]}`;
+  if (stage === 3) return `${b} ${STAGE3_NAME[branch]}`;
+  if (stage === 4) return `${b} ${STAGE4_NAME[branch]}`;
+  return `${b} ${STAGE5_NAME}`;
+}
+// ร่างทั้งหมด: 32 สายพันธุ์ × 10 ร่าง = 320
+const ALL_FORMS = (() => {
+  const out = [];
+  for (const sp of SP_KEYS){
+    out.push({id:formId(sp,0), sp, stage:0, branch:null});
+    out.push({id:formId(sp,1), sp, stage:1, branch:null});
+    out.push({id:formId(sp,2), sp, stage:2, branch:null});
+    for (const br of Object.keys(BRANCHES)){
+      out.push({id:formId(sp,3,br), sp, stage:3, branch:br});
+      out.push({id:formId(sp,4,br), sp, stage:4, branch:br});
+    }
+    out.push({id:formId(sp,5,'anc'), sp, stage:5, branch:'anc'});
+  }
+  return out;
+})();
+const FORMS_BY_SP = {};
+for (const f of ALL_FORMS){ (FORMS_BY_SP[f.sp] = FORMS_BY_SP[f.sp] || []).push(f); }
+
+/* ===================== ไอเทม ===================== */
+const ITEMS = {
+  leaf:    {n:'ใบอ่อน',        g:'🌿', t:'food', hunger:18, mood:3,  aff:1, sell:6,   d:'อาหารพื้นฐาน หาได้ทั่วไป'},
+  berry:   {n:'ลูกหว้า',       g:'🫐', t:'food', hunger:30, mood:8,  aff:2, sell:14,  d:'หวานฉ่ำ วิญญาณส่วนใหญ่ชอบ'},
+  ricecake:{n:'ข้าวต้มมัด',    g:'🍡', t:'food', hunger:40, mood:12, aff:3, sell:26,  d:'ทำจากข้าวเหนียวกับกล้วย'},
+  honey:   {n:'น้ำผึ้งป่า',    g:'🍯', t:'food', hunger:48, mood:16, aff:4, sell:34,  d:'อิ่มนานและอารมณ์ดีขึ้นมาก'},
+  nectar:  {n:'น้ำค้างดอกไม้', g:'🌸', t:'food', hunger:60, mood:22, aff:7, sell:70,  d:'อาหารชั้นดี วิญญาณหายากกินแล้วสนิทเร็ว'},
+
+  balm:    {n:'ยาหม่องสมุนไพร', g:'🧴', t:'heal', heal:35, sell:30,  d:'รักษาบาดแผลจากการสำรวจ'},
+  elixir:  {n:'ยาต้มโบราณ',    g:'⚗️', t:'heal', heal:100, mood:10, sell:90, d:'ฟื้นสุขภาพเต็มทันที'},
+
+  clay:    {n:'ดินเหนียว',     g:'🟤', t:'mat', sell:8,   d:'วัสดุสร้างของตกแต่ง'},
+  bamboo:  {n:'ไม้ไผ่',        g:'🎋', t:'mat', sell:12,  d:'เหนียว ทนทาน ใช้ต่อของได้สารพัด'},
+  shard:   {n:'เศษสังคโลก',    g:'🏺', t:'mat', sell:26,  d:'เศษเครื่องเคลือบจากเตาเก่า'},
+  silk:    {n:'ไหมป่า',        g:'🧵', t:'mat', sell:40,  d:'เส้นใยเงางาม หายากพอสมควร'},
+  relic:   {n:'ลูกปัดโบราณ',   g:'📿', t:'mat', sell:120, d:'พบได้เฉพาะในซากเจดีย์'},
+
+  stone_b: {n:'หินกายา',       g:'🟩', t:'stone', br:'body', sell:0, d:'ใช้ปลุกร่างโบราณสายกายา'},
+  stone_m: {n:'หินฌาน',        g:'🟦', t:'stone', br:'mind', sell:0, d:'ใช้ปลุกร่างโบราณสายฌาน'},
+  stone_p: {n:'หินระบำ',       g:'🟪', t:'stone', br:'play', sell:0, d:'ใช้ปลุกร่างโบราณสายระบำ'},
+
+  seed_r:  {n:'ไข่ธรรมดา',     g:'🥚', t:'egg', tier:1, need:400,  sell:0, d:'ฟักด้วยคะแนนฐาน 400 วิชาที่ตอบระหว่างฟักเป็นตัวกำหนดธาตุ'},
+  seed_g:  {n:'ไข่ลายหิน',     g:'🪺', t:'egg', tier:2, need:1600,  sell:0, d:'ต้องคะแนนฐาน 1,600 แต่โอกาสได้สายพันธุ์หายากสูงขึ้นมาก'},
+  seed_m:  {n:'ไข่ปริศนา',     g:'🔮', t:'egg', tier:3, need:5000, sell:0, d:'ต้องคะแนนฐาน 5,000 และไม่มีสายพันธุ์ธรรมดาอยู่ในไข่ใบนี้เลย'},
+};
+
+/* ---- น้ำหนักความหายากของไข่แต่ละชั้น ---- */
+const SEED_ODDS = {
+  1: {1:62, 2:30, 3:7,  4:1},
+  2: {1:18, 2:47, 3:29, 4:6},
+  3: {1:0,  2:24, 3:53, 4:23},
+};
+
+/* ===================== โซนสำรวจ ===================== */
+const ZONES = [
+  { id:'grove',  n:'ป่าละเมาะหลังบ้าน', g:'🌾', min:5,  lv:1,  risk:.06,
+    d:'ทุ่งหญ้าเตี้ยๆ ปลอดภัย เหมาะกับวิญญาณที่เพิ่งงอก',
+    loot:[['leaf',.55],['clay',.30],['berry',.22],['bamboo',.14]] },
+  { id:'canal',  n:'ริมคลองเก่า',       g:'🛶', min:12, lv:6,  risk:.12,
+    d:'น้ำนิ่ง เงาไม้ทอด มีของตกหล่นจากเรือสมัยก่อน',
+    loot:[['berry',.45],['bamboo',.34],['clay',.26],['shard',.16],['ricecake',.12]] },
+  { id:'mist',   n:'เนินหมอก',          g:'⛰️', min:25, lv:14, risk:.20,
+    d:'ลมแรง ทัศนวิสัยต่ำ แต่ของที่พบมักมีค่า',
+    loot:[['silk',.30],['shard',.28],['honey',.24],['bamboo',.22],['balm',.16],['stone_p',.05],['seed_r',.07]] },
+  { id:'deep',   n:'ป่าลึกน้ำครำ',      g:'🌲', min:45, lv:24, risk:.30,
+    d:'ต้นไม้สูงบังฟ้า มีอะไรบางอย่างเฝ้าอยู่',
+    loot:[['silk',.36],['relic',.14],['elixir',.14],['honey',.30],['shard',.26],
+          ['stone_b',.06],['stone_m',.06],['seed_r',.12],['seed_g',.05]] },
+  { id:'ruin',   n:'ซากเจดีย์ร้าง',     g:'🛕', min:70, lv:34, risk:.38,
+    d:'อิฐเรียงเป็นแนว ยังพอเห็นลายปูนปั้น ที่นี่เก็บของเก่าไว้เยอะ',
+    loot:[['relic',.34],['silk',.30],['elixir',.20],['shard',.30],['nectar',.16],
+          ['seed_g',.11],['seed_m',.04],['stone_b',.09],['stone_m',.09],['stone_p',.09]] },
+];
+
+/* ===================== เฟอร์นิเจอร์ ===================== */
+const FURN = {
+  mat:    {n:'เสื่อกก',         g:'🟫', cost:60,   eff:{moodSlow:.10}, d:'นั่งสบายขึ้น อารมณ์ลดช้าลง 10%'},
+  jar:    {n:'ไหน้ำสังคโลก',    g:'🏺', cost:140,  eff:{hungerSlow:.12}, d:'มีน้ำให้จิบตลอด ความหิวลดช้าลง 12%'},
+  lamp:   {n:'โคมกระดาษ',       g:'🏮', cost:180,  eff:{light:1}, d:'กลางคืนห้องจะสว่าง และอารมณ์ +2 ทุกชั่วโมง'},
+  shelf:  {n:'ชั้นวางไม้ไผ่',   g:'🪜', cost:220,  eff:{exploreLuck:.10}, d:'จัดของเป็นระเบียบ โอกาสได้ของหายาก +10%'},
+  bonsai: {n:'ไม้ดัดกระถางเล็ก', g:'🌳', cost:300, eff:{focusXp:.08}, d:'มองแล้วใจสงบ ค่าประสบการณ์จากโฟกัส +8%'},
+  incense:{n:'กระถางธูป',       g:'🕯️', cost:420,  eff:{focusXp:.12,moodSlow:.06}, d:'กลิ่นช่วยตั้งสมาธิ โฟกัส +12%'},
+  scroll: {n:'ภาพเขียนม้วน',    g:'🖼️', cost:560,  eff:{aff:.15}, d:'ความสนิทที่ได้รับ +15%'},
+  gong:   {n:'ฆ้องเล็ก',        g:'🔔', cost:700,  eff:{focusXp:.10,coin:.12}, d:'โฟกัส +10% และเหรียญที่ได้ +12%'},
+  pond:   {n:'บ่อบัวจิ๋ว',      g:'🪷', cost:900,  eff:{hungerSlow:.15,moodSlow:.15}, d:'ความหิวและอารมณ์ลดช้าลงอย่างละ 15%'},
+  chime:  {n:'กระดิ่งลม',       g:'🎐', cost:1200, eff:{exploreLuck:.18}, d:'เสียงนำทาง โอกาสได้ของหายาก +18%'},
+};
+
+/* ===================== รอบตอบคำถาม ===================== */
+const ROUND_LEN = 10;            // จำนวนข้อต่อหนึ่งรอบ
+const STREAK_CAP = 10;           // สตรีคที่ให้ตัวคูณสูงสุด ×2
+const SPEED_BONUS_MAX = 0.5;     // โบนัสความเร็วสูงสุด +50%
+const REPEAT_PENALTY = 0.25;     // ตอบข้อเดิมซ้ำในวันเดียวกันได้คะแนนเท่านี้
+const LEITNER_GAP = [0, 0, 3, 8, 20, 50];  // ต้องผ่านไปกี่ข้อจึงจะถามซ้ำ
+
+/* ===================== ร้านผลึกสมาธิ ===================== */
+const CRYSTAL_SHOP = [
+  {k:'seed_r', cost:10},
+  {k:'seed_g', cost:32},
+  {k:'seed_m', cost:90},
+  {k:'nectar', cost:6},
+  {k:'elixir', cost:4},
+];
+const GARDEN_MAX = 6;
+
+/* ===========================================================
+   โครงสร้างหลักสูตร — อิงตารางสอนจริง
+   ประวัติศาสตร์ ป.4-6 / ม.1-3 · การป้องกันการทุจริต ป.1-6 · คอมพิวเตอร์ ป.1-3
+   =========================================================== */
+
+/* ---------- วิชา ---------- */
+const SUBJECTS = {
+  hist: {n:'ประวัติศาสตร์',        short:'ประวัติศาสตร์', g:'🏯',
+         code:{p4:'ส14102', p5:'ส15102', p6:'ส16102', m1:'ส21103', m2:'ส22103', m3:'ส23103'}},
+  anti: {n:'การป้องกันการทุจริต',  short:'ต้านทุจริต',   g:'⚖️',
+         code:{p1:'ส11201', p2:'ส12201', p3:'ส13201', p4:'ส14201', p5:'ส15201', p6:'ส16201'}},
+  comp: {n:'คอมพิวเตอร์',          short:'คอมพิวเตอร์',  g:'💻',
+         code:{p1:'ว11201', p2:'ว12201', p3:'ว13201'}},
+};
+const SUBJ_KEYS = Object.keys(SUBJECTS);
+
+/* ---------- ระดับชั้น ---------- */
+const GRADES = {
+  p1:{n:'ป.1', ord:1}, p2:{n:'ป.2', ord:2}, p3:{n:'ป.3', ord:3},
+  p4:{n:'ป.4', ord:4}, p5:{n:'ป.5', ord:5}, p6:{n:'ป.6', ord:6},
+  m1:{n:'ม.1', ord:7}, m2:{n:'ม.2', ord:8}, m3:{n:'ม.3', ord:9},
+};
+const GRADE_KEYS = Object.keys(GRADES);
+function gradesOf(subj){ return Object.keys(SUBJECTS[subj].code); }
+
+/* ---------- หน่วยการเรียนรู้ → ธาตุ ----------
+   หน่วยที่เรียนเป็นตัวกำหนดธาตุของไข่ ทำให้เนื้อหาที่ตอบมีผลต่อสายพันธุ์ที่ได้ */
+const UNITS = {
+  // ประวัติศาสตร์
+  h_time:    {n:'เวลาและยุคสมัย',              subj:'hist', el:'wind'},
+  h_method:  {n:'วิธีการทางประวัติศาสตร์',      subj:'hist', el:'water'},
+  h_kingdom: {n:'พัฒนาการของอาณาจักร',          subj:'hist', el:'earth'},
+  h_person:  {n:'บุคคลสำคัญ',                   subj:'hist', el:'fire'},
+  h_culture: {n:'ภูมิปัญญาและวัฒนธรรม',         subj:'hist', el:'light'},
+  h_world:   {n:'เพื่อนบ้านและอารยธรรมโลก',     subj:'hist', el:'shade'},
+  h_nation:  {n:'ชาติไทยและท้องถิ่น',           subj:'hist', el:'wood'},
+  // การป้องกันการทุจริต (4 หน่วยตามหลักสูตร ป.ป.ช.)
+  a_sep:     {n:'คิดแยกแยะผลประโยชน์',          subj:'anti', el:'wood'},
+  a_shame:   {n:'ความละอายและไม่ทนต่อการทุจริต', subj:'anti', el:'shade'},
+  a_strong:  {n:'STRONG จิตพอเพียงต้านทุจริต',   subj:'anti', el:'light'},
+  a_citizen: {n:'พลเมืองกับความรับผิดชอบ',       subj:'anti', el:'earth'},
+  // คอมพิวเตอร์
+  c_basic:   {n:'รู้จักคอมพิวเตอร์',            subj:'comp', el:'bolt'},
+  c_use:     {n:'การใช้งานและโปรแกรม',          subj:'comp', el:'bolt'},
+  c_algo:    {n:'การแก้ปัญหาและอัลกอริทึม',      subj:'comp', el:'bolt'},
+  c_safe:    {n:'ใช้เทคโนโลยีอย่างปลอดภัย',      subj:'comp', el:'water'},
+};
+const EL_TO_UNITS = {};
+for (const k in UNITS){ (EL_TO_UNITS[UNITS[k].el] = EL_TO_UNITS[UNITS[k].el] || []).push(k); }
+
+/* ---------- ระดับความยาก ---------- */
+const DIFF = [
+  null,
+  {n:'ง่าย',      pt:10, sec:25, c:'#7cae9b'},
+  {n:'ปานกลาง',  pt:20, sec:35, c:'#7fa8c9'},
+  {n:'ยาก',       pt:35, sec:50, c:'#d8b04a'},
+  {n:'ท้าทาย',    pt:60, sec:70, c:'#c98ad4'},
+];
+
+/* ===========================================================
+   ประวัติศาสตร์ ป.5 (ส15102) — 100 ข้อ
+   ตัวชี้วัด ส 4.1 ป.5/1-3 · ส 4.2 ป.5/1-2 · ส 4.3 ป.5/1-4
+   รูปแบบ: [หน่วย, ความยาก, โจทย์, [ก,ข,ค,ง], เฉลย(0-3), คำอธิบาย]
+   =========================================================== */
+const Q_HIST_P5 = [
+
+/* ---------- หน่วย: วิธีการทางประวัติศาสตร์ (14 ข้อ) ---------- */
+['h_method',1,'หลักฐานทางประวัติศาสตร์ในข้อใดจัดเป็นหลักฐานชั้นต้น',['หนังสือเรียนประวัติศาสตร์','ศิลาจารึกที่ทำขึ้นในสมัยนั้น','บทความวิเคราะห์ของนักวิชาการ','สารคดีทางโทรทัศน์'],1,'หลักฐานชั้นต้นคือหลักฐานที่เกิดขึ้นในสมัยนั้นโดยผู้อยู่ร่วมเหตุการณ์ เช่น ศิลาจารึก'],
+['h_method',1,'ข้อใดเป็นหลักฐานที่ไม่เป็นลายลักษณ์อักษร',['พงศาวดาร','จดหมายเหตุ','เจดีย์และโบราณสถาน','ศิลาจารึก'],2,'โบราณสถานและโบราณวัตถุเป็นหลักฐานที่ไม่เป็นลายลักษณ์อักษร'],
+['h_method',1,'ขั้นตอนแรกของวิธีการทางประวัติศาสตร์คือข้อใด',['กำหนดหัวเรื่องหรือประเด็นที่จะศึกษา','นำเสนอข้อมูล','ตีความหลักฐาน','รวบรวมหลักฐาน'],0,'เริ่มจากกำหนดประเด็นที่อยากรู้ก่อน แล้วจึงไปหาหลักฐาน'],
+['h_method',2,'วิธีการทางประวัติศาสตร์มีขั้นตอนเรียงลำดับอย่างไร',['รวบรวม → กำหนดประเด็น → ตีความ → นำเสนอ','กำหนดประเด็น → รวบรวมหลักฐาน → ตรวจสอบและตีความ → สรุปและนำเสนอ','ตีความ → รวบรวม → นำเสนอ → สรุป','นำเสนอ → กำหนดประเด็น → รวบรวม → ตีความ'],1,'ลำดับที่ถูกต้องคือ กำหนดประเด็น รวบรวมหลักฐาน ตรวจสอบและตีความ แล้วจึงสรุปนำเสนอ'],
+['h_method',2,'เพราะเหตุใดจึงต้องตรวจสอบความน่าเชื่อถือของหลักฐานก่อนนำมาใช้',['เพราะหลักฐานบางชิ้นอาจถูกปลอมแปลงหรือบันทึกคลาดเคลื่อน','เพราะหลักฐานทุกชิ้นเชื่อถือไม่ได้','เพราะครูสั่งให้ทำ','เพราะจะได้ใช้เวลานานขึ้น'],0,'หลักฐานอาจถูกปลอม บันทึกผิดพลาด หรือมีอคติของผู้บันทึก จึงต้องตรวจสอบก่อน'],
+['h_method',2,'ข้อใดเป็น "ข้อเท็จจริง" ไม่ใช่ความคิดเห็น',['กรุงศรีอยุธยาเป็นเมืองที่สวยที่สุดในโลก','กรุงศรีอยุธยาสถาปนาเมื่อ พ.ศ. 1893','คนอยุธยามีความสุขมากกว่าคนสมัยนี้','พระเจ้าอู่ทองเป็นกษัตริย์ที่เก่งที่สุด'],1,'ข้อเท็จจริงตรวจสอบได้จากหลักฐาน ส่วนคำว่าสวยที่สุด เก่งที่สุด เป็นความคิดเห็น'],
+['h_method',2,'ข้อใดเป็นความคิดเห็นของผู้เขียน ไม่ใช่ข้อเท็จจริง',['อยุธยาตั้งอยู่บริเวณที่แม่น้ำสามสายมาบรรจบกัน','อยุธยาเสียแก่พม่าใน พ.ศ. 2310','อยุธยาน่าอยู่กว่าเมืองอื่นทุกเมือง','อยุธยามีพระมหากษัตริย์ 33 พระองค์'],2,'คำเปรียบเทียบเชิงชอบไม่ชอบเป็นความคิดเห็น พิสูจน์ด้วยหลักฐานไม่ได้'],
+['h_method',2,'การสอบถามผู้สูงอายุในหมู่บ้านเกี่ยวกับเรื่องเล่าในอดีต เรียกว่าหลักฐานประเภทใด',['หลักฐานลายลักษณ์อักษร','หลักฐานจากคำบอกเล่า','โบราณวัตถุ','แผนที่โบราณ'],1,'เรื่องเล่าจากปากผู้คนเรียกว่าหลักฐานจากคำบอกเล่าหรือมุขปาฐะ'],
+['h_method',2,'ข้อใดเป็นข้อจำกัดของหลักฐานจากคำบอกเล่า',['ตรวจสอบง่ายที่สุด','อาจคลาดเคลื่อนเพราะความจำและการเล่าต่อกันมา','ไม่มีประโยชน์ต่อการศึกษาประวัติศาสตร์','ใช้ได้เฉพาะเรื่องราวของราชสำนัก'],1,'ความจำเลือนรางและการเล่าต่อทำให้เนื้อหาเพี้ยนได้ จึงต้องเทียบกับหลักฐานอื่น'],
+['h_method',3,'นักเรียนต้องการศึกษาว่าวัดในหมู่บ้านสร้างเมื่อใด ควรใช้หลักฐานใดน่าเชื่อถือที่สุด',['คำบอกเล่าของเพื่อนร่วมชั้น','จารึกหรือเอกสารการสร้างวัดที่ทางวัดเก็บไว้','ข่าวลือในหมู่บ้าน','ความคิดเห็นส่วนตัว'],1,'เอกสารหรือจารึกที่ทำขึ้นในช่วงนั้นเป็นหลักฐานชั้นต้นที่น่าเชื่อถือที่สุด'],
+['h_method',3,'ถ้าหลักฐานสองชิ้นให้ข้อมูลขัดแย้งกัน นักเรียนควรทำอย่างไร',['เชื่อชิ้นที่อ่านง่ายกว่า','เลือกเชื่อชิ้นที่ถูกใจ','ตรวจสอบที่มาและหาหลักฐานชิ้นที่สามมาเทียบเคียง','ทิ้งหลักฐานทั้งสองชิ้น'],2,'ต้องตรวจสอบที่มา ความน่าเชื่อถือ และหาหลักฐานเพิ่มมาเปรียบเทียบ'],
+['h_method',3,'ข้อใดคือความแตกต่างระหว่างหลักฐานชั้นต้นกับหลักฐานชั้นรอง',['ชั้นต้นเกิดร่วมสมัยกับเหตุการณ์ ชั้นรองเกิดภายหลังจากการเรียบเรียง','ชั้นต้นเป็นภาษาไทย ชั้นรองเป็นภาษาต่างประเทศ','ชั้นต้นเป็นของราชการ ชั้นรองเป็นของเอกชน','ชั้นต้นมีภาพประกอบ ชั้นรองไม่มี'],0,'เกณฑ์สำคัญคือความใกล้ชิดกับเหตุการณ์ ไม่ใช่ภาษาหรือผู้จัดทำ'],
+['h_method',3,'พงศาวดารกรุงศรีอยุธยาที่ชำระขึ้นในสมัยรัตนโกสินทร์ จัดเป็นหลักฐานประเภทใดสำหรับการศึกษาสมัยอยุธยา',['หลักฐานชั้นต้น','หลักฐานชั้นรอง','โบราณวัตถุ','หลักฐานคำบอกเล่า'],1,'เพราะเรียบเรียงขึ้นภายหลังเหตุการณ์ จึงเป็นหลักฐานชั้นรอง'],
+['h_method',4,'ข้อใดอธิบายเหตุผลที่นักประวัติศาสตร์ต้องใช้หลักฐานหลายชิ้นประกอบกันได้ดีที่สุด',['เพื่อให้รายงานมีความยาวมากขึ้น','เพราะหลักฐานแต่ละชิ้นมีมุมมองและข้อจำกัดต่างกัน การประกอบกันจึงใกล้เคียงความจริงมากขึ้น','เพราะครูกำหนดจำนวนหลักฐานขั้นต่ำ','เพราะหลักฐานชิ้นเดียวมักอ่านไม่ออก'],1,'หลักฐานแต่ละชิ้นมีอคติและช่องว่างของตัวเอง การเทียบเคียงหลายชิ้นช่วยลดความคลาดเคลื่อน'],
+
+/* ---------- หน่วย: ชาติไทยและท้องถิ่น (6 ข้อ) ---------- */
+['h_nation',1,'แหล่งข้อมูลใดเหมาะสมที่สุดในการศึกษาความเป็นมาของท้องถิ่นตนเอง',['นิตยสารบันเทิง','พิพิธภัณฑ์ท้องถิ่นและวัดในชุมชน','การ์ตูนออนไลน์','โฆษณาสินค้า'],1,'พิพิธภัณฑ์ท้องถิ่น วัด และผู้รู้ในชุมชน เก็บร่องรอยความเป็นมาของท้องถิ่นไว้มากที่สุด'],
+['h_nation',1,'ข้อใดเป็นหลักฐานที่บอกความเป็นมาของชุมชนได้',['ชื่อหมู่บ้านและชื่อคลองที่ใช้กันมาแต่เดิม','สีของบ้านแต่ละหลัง','จำนวนรถยนต์ในหมู่บ้าน','รายการทีวีที่คนในหมู่บ้านชอบดู'],0,'ชื่อสถานที่มักบอกที่มา อาชีพ หรือเหตุการณ์ในอดีตของชุมชน'],
+['h_nation',2,'การศึกษาประวัติความเป็นมาของท้องถิ่นมีประโยชน์อย่างไรมากที่สุด',['ทำให้เกิดความรักและภาคภูมิใจในท้องถิ่นของตน','ทำให้ได้เงินรางวัล','ทำให้ไม่ต้องเรียนวิชาอื่น','ทำให้ท้องถิ่นมีชื่อเสียงระดับโลกทันที'],0,'ความเข้าใจรากเหง้าของตนนำไปสู่ความรัก ความภูมิใจ และการอนุรักษ์'],
+['h_nation',2,'เมื่อพบโบราณวัตถุในที่ดินของตนเอง ควรปฏิบัติอย่างไรจึงเหมาะสมที่สุด',['เก็บไว้เป็นสมบัติส่วนตัว','นำไปขายให้นักสะสม','แจ้งกรมศิลปากรหรือหน่วยงานราชการในพื้นที่','ทำลายทิ้งเพราะไม่มีประโยชน์'],2,'โบราณวัตถุเป็นสมบัติของชาติ ต้องแจ้งหน่วยงานที่รับผิดชอบตามกฎหมาย'],
+['h_nation',2,'ข้อใดคือวิธีอนุรักษ์โบราณสถานในท้องถิ่นที่นักเรียนทำได้',['ปีนขึ้นไปถ่ายรูปบนเจดีย์','ขีดเขียนชื่อตนเองไว้บนกำแพง','ช่วยเก็บขยะและไม่ทำให้โบราณสถานเสียหาย','เก็บอิฐเก่ากลับบ้านเป็นที่ระลึก'],2,'การไม่ทำลายและช่วยดูแลความสะอาดเป็นสิ่งที่นักเรียนทำได้ทันที'],
+['h_nation',3,'เพราะเหตุใดเรื่องเล่าในท้องถิ่นบางเรื่องจึงต้องตรวจสอบก่อนเชื่อ',['เพราะเรื่องเล่ามักผสมความเชื่อและจินตนาการเข้ากับเหตุการณ์จริง','เพราะเรื่องเล่าทุกเรื่องเป็นเรื่องโกหก','เพราะผู้เล่าตั้งใจหลอกลวงเสมอ','เพราะเรื่องเล่าไม่เกี่ยวกับประวัติศาสตร์'],0,'เรื่องเล่ามักมีแก่นความจริงปนกับตำนาน จึงต้องเทียบกับหลักฐานอื่น'],
+
+/* ---------- หน่วย: เพื่อนบ้านและอารยธรรมโลก (18 ข้อ) ---------- */
+['h_world',1,'ศาสนาใดที่ไทยรับมาจากอารยธรรมอินเดีย',['ศาสนาคริสต์','ศาสนาพุทธ','ศาสนาอิสลาม','ศาสนาชินโต'],1,'พระพุทธศาสนาเผยแผ่จากอินเดียเข้าสู่ดินแดนไทยตั้งแต่สมัยโบราณ'],
+['h_world',1,'ภาษาบาลีและสันสกฤตที่ปะปนอยู่ในภาษาไทย รับอิทธิพลมาจากอารยธรรมใด',['จีน','อินเดีย','ญี่ปุ่น','ยุโรป'],1,'บาลีและสันสกฤตเป็นภาษาของอินเดีย เข้ามาพร้อมศาสนาพุทธและพราหมณ์'],
+['h_world',1,'อาหารชนิดใดได้รับอิทธิพลจากชาวจีน',['ก๋วยเตี๋ยว','แกงมัสมั่น','ข้าวยำ','โรตี'],0,'ก๋วยเตี๋ยวเป็นอาหารเส้นที่ชาวจีนนำเข้ามาเผยแพร่ในไทย'],
+['h_world',1,'ขนมไทยชนิดใดได้รับอิทธิพลจากชาวโปรตุเกส',['ข้าวเหนียวมูน','ทองหยิบ ทองหยอด ฝอยทอง','ขนมกล้วย','ข้าวต้มมัด'],1,'ขนมตระกูลทองใช้ไข่และน้ำตาลมาก เป็นอิทธิพลจากโปรตุเกสในสมัยอยุธยา'],
+['h_world',2,'ความเชื่อเรื่องเทวราชาหรือกษัตริย์เป็นสมมติเทพ ได้รับอิทธิพลจากศาสนาใด',['ศาสนาพราหมณ์-ฮินดูของอินเดีย','ศาสนาคริสต์','ลัทธิขงจื๊อ','ศาสนาอิสลาม'],0,'แนวคิดเทวราชามาจากคติพราหมณ์-ฮินดูของอินเดีย'],
+['h_world',2,'วรรณคดีเรื่องรามเกียรติ์ของไทยมีต้นเค้ามาจากวรรณกรรมเรื่องใดของอินเดีย',['มหาภารตะ','รามายณะ','เวสสันดรชาดก','ปัญจตันตระ'],1,'รามเกียรติ์ดัดแปลงมาจากรามายณะของอินเดีย'],
+['h_world',2,'พิธีกรรมใดในราชสำนักไทยได้รับอิทธิพลจากศาสนาพราหมณ์',['พระราชพิธีจรดพระนังคัลแรกนาขวัญ','การตักบาตรเทโว','การเวียนเทียนวันวิสาขบูชา','การถวายผ้าอาบน้ำฝน'],0,'พระราชพิธีแรกนาขวัญเป็นพิธีพราหมณ์เพื่อความอุดมสมบูรณ์ของการเพาะปลูก'],
+['h_world',2,'การค้าสำเภาระหว่างอยุธยากับจีนส่งผลอย่างไรต่ออยุธยา',['ทำให้อยุธยาขาดแคลนสินค้า','ทำให้อยุธยามั่งคั่งและเป็นศูนย์กลางการค้าของภูมิภาค','ทำให้อยุธยาถูกจีนยึดครอง','ทำให้อยุธยาเลิกทำนา'],1,'รายได้จากการค้ากับจีนและชาติต่างๆ ทำให้อยุธยารุ่งเรืองเป็นเมืองท่าสำคัญ'],
+['h_world',2,'ชาติตะวันตกชาติใดเข้ามาติดต่อกับอยุธยาเป็นชาติแรก',['อังกฤษ','ฮอลันดา','โปรตุเกส','ฝรั่งเศส'],2,'โปรตุเกสเข้ามาใน พ.ศ. 2054 ตรงกับรัชกาลสมเด็จพระรามาธิบดีที่ 2'],
+['h_world',2,'เครื่องถ้วยชามและเครื่องเคลือบที่พบมากในอยุธยาส่วนใหญ่มาจากประเทศใด',['ญี่ปุ่น','จีน','อินเดีย','ฝรั่งเศส'],1,'เครื่องถ้วยจีนเป็นสินค้านำเข้าสำคัญและพบเป็นหลักฐานจำนวนมาก'],
+['h_world',2,'ข้อใดเป็นอิทธิพลของวัฒนธรรมตะวันตกที่ปรากฏในสังคมไทยปัจจุบัน',['การกินข้าวด้วยมือ','การใช้ช้อนส้อมและการแต่งกายแบบสากล','การนุ่งโจงกระเบน','การใช้เกวียนเป็นพาหนะ'],1,'การแต่งกายสากลและมารยาทบนโต๊ะอาหารเป็นอิทธิพลตะวันตก'],
+['h_world',2,'เทศกาลใดในสังคมไทยปัจจุบันได้รับอิทธิพลจากชาวจีน',['วันลอยกระทง','วันสงกรานต์','เทศกาลตรุษจีนและสารทจีน','วันเข้าพรรษา'],2,'ตรุษจีนและสารทจีนเป็นประเพณีของชาวจีนที่แพร่หลายในสังคมไทย'],
+['h_world',3,'เพราะเหตุใดอารยธรรมอินเดียจึงแพร่เข้าสู่เอเชียตะวันออกเฉียงใต้ได้ง่าย',['เพราะอินเดียส่งกองทัพเข้ายึดครอง','เพราะการค้าทางทะเลและการเผยแผ่ศาสนาทำให้เกิดการติดต่อกันมานาน','เพราะอินเดียอยู่ติดกับไทยทางบก','เพราะภาษาเหมือนกันอยู่แล้ว'],1,'พ่อค้าและนักบวชอินเดียเดินทางมาค้าขายและเผยแผ่ศาสนา ทำให้อารยธรรมแพร่ตาม'],
+['h_world',3,'ข้อใดแสดงอิทธิพลของอารยธรรมอินเดียในด้านการปกครองของไทยสมัยอยุธยา',['การเลือกตั้งผู้นำ','การใช้กฎหมายพระธรรมศาสตร์และคติเทวราชา','การแบ่งเขตปกครองแบบสหพันธรัฐ','การปกครองแบบสภาขุนนาง'],1,'พระธรรมศาสตร์และคติเทวราชาเป็นแบบแผนที่รับจากอินเดีย'],
+['h_world',3,'การรับวัฒนธรรมต่างชาติอย่างเหมาะสมควรทำอย่างไร',['รับมาทั้งหมดโดยไม่เลือก','ปฏิเสธทุกอย่างที่มาจากต่างชาติ','เลือกรับสิ่งที่เป็นประโยชน์และปรับให้เข้ากับวัฒนธรรมไทย','รับเฉพาะของประเทศที่ร่ำรวย'],2,'การเลือกรับและปรับใช้ทำให้ได้ประโยชน์โดยไม่สูญเสียเอกลักษณ์'],
+['h_world',3,'ข้อใดเป็นผลเสียของการรับวัฒนธรรมต่างชาติโดยไม่ไตร่ตรอง',['ทำให้มีความรู้มากขึ้น','ทำให้วัฒนธรรมไทยบางอย่างเลือนหายไป','ทำให้เศรษฐกิจดีขึ้น','ทำให้คนไทยพูดได้หลายภาษา'],1,'การรับมาโดยไม่เลือกอาจทำให้ละเลยและสูญเสียวัฒนธรรมของตนเอง'],
+['h_world',3,'ประเทศเพื่อนบ้านใดที่มีพรมแดนติดกับไทยยาวที่สุด',['ลาว','เมียนมา','กัมพูชา','มาเลเซีย'],1,'ไทยมีพรมแดนติดเมียนมายาวที่สุด ประมาณ 2,400 กิโลเมตร'],
+['h_world',4,'ข้อใดอธิบายลักษณะการรับอารยธรรมของไทยได้ถูกต้องที่สุด',['ไทยลอกเลียนอารยธรรมต่างชาติมาทั้งหมดโดยไม่เปลี่ยนแปลง','ไทยรับอารยธรรมต่างชาติมาผสมผสานและดัดแปลงจนเกิดเป็นเอกลักษณ์ของตนเอง','ไทยไม่เคยรับอารยธรรมจากชาติใดเลย','ไทยรับเฉพาะอารยธรรมตะวันตกเท่านั้น'],1,'ไทยรับแล้วปรับ เช่น รามายณะกลายเป็นรามเกียรติ์ที่มีลักษณะไทย'],
+
+/* ---------- หน่วย: พัฒนาการของอาณาจักร (30 ข้อ) ---------- */
+['h_kingdom',1,'กรุงศรีอยุธยาสถาปนาขึ้นในปีใด',['พ.ศ. 1781','พ.ศ. 1893','พ.ศ. 2112','พ.ศ. 2310'],1,'สถาปนาเมื่อ พ.ศ. 1893'],
+['h_kingdom',1,'ผู้สถาปนากรุงศรีอยุธยาคือพระองค์ใด',['สมเด็จพระรามาธิบดีที่ 1 (พระเจ้าอู่ทอง)','สมเด็จพระนเรศวรมหาราช','พ่อขุนรามคำแหงมหาราช','สมเด็จพระเจ้าตากสินมหาราช'],0,'พระเจ้าอู่ทองทรงสถาปนากรุงศรีอยุธยาเป็นราชธานี'],
+['h_kingdom',1,'กรุงศรีอยุธยาเป็นราชธานีของไทยนานประมาณกี่ปี',['217 ปี','317 ปี','417 ปี','517 ปี'],2,'ตั้งแต่ พ.ศ. 1893 ถึง 2310 รวม 417 ปี'],
+['h_kingdom',1,'กรุงศรีอยุธยาตั้งอยู่ในจังหวัดใดในปัจจุบัน',['พระนครศรีอยุธยา','สุพรรณบุรี','ลพบุรี','อ่างทอง'],0,'ปัจจุบันคือจังหวัดพระนครศรีอยุธยา'],
+['h_kingdom',1,'กรุงธนบุรีสถาปนาขึ้นในปีใด',['พ.ศ. 2112','พ.ศ. 2310','พ.ศ. 2325','พ.ศ. 2135'],1,'สมเด็จพระเจ้าตากสินมหาราชทรงตั้งกรุงธนบุรีใน พ.ศ. 2310'],
+['h_kingdom',1,'กรุงธนบุรีเป็นราชธานีนานประมาณกี่ปี',['5 ปี','15 ปี','25 ปี','50 ปี'],1,'ตั้งแต่ พ.ศ. 2310 ถึง 2325 รวมประมาณ 15 ปี'],
+['h_kingdom',1,'กรุงศรีอยุธยาเสียแก่พม่าครั้งที่ 2 ในปีใด',['พ.ศ. 2091','พ.ศ. 2112','พ.ศ. 2310','พ.ศ. 2325'],2,'เสียกรุงครั้งที่ 2 เมื่อ พ.ศ. 2310'],
+['h_kingdom',2,'แม่น้ำสามสายที่ล้อมรอบเกาะเมืองอยุธยาคือข้อใด',['เจ้าพระยา ป่าสัก ลพบุรี','เจ้าพระยา ท่าจีน แม่กลอง','ปิง วัง ยม','มูล ชี โขง'],0,'เกาะเมืองอยุธยาล้อมรอบด้วยแม่น้ำเจ้าพระยา ป่าสัก และลพบุรี'],
+['h_kingdom',2,'ทำเลที่ตั้งของกรุงศรีอยุธยาส่งผลดีอย่างไรมากที่สุด',['อยู่บนภูเขาสูงจึงปลอดภัย','เป็นเกาะมีน้ำล้อมรอบ ใช้เป็นปราการป้องกันข้าศึกและสะดวกต่อการค้าทางน้ำ','อยู่ติดทะเลจึงมีท่าเรือใหญ่','อยู่ใกล้ชายแดนจีน'],1,'น้ำล้อมรอบช่วยป้องกันข้าศึกโดยเฉพาะฤดูน้ำหลาก และเป็นเส้นทางค้าขายออกทะเลได้'],
+['h_kingdom',2,'กรุงศรีอยุธยามีพระมหากษัตริย์ปกครองทั้งสิ้นกี่พระองค์',['23 พระองค์','33 พระองค์','43 พระองค์','53 พระองค์'],1,'มีพระมหากษัตริย์ 33 พระองค์ จาก 5 ราชวงศ์'],
+['h_kingdom',2,'ราชวงศ์แรกที่ปกครองกรุงศรีอยุธยาคือราชวงศ์ใด',['สุพรรณภูมิ','อู่ทอง','ปราสาททอง','บ้านพลูหลวง'],1,'ราชวงศ์อู่ทองเป็นราชวงศ์แรกของอยุธยา'],
+['h_kingdom',2,'ราชวงศ์สุดท้ายที่ปกครองกรุงศรีอยุธยาคือราชวงศ์ใด',['อู่ทอง','สุโขทัย','ปราสาททอง','บ้านพลูหลวง'],3,'ราชวงศ์บ้านพลูหลวงเป็นราชวงศ์สุดท้าย เริ่มจากสมเด็จพระเพทราชา'],
+['h_kingdom',2,'การปกครองส่วนกลางสมัยอยุธยาตอนต้นแบ่งเป็น 4 กรม เรียกว่าอะไร',['จตุสดมภ์','เบญจขันธ์','ไตรภูมิ','ทศพิธ'],0,'จตุสดมภ์แปลว่าเสาหลักทั้งสี่ของการปกครอง'],
+['h_kingdom',2,'จตุสดมภ์ประกอบด้วยกรมใดบ้าง',['เวียง วัง คลัง นา','บก เรือ อากาศ เมือง','ทหาร พลเรือน ศาล คลัง','เหนือ ใต้ ออก ตก'],0,'จตุสดมภ์คือ เวียง วัง คลัง นา'],
+['h_kingdom',2,'กรมนาในระบบจตุสดมภ์มีหน้าที่ใด',['ดูแลความสงบเรียบร้อยในเมือง','ดูแลราชสำนักและการพระราชพิธี','ดูแลการเก็บภาษีและรายได้','ดูแลเรือกสวนไร่นาและเสบียงอาหาร'],3,'กรมนารับผิดชอบการเพาะปลูกและเสบียงของบ้านเมือง'],
+['h_kingdom',2,'กรมเวียงมีหน้าที่ใด',['รักษาความสงบเรียบร้อยและปกครองท้องที่ในเมืองหลวง','ดูแลพระคลังสินค้า','ดูแลนาหลวง','ดูแลการต่างประเทศ'],0,'กรมเวียงหรือนครบาลดูแลความสงบเรียบร้อยของบ้านเมือง'],
+['h_kingdom',3,'พระมหากษัตริย์พระองค์ใดทรงปฏิรูปการปกครองโดยแยกฝ่ายทหารและพลเรือนออกจากกัน',['สมเด็จพระรามาธิบดีที่ 1','สมเด็จพระบรมไตรโลกนาถ','สมเด็จพระนเรศวรมหาราช','สมเด็จพระนารายณ์มหาราช'],1,'สมเด็จพระบรมไตรโลกนาถทรงตั้งสมุหนายกดูแลพลเรือน และสมุหพระกลาโหมดูแลทหาร'],
+['h_kingdom',3,'ระบบศักดินาในสมัยอยุธยามีความหมายอย่างไร',['ระบบแบ่งที่ดินให้ทุกคนเท่ากัน','ระบบกำหนดฐานะและสิทธิหน้าที่ของคนในสังคมด้วยจำนวนไร่นาที่กำหนดไว้','ระบบเก็บภาษีจากพ่อค้าต่างชาติ','ระบบเกณฑ์ทหารในยามสงคราม'],1,'ศักดินาเป็นตัวเลขบอกฐานะและสิทธิหน้าที่ของแต่ละคนในสังคม'],
+['h_kingdom',3,'ปัจจัยใดส่งเสริมความเจริญรุ่งเรืองทางเศรษฐกิจของอยุธยามากที่สุด',['การมีแร่ทองคำจำนวนมาก','การเป็นเมืองท่าที่ตั้งอยู่บนเส้นทางการค้าทางทะเลระหว่างตะวันออกกับตะวันตก','การมีภูเขาล้อมรอบ','การมีประชากรน้อย'],1,'อยุธยาเป็นศูนย์กลางการค้าระหว่างจีน อินเดีย และชาติตะวันตก'],
+['h_kingdom',3,'หน่วยงานใดของอยุธยาทำหน้าที่ผูกขาดการค้ากับต่างประเทศ',['กรมนา','พระคลังสินค้า','กรมเวียง','กรมวัง'],1,'พระคลังสินค้าควบคุมและผูกขาดการค้าสินค้าสำคัญกับต่างชาติ'],
+['h_kingdom',3,'สินค้าออกสำคัญของอยุธยาคือข้อใด',['รถยนต์และเครื่องจักร','ของป่า เครื่องเทศ หนังสัตว์ และข้าว','เครื่องบินและเรือรบ','น้ำมันดิบ'],1,'อยุธยาส่งออกของป่า เครื่องเทศ หนังสัตว์ ไม้ฝาง และข้าวเป็นหลัก'],
+['h_kingdom',3,'สาเหตุสำคัญที่ทำให้กรุงศรีอยุธยาเสียแก่พม่าครั้งที่ 2 คือข้อใด',['อยุธยาไม่มีกำแพงเมือง','ความแตกแยกภายในและการขาดความพร้อมในการป้องกันบ้านเมือง','พม่ามีอาวุธปืนแต่อยุธยาไม่มี','อยุธยาย้ายเมืองหลวงไปที่อื่น'],1,'ความแตกแยกของขุนนาง การชิงอำนาจ และการเตรียมการที่ไม่พร้อมเป็นสาเหตุสำคัญ'],
+['h_kingdom',3,'เหตุใดสมเด็จพระเจ้าตากสินมหาราชจึงทรงเลือกกรุงธนบุรีเป็นราชธานี',['เพราะอยู่ใกล้ทะเล ค้าขายสะดวก และมีขนาดพอเหมาะกับกำลังคนที่เหลืออยู่','เพราะเป็นเมืองใหญ่กว่าอยุธยา','เพราะอยู่ไกลจากแม่น้ำ','เพราะมีกำแพงเมืองแข็งแรงที่สุด'],0,'ธนบุรีอยู่ใกล้ปากน้ำ สะดวกต่อการค้าและการถอยทัพ อีกทั้งขนาดเหมาะกับกำลังคนที่เหลือ'],
+['h_kingdom',3,'หลังเสียกรุงครั้งที่ 2 บ้านเมืองแตกออกเป็นก๊กหรือชุมนุมต่างๆ สมเด็จพระเจ้าตากสินทรงทำสิ่งใด',['ปล่อยให้แต่ละชุมนุมปกครองตนเองต่อไป','ทรงปราบปรามชุมนุมต่างๆ จนรวมแผ่นดินเป็นหนึ่งเดียวได้สำเร็จ','ทรงย้ายไปอยู่ต่างประเทศ','ทรงยกดินแดนให้พม่า'],1,'พระองค์ทรงปราบชุมนุมต่างๆ และรวบรวมแผ่นดินให้เป็นปึกแผ่นอีกครั้ง'],
+['h_kingdom',3,'ข้อใดคือปัญหาสำคัญที่สุดของกรุงธนบุรีในระยะเริ่มต้น',['ประชาชนมีมากเกินไป','ข้าวยากหมากแพงและผู้คนกระจัดกระจายหลังสงคราม','ไม่มีแม่น้ำสำหรับใช้สอย','มีศัตรูเพียงชาติเดียว'],1,'หลังสงครามบ้านเมืองเสียหาย ขาดแคลนอาหาร และผู้คนแตกกระจาย'],
+['h_kingdom',4,'ข้อใดอธิบายเหตุผลที่อยุธยาสามารถดำรงอยู่ได้ยาวนานถึง 417 ปี ได้ดีที่สุด',['เพราะไม่เคยทำสงครามกับใครเลย','เพราะมีทำเลที่ตั้งดี ระบบการปกครองที่ปรับตัวได้ และเศรษฐกิจการค้าที่มั่งคั่ง','เพราะมีประชากรมากที่สุดในโลก','เพราะมีกำแพงเมืองสูงที่สุด'],1,'ปัจจัยทางภูมิศาสตร์ การปกครอง และเศรษฐกิจประกอบกันทำให้อยุธยามั่นคงยาวนาน'],
+['h_kingdom',2,'สงครามที่สมเด็จพระสุริโยทัยทรงสิ้นพระชนม์บนคอช้างเกิดขึ้นในรัชกาลใด',['สมเด็จพระมหาจักรพรรดิ','สมเด็จพระนเรศวรมหาราช','สมเด็จพระนารายณ์มหาราช','สมเด็จพระเจ้าอู่ทอง'],0,'เกิดใน พ.ศ. 2091 รัชกาลสมเด็จพระมหาจักรพรรดิ'],
+['h_kingdom',2,'วีรกรรมของชาวบ้านบางระจันเกิดขึ้นในช่วงเวลาใด',['ก่อนเสียกรุงศรีอยุธยาครั้งที่ 2','หลังตั้งกรุงธนบุรี','สมัยสุโขทัย','สมัยรัตนโกสินทร์'],0,'ชาวบ้านบางระจันต่อสู้กับพม่าในช่วงก่อนเสียกรุงครั้งที่ 2'],
+['h_kingdom',1,'อาณาจักรใดที่รุ่งเรืองต่อจากกรุงศรีอยุธยา',['สุโขทัย','ธนบุรี','ล้านนา','ทวารวดี'],1,'หลังเสียกรุงศรีอยุธยา สมเด็จพระเจ้าตากสินมหาราชทรงตั้งกรุงธนบุรีเป็นราชธานีต่อมา'],
+['h_kingdom',2,'เมืองใดที่สมเด็จพระนารายณ์มหาราชทรงใช้เป็นราชธานีแห่งที่สอง',['สุพรรณบุรี','ลพบุรี','นครศรีธรรมราช','พิษณุโลก'],1,'พระองค์โปรดประทับที่เมืองลพบุรีและสร้างพระนารายณ์ราชนิเวศน์ไว้'],
+
+/* ---------- หน่วย: บุคคลสำคัญ (17 ข้อ) ---------- */
+['h_person',1,'พระมหากษัตริย์พระองค์ใดทรงประกาศอิสรภาพจากพม่าเมื่อ พ.ศ. 2127',['สมเด็จพระนเรศวรมหาราช','สมเด็จพระเอกาทศรถ','สมเด็จพระนารายณ์มหาราช','สมเด็จพระเพทราชา'],0,'สมเด็จพระนเรศวรมหาราชทรงประกาศอิสรภาพที่เมืองแครง'],
+['h_person',1,'สมเด็จพระเจ้าตากสินมหาราชทรงมีพระราชกรณียกิจสำคัญที่สุดคือข้อใด',['ทรงสร้างพระบรมมหาราชวัง','ทรงกอบกู้เอกราชและรวบรวมแผ่นดินหลังเสียกรุงครั้งที่ 2','ทรงแต่งเรื่องรามเกียรติ์ครบทุกตอน','ทรงส่งราชทูตไปฝรั่งเศส'],1,'พระราชกรณียกิจสำคัญที่สุดคือการกู้เอกราชและรวมแผ่นดินให้เป็นปึกแผ่น'],
+['h_person',1,'พระมหากษัตริย์พระองค์ใดทรงกระทำยุทธหัตถีชนะพระมหาอุปราชา',['สมเด็จพระมหาจักรพรรดิ','สมเด็จพระนเรศวรมหาราช','สมเด็จพระเจ้าอู่ทอง','สมเด็จพระเพทราชา'],1,'สมเด็จพระนเรศวรมหาราชทรงชนะยุทธหัตถีที่หนองสาหร่าย'],
+['h_person',2,'สมเด็จพระสุริโยทัยทรงเป็นที่จดจำเพราะเหตุใด',['ทรงแต่งวรรณคดีหลายเรื่อง','ทรงไสช้างเข้าขวางเพื่อป้องกันพระสวามีจนสิ้นพระชนม์ในสนามรบ','ทรงสร้างวัดจำนวนมาก','ทรงเป็นราชทูตไปต่างประเทศ'],1,'ทรงเสียสละพระชนม์ชีพเพื่อปกป้องสมเด็จพระมหาจักรพรรดิในสงคราม'],
+['h_person',2,'สมเด็จพระบรมไตรโลกนาถมีผลงานสำคัญด้านใด',['การปฏิรูปการปกครองและวางระบบศักดินา','การค้าขายกับชาติตะวันตก','การกู้เอกราชจากพม่า','การย้ายราชธานีไปธนบุรี'],0,'พระองค์ทรงปฏิรูปการปกครองส่วนกลางและวางระบบศักดินา'],
+['h_person',2,'ในรัชสมัยใดที่ชาวต่างชาติเข้ามาติดต่อกับอยุธยามากที่สุด',['สมเด็จพระเจ้าอู่ทอง','สมเด็จพระนารายณ์มหาราช','สมเด็จพระเพทราชา','สมเด็จพระเจ้าเสือ'],1,'สมัยสมเด็จพระนารายณ์มหาราชมีทั้งฝรั่งเศส ฮอลันดา อังกฤษ และเปอร์เซียเข้ามา'],
+['h_person',2,'ราชทูตของสมเด็จพระนารายณ์มหาราชที่เดินทางไปเจริญสัมพันธไมตรีกับฝรั่งเศสคือผู้ใด',['ออกญาโกษาธิบดี (ปาน)','พระยาพิชัยดาบหัก','เจ้าพระยาจักรี','ขุนวรวงศาธิราช'],0,'ออกญาโกษาธิบดี (ปาน) หรือโกษาปาน เป็นหัวหน้าคณะราชทูตไปฝรั่งเศส'],
+['h_person',2,'ชาวกรีกที่เข้ามารับราชการจนมีอำนาจมากในสมัยสมเด็จพระนารายณ์มหาราชคือผู้ใด',['คอนสแตนติน ฟอลคอน','มาร์โค โปโล','วาสโก ดา กามา','เจมส์ คุก'],0,'คอนสแตนติน ฟอลคอน หรือเจ้าพระยาวิชาเยนทร์'],
+['h_person',2,'พระยาพิชัยดาบหักเป็นทหารเอกของพระมหากษัตริย์พระองค์ใด',['สมเด็จพระนเรศวรมหาราช','สมเด็จพระเจ้าตากสินมหาราช','สมเด็จพระนารายณ์มหาราช','สมเด็จพระบรมไตรโลกนาถ'],1,'พระยาพิชัยดาบหักเป็นทหารคู่พระทัยของสมเด็จพระเจ้าตากสินมหาราช'],
+['h_person',2,'พระมหากษัตริย์พระองค์ใดทรงเป็นปฐมกษัตริย์แห่งราชวงศ์บ้านพลูหลวง',['สมเด็จพระเพทราชา','สมเด็จพระเจ้าปราสาททอง','สมเด็จพระนารายณ์มหาราช','สมเด็จพระเจ้าเอกทัศ'],0,'สมเด็จพระเพทราชาทรงตั้งราชวงศ์บ้านพลูหลวง'],
+['h_person',3,'พระมหากษัตริย์พระองค์สุดท้ายของกรุงศรีอยุธยาคือพระองค์ใด',['สมเด็จพระเจ้าอุทุมพร','สมเด็จพระเจ้าเอกทัศ','สมเด็จพระเพทราชา','สมเด็จพระเจ้าบรมโกศ'],1,'สมเด็จพระเจ้าเอกทัศทรงเป็นพระมหากษัตริย์พระองค์สุดท้ายก่อนเสียกรุง'],
+['h_person',3,'"ขุนหลวงหาวัด" เป็นพระนามที่ใช้เรียกพระมหากษัตริย์พระองค์ใด',['สมเด็จพระเจ้าอุทุมพร','สมเด็จพระเจ้าเอกทัศ','สมเด็จพระเจ้าเสือ','สมเด็จพระเพทราชา'],0,'สมเด็จพระเจ้าอุทุมพรทรงสละราชสมบัติออกผนวช จึงมีพระนามเรียกว่าขุนหลวงหาวัด'],
+['h_person',3,'สมเด็จพระนเรศวรมหาราชทรงประกาศอิสรภาพที่เมืองใด',['เมืองแครง','เมืองพิษณุโลก','เมืองหงสาวดี','เมืองกาญจนบุรี'],0,'ทรงประกาศอิสรภาพที่เมืองแครงในดินแดนพม่า'],
+['h_person',3,'เหตุใดสมเด็จพระเจ้าตากสินมหาราชจึงได้รับการยกย่องเป็นมหาราช',['เพราะทรงครองราชย์นานที่สุด','เพราะทรงกอบกู้เอกราชและฟื้นฟูบ้านเมืองในเวลาอันสั้น','เพราะทรงสร้างวัดมากที่สุด','เพราะทรงมีพระโอรสมากที่สุด'],1,'ทรงกู้เอกราช รวมแผ่นดิน และฟื้นฟูเศรษฐกิจภายในเวลาเพียง 15 ปี'],
+['h_person',3,'ก่อนขึ้นครองราชย์ สมเด็จพระเจ้าตากสินมหาราชทรงดำรงตำแหน่งใด',['เจ้าเมืองตาก','เจ้าเมืองพิษณุโลก','เจ้าเมืองนครศรีธรรมราช','เจ้าเมืองลพบุรี'],0,'ทรงเป็นพระยาตากหรือเจ้าเมืองตากมาก่อน จึงเรียกกันว่าพระเจ้าตากสิน'],
+['h_person',4,'ข้อใดคือคุณลักษณะร่วมของบุคคลสำคัญสมัยอยุธยาและธนบุรีที่ควรนำมาเป็นแบบอย่าง',['ความร่ำรวยและยศถาบรรดาศักดิ์','ความเสียสละ ความกล้าหาญ และความจงรักภักดีต่อบ้านเมือง','ความสามารถในการค้าขาย','การมีบริวารจำนวนมาก'],1,'สิ่งที่ทำให้ท่านเหล่านั้นได้รับการยกย่องคือความเสียสละและกล้าหาญเพื่อส่วนรวม'],
+['h_person',2,'พระมหากษัตริย์พระองค์ใดโปรดให้สร้างวัดไชยวัฒนาราม',['สมเด็จพระเจ้าปราสาททอง','สมเด็จพระนเรศวรมหาราช','สมเด็จพระเจ้าอู่ทอง','สมเด็จพระเจ้าตากสินมหาราช'],0,'สมเด็จพระเจ้าปราสาททองโปรดให้สร้างวัดไชยวัฒนารามริมแม่น้ำเจ้าพระยา'],
+
+/* ---------- หน่วย: ภูมิปัญญาและวัฒนธรรม (15 ข้อ) ---------- */
+['h_culture',1,'วัดใดเป็นวัดประจำพระราชวังหลวงของกรุงศรีอยุธยา',['วัดพระศรีสรรเพชญ์','วัดไชยวัฒนาราม','วัดใหญ่ชัยมงคล','วัดพนัญเชิง'],0,'วัดพระศรีสรรเพชญ์อยู่ในเขตพระราชวังหลวง ไม่มีพระสงฆ์จำพรรษา'],
+['h_culture',1,'พระพุทธรูปองค์ใหญ่ที่ชาวบ้านเรียกว่า "หลวงพ่อโต" ประดิษฐานอยู่ที่วัดใด',['วัดพนัญเชิงวรวิหาร','วัดมหาธาตุ','วัดราชบูรณะ','วัดโลกยสุธา'],0,'พระพุทธไตรรัตนนายกหรือหลวงพ่อโต ประดิษฐานที่วัดพนัญเชิง'],
+['h_culture',1,'เศียรพระพุทธรูปในรากต้นโพธิ์ที่เป็นสัญลักษณ์ของอยุธยาอยู่ที่วัดใด',['วัดมหาธาตุ','วัดพระศรีสรรเพชญ์','วัดไชยวัฒนาราม','วัดหน้าพระเมรุ'],0,'เศียรพระพุทธรูปในรากไม้อยู่ที่วัดมหาธาตุ จังหวัดพระนครศรีอยุธยา'],
+['h_culture',1,'ภูมิปัญญาด้านการคมนาคมที่สำคัญของคนอยุธยาคือข้อใด',['การสร้างรถไฟ','การใช้เรือและการขุดคลองเป็นเส้นทางสัญจร','การสร้างถนนลาดยาง','การใช้เครื่องบิน'],1,'อยุธยาเป็นเมืองน้ำ ผู้คนใช้เรือและคลองเป็นเส้นทางหลัก'],
+['h_culture',2,'เครื่องปั้นดินเผาเคลือบที่เรียกว่า "เครื่องสังคโลก" เป็นภูมิปัญญาของอาณาจักรใด',['สุโขทัย','อยุธยา','ธนบุรี','ล้านนา'],0,'เครื่องสังคโลกเป็นภูมิปัญญาเด่นของสุโขทัย ไม่ใช่ของอยุธยา'],
+['h_culture',2,'วรรณคดีเรื่อง "มหาชาติคำหลวง" แต่งขึ้นในรัชสมัยใด',['สมเด็จพระบรมไตรโลกนาถ','สมเด็จพระนารายณ์มหาราช','สมเด็จพระเจ้าตากสินมหาราช','สมเด็จพระเพทราชา'],0,'มหาชาติคำหลวงแต่งขึ้นในรัชสมัยสมเด็จพระบรมไตรโลกนาถ'],
+['h_culture',2,'"กาพย์เห่เรือ" อันไพเราะสมัยอยุธยาเป็นผลงานของผู้ใด',['เจ้าฟ้าธรรมธิเบศร','ศรีปราชญ์','สุนทรภู่','พระมหาราชครู'],0,'เจ้าฟ้าธรรมธิเบศรหรือเจ้าฟ้ากุ้ง ทรงนิพนธ์กาพย์เห่เรือ'],
+['h_culture',2,'สถาปัตยกรรมแบบใดที่นิยมสร้างในสมัยอยุธยาตอนต้น',['พระปรางค์','พระธาตุแบบล้านนา','โบสถ์แบบตะวันตก','เจดีย์ทรงระฆังแบบลังกาเท่านั้น'],0,'อยุธยาตอนต้นนิยมสร้างพระปรางค์ตามอิทธิพลขอม'],
+['h_culture',2,'ศิลปะการแสดงชั้นสูงที่สืบทอดมาตั้งแต่สมัยอยุธยาคือข้อใด',['โขนและละครใน','ลิเก','หมอลำ','ลำตัด'],0,'โขนและละครในเป็นนาฏศิลป์ชั้นสูงที่แสดงในราชสำนักมาแต่สมัยอยุธยา'],
+['h_culture',2,'สมเด็จพระเจ้าตากสินมหาราชทรงพระราชนิพนธ์วรรณคดีเรื่องใด',['รามเกียรติ์บางตอน','พระอภัยมณี','ขุนช้างขุนแผน','อิเหนา'],0,'ทรงพระราชนิพนธ์บทละครเรื่องรามเกียรติ์ไว้บางตอนในสมัยธนบุรี'],
+['h_culture',2,'วัดใดเป็นวัดสำคัญที่สร้างและบูรณะในสมัยกรุงธนบุรี',['วัดอรุณราชวราราม','วัดพระศรีสรรเพชญ์','วัดไชยวัฒนาราม','วัดมหาธาตุ อยุธยา'],0,'วัดอรุณราชวรารามหรือวัดแจ้ง เป็นวัดสำคัญในสมัยธนบุรี'],
+['h_culture',3,'ภูมิปัญญาด้านการทำนาของคนอยุธยาที่ยังใช้ได้ถึงปัจจุบันคือข้อใด',['การใช้ปุ๋ยเคมีทุกชนิด','การทำนาปีตามฤดูน้ำหลากและการใช้ระบบคลองส่งน้ำ','การปลูกข้าวในโรงเรือนแอร์','การใช้รถแทรกเตอร์'],1,'การทำนาให้สอดคล้องกับฤดูน้ำและการจัดการน้ำด้วยคลองเป็นภูมิปัญญาที่ยังใช้อยู่'],
+['h_culture',3,'เพราะเหตุใดจึงควรอนุรักษ์ภูมิปัญญาไทยสมัยอยุธยาและธนบุรี',['เพราะเป็นมรดกที่แสดงความสามารถของบรรพบุรุษและเป็นรากฐานของวัฒนธรรมไทยปัจจุบัน','เพราะขายได้ราคาแพง','เพราะรัฐบาลบังคับ','เพราะชาวต่างชาติชอบ'],0,'ภูมิปัญญาเป็นรากฐานทางวัฒนธรรมและความภาคภูมิใจของชาติ'],
+['h_culture',3,'อุทยานประวัติศาสตร์พระนครศรีอยุธยาได้รับการขึ้นทะเบียนจากองค์การใด',['องค์การอนามัยโลก','ยูเนสโกให้เป็นมรดกโลก','องค์การการค้าโลก','กองทุนการเงินระหว่างประเทศ'],1,'ยูเนสโกขึ้นทะเบียนเป็นมรดกโลกเมื่อ พ.ศ. 2534'],
+['h_culture',4,'ข้อใดแสดงให้เห็นว่าภูมิปัญญาไทยสมัยอยุธยามีลักษณะ "ปรับให้เข้ากับสภาพแวดล้อม" ได้ชัดเจนที่สุด',['การสร้างกำแพงเมืองด้วยศิลาแลง','การสร้างบ้านเรือนไทยใต้ถุนสูงและใช้เรือสัญจรตามฤดูน้ำหลาก','การใช้เกวียนขนสินค้า','การปลูกพืชเมืองหนาว'],1,'เรือนไทยใต้ถุนสูงและการสัญจรทางน้ำเป็นการปรับตัวให้เข้ากับพื้นที่น้ำท่วมถึง'],
+];
+
+/* ===========================================================
+   ประวัติศาสตร์ ป.6 (ส16102) — 100 ข้อ
+   ตัวชี้วัด ส 4.1 ป.6/1-2 · ส 4.2 ป.6/1-2 · ส 4.3 ป.6/1-4
+   รูปแบบ: [หน่วย, ความยาก, โจทย์, [ก,ข,ค,ง], เฉลย(0-3), คำอธิบาย]
+   =========================================================== */
+const Q_HIST_P6 = [
+
+/* ---------- วิธีการทางประวัติศาสตร์ (14 ข้อ) ---------- */
+['h_method',1,'วิธีการทางประวัติศาสตร์มีความสำคัญอย่างไร',['ทำให้เรื่องเล่าสนุกขึ้น','ช่วยให้ได้ข้อมูลในอดีตที่น่าเชื่อถือและมีเหตุผล','ทำให้จำวันที่ได้แม่นยำ','ทำให้เขียนรายงานได้ยาวขึ้น'],1,'วิธีการทางประวัติศาสตร์เป็นกระบวนการตรวจสอบหลักฐานเพื่อให้ได้ข้อสรุปที่เชื่อถือได้'],
+['h_method',1,'ขั้นตอนสุดท้ายของวิธีการทางประวัติศาสตร์คือข้อใด',['กำหนดประเด็นศึกษา','รวบรวมหลักฐาน','ตีความหลักฐาน','เรียบเรียงและนำเสนอข้อมูล'],3,'เมื่อวิเคราะห์เสร็จแล้วจึงเรียบเรียงและนำเสนอเป็นขั้นสุดท้าย'],
+['h_method',1,'ข้อใดเป็นหลักฐานชั้นต้นของประวัติศาสตร์สมัยรัตนโกสินทร์',['หนังสือเรียนประวัติศาสตร์ ป.6','พระราชหัตถเลขาและจดหมายเหตุร่วมสมัย','สารคดีที่ผลิตในปัจจุบัน','บทความในเว็บไซต์ทั่วไป'],1,'เอกสารที่เขียนขึ้นในสมัยนั้นโดยผู้เกี่ยวข้องเป็นหลักฐานชั้นต้น'],
+['h_method',2,'การประเมินคุณค่าภายนอกของหลักฐานหมายถึงข้อใด',['ตรวจสอบว่าหลักฐานนั้นเป็นของแท้หรือของปลอม','ตรวจสอบว่าเนื้อหาน่าเชื่อถือเพียงใด','ตรวจสอบว่าอ่านง่ายหรือไม่','ตรวจสอบว่ามีภาพประกอบหรือไม่'],0,'การประเมินภายนอกดูที่ตัวหลักฐานว่าแท้หรือปลอม ส่วนการประเมินภายในดูที่เนื้อหา'],
+['h_method',2,'เพราะเหตุใดจึงควรใช้หลักฐานหลายชิ้นในการศึกษาเรื่องเดียวกัน',['เพื่อให้รายงานยาวขึ้น','เพื่อตรวจสอบความถูกต้องและลดความลำเอียงของหลักฐานแต่ละชิ้น','เพื่อให้ครูให้คะแนนมากขึ้น','เพื่อใช้เวลาศึกษานานขึ้น'],1,'หลักฐานแต่ละชิ้นมีมุมมองต่างกัน การเทียบเคียงช่วยให้ใกล้เคียงความจริงมากขึ้น'],
+['h_method',2,'ข้อใดเป็นหลักฐานทางโบราณคดี',['พงศาวดาร','เครื่องมือหินและภาชนะดินเผาที่ขุดพบ','พระราชหัตถเลขา','หนังสือพิมพ์เก่า'],1,'โบราณวัตถุที่ขุดค้นพบเป็นหลักฐานทางโบราณคดี'],
+['h_method',2,'การนำเสนอข้อมูลทางประวัติศาสตร์ที่ดีควรมีลักษณะใด',['ใส่ความคิดเห็นส่วนตัวให้มากที่สุด','อ้างอิงแหล่งที่มาของหลักฐานอย่างชัดเจน','เลือกเฉพาะข้อมูลที่ตรงกับความเชื่อของตน','ไม่ต้องบอกที่มาเพื่อความกระชับ'],1,'การอ้างอิงแหล่งที่มาทำให้ผู้อ่านตรวจสอบย้อนกลับได้'],
+['h_method',2,'ข้อใดเป็นข้อเท็จจริง ไม่ใช่ความคิดเห็น',['รัชกาลที่ 5 ทรงเป็นกษัตริย์ที่ดีที่สุด','พระราชบัญญัติเลิกทาสประกาศใช้ใน พ.ศ. 2448','คนสมัยก่อนมีความสุขมากกว่าคนสมัยนี้','กรุงเทพฯ สวยที่สุดในเอเชีย'],1,'ข้อเท็จจริงตรวจสอบได้จากเอกสาร ส่วนคำว่าดีที่สุดหรือสวยที่สุดเป็นความคิดเห็น'],
+['h_method',2,'ถ้าต้องการศึกษาชีวิตชาวบ้านสมัยรัชกาลที่ 5 หลักฐานใดให้ภาพได้ดีที่สุด',['ตำราเรียนสมัยปัจจุบัน','ภาพถ่ายเก่าและบันทึกของชาวต่างชาติที่เดินทางเข้ามาในสมัยนั้น','นิยายอิงประวัติศาสตร์','ละครโทรทัศน์'],1,'ภาพถ่ายและบันทึกร่วมสมัยเป็นหลักฐานชั้นต้นที่สะท้อนชีวิตจริงในยุคนั้น'],
+['h_method',3,'นิยายอิงประวัติศาสตร์ใช้เป็นหลักฐานทางประวัติศาสตร์ได้หรือไม่ เพราะเหตุใด',['ใช้ได้เต็มที่ เพราะเขียนจากเรื่องจริง','ใช้ไม่ได้เลย เพราะเป็นเรื่องแต่ง','ใช้ได้อย่างระมัดระวัง เพราะมีทั้งข้อมูลจริงและจินตนาการของผู้แต่งปะปนกัน','ใช้ได้เฉพาะเรื่องที่ทำเป็นละคร'],2,'ต้องแยกส่วนที่เป็นข้อมูลจริงออกจากจินตนาการ และตรวจสอบกับหลักฐานอื่นเสมอ'],
+['h_method',3,'หลักฐานสองชิ้นระบุปีเหตุการณ์เดียวกันไม่ตรงกัน ควรทำอย่างไรก่อน',['เลือกปีที่จำง่ายกว่า','ตรวจสอบว่าหลักฐานชิ้นใดเป็นชั้นต้นและใกล้เหตุการณ์มากกว่า','เชื่อชิ้นที่พิมพ์สวยกว่า','ไม่ต้องสนใจปี'],1,'ความใกล้ชิดกับเหตุการณ์และความเป็นหลักฐานชั้นต้นเป็นเกณฑ์สำคัญในการตัดสิน'],
+['h_method',3,'ข้อใดคือ "การตีความหลักฐาน"',['การคัดลอกข้อความจากหลักฐานมาทั้งหมด','การอธิบายว่าหลักฐานนั้นบอกอะไรและมีความหมายอย่างไรในบริบทของยุคนั้น','การถ่ายรูปหลักฐานเก็บไว้','การนับจำนวนหลักฐานที่มี'],1,'การตีความคือการหาความหมายของหลักฐานโดยคำนึงถึงบริบทของยุคสมัย'],
+['h_method',3,'เหตุใดผู้บันทึกเหตุการณ์จึงอาจทำให้หลักฐานมีความลำเอียง',['เพราะเขียนหนังสือไม่เก่ง','เพราะผู้บันทึกมีจุดยืน ความเชื่อ และผลประโยชน์ของตนเอง','เพราะไม่มีเวลาเขียน','เพราะกระดาษไม่พอ'],1,'มุมมองและผลประโยชน์ของผู้บันทึกส่งผลต่อสิ่งที่เลือกเขียนและวิธีเล่า'],
+['h_method',4,'ข้อใดแสดงการใช้วิธีการทางประวัติศาสตร์ได้ครบถ้วนที่สุด',['อ่านหนังสือเล่มเดียวแล้วสรุปทันที','ตั้งคำถามว่าโรงเรียนเราตั้งเมื่อใด แล้วไปค้นเอกสารของโรงเรียน สัมภาษณ์ครูเก่า เปรียบเทียบข้อมูล แล้วเขียนรายงานพร้อมอ้างอิง','ถามเพื่อนแล้วเชื่อตามนั้น','คัดลอกข้อมูลจากอินเทอร์เน็ตมาทั้งหมด'],1,'มีครบทั้งการตั้งประเด็น รวบรวมหลากหลายแหล่ง ตรวจสอบเทียบเคียง และนำเสนออย่างอ้างอิงได้'],
+
+/* ---------- เพื่อนบ้านและอาเซียน (22 ข้อ) ---------- */
+['h_world',1,'อาเซียนก่อตั้งขึ้นเมื่อใด',['8 สิงหาคม พ.ศ. 2510','8 สิงหาคม พ.ศ. 2520','1 มกราคม พ.ศ. 2500','5 ธันวาคม พ.ศ. 2530'],0,'ก่อตั้งเมื่อ 8 สิงหาคม พ.ศ. 2510 ด้วยการลงนามปฏิญญากรุงเทพ'],
+['h_world',1,'เอกสารที่ใช้ก่อตั้งอาเซียนเรียกว่าอะไร',['ปฏิญญากรุงเทพ','สนธิสัญญาเบาว์ริง','กฎบัตรสหประชาชาติ','ปฏิญญาสากลว่าด้วยสิทธิมนุษยชน'],0,'ปฏิญญากรุงเทพหรือ Bangkok Declaration ลงนามที่วังสราญรมย์'],
+['h_world',1,'ประเทศผู้ร่วมก่อตั้งอาเซียนมีกี่ประเทศ',['3 ประเทศ','5 ประเทศ','7 ประเทศ','10 ประเทศ'],1,'ผู้ก่อตั้ง 5 ประเทศคือ ไทย มาเลเซีย อินโดนีเซีย ฟิลิปปินส์ และสิงคโปร์'],
+['h_world',1,'สำนักเลขาธิการอาเซียนตั้งอยู่ที่เมืองใด',['กรุงเทพมหานคร','จาการ์ตา','สิงคโปร์','มะนิลา'],1,'สำนักเลขาธิการอาเซียนตั้งอยู่ที่กรุงจาการ์ตา ประเทศอินโดนีเซีย'],
+['h_world',1,'เมืองหลวงของสาธารณรัฐประชาธิปไตยประชาชนลาวคือเมืองใด',['หลวงพระบาง','เวียงจันทน์','สะหวันนะเขต','ปากเซ'],1,'เวียงจันทน์เป็นเมืองหลวงของ สปป.ลาว'],
+['h_world',1,'เมืองหลวงของราชอาณาจักรกัมพูชาคือเมืองใด',['เสียมราฐ','พระตะบอง','พนมเปญ','สีหนุวิลล์'],2,'พนมเปญเป็นเมืองหลวงของกัมพูชา'],
+['h_world',1,'เมืองหลวงของมาเลเซียคือเมืองใด',['ปีนัง','ยะโฮร์บาห์รู','กัวลาลัมเปอร์','โกตาคินาบาลู'],2,'กัวลาลัมเปอร์เป็นเมืองหลวงของมาเลเซีย'],
+['h_world',1,'เมืองหลวงของสาธารณรัฐแห่งสหภาพเมียนมาคือเมืองใด',['ย่างกุ้ง','มัณฑะเลย์','เนปยีดอ','พะโค'],2,'เมียนมาย้ายเมืองหลวงจากย่างกุ้งไปเนปยีดอเมื่อ พ.ศ. 2548'],
+['h_world',2,'ประเทศใดในอาเซียนไม่มีทางออกสู่ทะเล',['ลาว','กัมพูชา','เวียดนาม','บรูไน'],0,'ลาวเป็นประเทศเดียวในอาเซียนที่ไม่มีพื้นที่ติดทะเล'],
+['h_world',2,'ประเทศเพื่อนบ้านใดมีพรมแดนติดกับไทยยาวที่สุด',['ลาว','เมียนมา','กัมพูชา','มาเลเซีย'],1,'ไทยมีพรมแดนติดเมียนมายาวที่สุด ประมาณ 2,400 กิโลเมตร'],
+['h_world',2,'สกุลเงินของประเทศลาวคือข้อใด',['จั๊ต','กีบ','เรียล','ริงกิต'],1,'ลาวใช้เงินกีบ เมียนมาใช้จั๊ต กัมพูชาใช้เรียล มาเลเซียใช้ริงกิต'],
+['h_world',2,'ปราสาทนครวัดเป็นมรดกทางวัฒนธรรมของประเทศใด',['ไทย','กัมพูชา','ลาว','เวียดนาม'],1,'นครวัดตั้งอยู่ที่เมืองเสียมราฐ ประเทศกัมพูชา'],
+['h_world',2,'ประเทศใดในอาเซียนที่มีระบบการปกครองแบบสาธารณรัฐและเป็นศูนย์กลางการเงินของภูมิภาค',['สิงคโปร์','บรูไน','กัมพูชา','ไทย'],0,'สิงคโปร์เป็นสาธารณรัฐและเป็นศูนย์กลางการเงินและท่าเรือสำคัญของภูมิภาค'],
+['h_world',2,'ประเทศใดในอาเซียนปกครองด้วยระบอบสมบูรณาญาสิทธิราชย์และมีรายได้หลักจากน้ำมันและก๊าซธรรมชาติ',['มาเลเซีย','บรูไนดารุสซาลาม','กัมพูชา','เมียนมา'],1,'บรูไนมีสุลต่านเป็นประมุขและมีรายได้หลักจากทรัพยากรน้ำมันและก๊าซ'],
+['h_world',2,'ประเทศใดในอาเซียนปกครองด้วยระบอบสังคมนิยมโดยมีพรรคการเมืองเดียว',['ไทยและมาเลเซีย','ลาวและเวียดนาม','ฟิลิปปินส์และอินโดนีเซีย','สิงคโปร์และบรูไน'],1,'ลาวและเวียดนามปกครองด้วยระบอบสังคมนิยมโดยพรรคคอมมิวนิสต์'],
+['h_world',2,'เสาหลักของประชาคมอาเซียนมี 3 ด้าน ได้แก่ข้อใด',['การเมืองความมั่นคง เศรษฐกิจ สังคมและวัฒนธรรม','การทหาร การศึกษา การกีฬา','การเกษตร อุตสาหกรรม การท่องเที่ยว','ศาสนา ภาษา ประเพณี'],0,'ประชาคมอาเซียนประกอบด้วย 3 เสาหลักคือการเมืองความมั่นคง เศรษฐกิจ และสังคมวัฒนธรรม'],
+['h_world',3,'ภาษาราชการที่ใช้ในการทำงานของอาเซียนคือภาษาใด',['ภาษาจีน','ภาษาอังกฤษ','ภาษามลายู','ภาษาไทย'],1,'อาเซียนกำหนดให้ภาษาอังกฤษเป็นภาษาที่ใช้ในการทำงาน'],
+['h_world',3,'ประโยชน์สำคัญที่ไทยได้รับจากการเป็นสมาชิกอาเซียนคือข้อใด',['ได้ดินแดนเพิ่มขึ้น','ขยายตลาดการค้าและมีอำนาจต่อรองกับประเทศนอกภูมิภาคมากขึ้น','ไม่ต้องเสียภาษีทุกชนิด','สามารถใช้เงินสกุลเดียวกันทั้งภูมิภาค'],1,'การรวมกลุ่มช่วยขยายตลาด ลดอุปสรรคทางการค้า และเพิ่มอำนาจต่อรอง'],
+['h_world',3,'ข้อใดคือความคล้ายคลึงกันทางวัฒนธรรมของไทย ลาว และกัมพูชา',['นับถือพระพุทธศาสนาและได้รับอิทธิพลจากอารยธรรมอินเดีย','ใช้ภาษาเดียวกันทั้งหมด','ปกครองด้วยระบอบเดียวกัน','ใช้สกุลเงินเดียวกัน'],0,'ทั้งสามประเทศนับถือพุทธศาสนาเถรวาทและรับอารยธรรมอินเดียร่วมกัน'],
+['h_world',3,'การที่ประเทศเพื่อนบ้านมีความสัมพันธ์ที่ดีต่อกันส่งผลอย่างไร',['เกิดสงครามบ่อยขึ้น','เกิดความร่วมมือทางการค้า การท่องเที่ยว และการแก้ปัญหาข้ามพรมแดนได้ดีขึ้น','ทำให้แต่ละประเทศเสียเอกราช','ทำให้ประชากรลดลง'],1,'ความสัมพันธ์ที่ดีนำไปสู่ความร่วมมือทางเศรษฐกิจและการแก้ปัญหาร่วมกัน'],
+['h_world',3,'นักเรียนควรปฏิบัติตนอย่างไรในฐานะพลเมืองอาเซียน',['ดูถูกวัฒนธรรมของประเทศเพื่อนบ้าน','เรียนรู้และเคารพความแตกต่างทางภาษา ศาสนา และวัฒนธรรมของเพื่อนบ้าน','ใช้สินค้าจากประเทศไทยเท่านั้น','ไม่คบหากับคนต่างชาติ'],1,'การเคารพความแตกต่างเป็นพื้นฐานของการอยู่ร่วมกันในประชาคมอาเซียน'],
+['h_world',4,'ข้อใดเป็นความท้าทายสำคัญของอาเซียนในการรวมตัวเป็นประชาคมเดียว',['สมาชิกทุกประเทศมีภาษาเดียวกันจนไม่มีเอกลักษณ์','ความแตกต่างของระดับการพัฒนาเศรษฐกิจ ระบอบการปกครอง และวัฒนธรรมของแต่ละประเทศ','สมาชิกมีจำนวนน้อยเกินไป','ไม่มีประเทศใดสนใจการค้าระหว่างกัน'],1,'ความหลากหลายด้านเศรษฐกิจและการเมืองทำให้การกำหนดนโยบายร่วมกันเป็นเรื่องยาก'],
+
+/* ---------- พัฒนาการของอาณาจักร: รัตนโกสินทร์ (28 ข้อ) ---------- */
+['h_kingdom',1,'กรุงรัตนโกสินทร์สถาปนาขึ้นในปีใด',['พ.ศ. 2310','พ.ศ. 2325','พ.ศ. 2398','พ.ศ. 2475'],1,'พระบาทสมเด็จพระพุทธยอดฟ้าจุฬาโลกมหาราชทรงสถาปนากรุงรัตนโกสินทร์ใน พ.ศ. 2325'],
+['h_kingdom',1,'ราชวงศ์ที่ปกครองกรุงรัตนโกสินทร์คือราชวงศ์ใด',['ราชวงศ์จักรี','ราชวงศ์บ้านพลูหลวง','ราชวงศ์อู่ทอง','ราชวงศ์ธนบุรี'],0,'ราชวงศ์จักรีเริ่มตั้งแต่รัชกาลที่ 1 จนถึงปัจจุบัน'],
+['h_kingdom',1,'พระมหากษัตริย์พระองค์ใดทรงสถาปนากรุงรัตนโกสินทร์',['สมเด็จพระเจ้าตากสินมหาราช','พระบาทสมเด็จพระพุทธยอดฟ้าจุฬาโลกมหาราช','พระบาทสมเด็จพระจอมเกล้าเจ้าอยู่หัว','พระบาทสมเด็จพระจุลจอมเกล้าเจ้าอยู่หัว'],1,'รัชกาลที่ 1 ทรงย้ายราชธานีมาฝั่งตะวันออกของแม่น้ำเจ้าพระยา'],
+['h_kingdom',1,'เหตุใดรัชกาลที่ 1 จึงทรงย้ายราชธานีจากธนบุรีมาฝั่งตะวันออก',['เพราะฝั่งตะวันออกมีพื้นที่กว้างกว่าและมีแม่น้ำเป็นปราการป้องกันข้าศึกทางด้านตะวันตก','เพราะฝั่งธนบุรีไม่มีน้ำใช้','เพราะฝั่งตะวันออกมีภูเขา','เพราะประชาชนขอร้อง'],0,'ฝั่งตะวันออกมีพื้นที่ขยายเมืองได้และมีแม่น้ำเป็นแนวป้องกันด้านที่ข้าศึกมักยกมา'],
+['h_kingdom',1,'การเปลี่ยนแปลงการปกครองจากระบอบสมบูรณาญาสิทธิราชย์มาเป็นระบอบประชาธิปไตยเกิดขึ้นในปีใด',['พ.ศ. 2411','พ.ศ. 2435','พ.ศ. 2475','พ.ศ. 2500'],2,'เกิดขึ้นเมื่อวันที่ 24 มิถุนายน พ.ศ. 2475'],
+['h_kingdom',2,'กฎหมายที่รัชกาลที่ 1 โปรดให้ชำระขึ้นใหม่เรียกว่าอะไร',['กฎหมายตราสามดวง','กฎมณเฑียรบาล','พระธรรมศาสตร์','ประมวลกฎหมายอาญา'],0,'กฎหมายตราสามดวงชำระขึ้นใน พ.ศ. 2347 ประทับตราราชสีห์ คชสีห์ และบัวแก้ว'],
+['h_kingdom',2,'รัชสมัยใดที่ได้ชื่อว่าเป็นยุคทองของวรรณคดีไทย',['รัชกาลที่ 1','รัชกาลที่ 2','รัชกาลที่ 4','รัชกาลที่ 6'],1,'รัชสมัยพระบาทสมเด็จพระพุทธเลิศหล้านภาลัยมีวรรณคดีเด่นจำนวนมาก'],
+['h_kingdom',2,'รัชกาลใดที่การค้าสำเภากับจีนรุ่งเรืองมากจนมีรายได้เก็บไว้เป็น "เงินถุงแดง"',['รัชกาลที่ 2','รัชกาลที่ 3','รัชกาลที่ 5','รัชกาลที่ 7'],1,'รัชกาลที่ 3 ทรงเก็บรายได้จากการค้าไว้ และภายหลังนำมาใช้ในวิกฤต ร.ศ. 112'],
+['h_kingdom',2,'สนธิสัญญาเบาว์ริงลงนามในรัชสมัยใด',['รัชกาลที่ 3','รัชกาลที่ 4','รัชกาลที่ 5','รัชกาลที่ 6'],1,'ลงนามกับอังกฤษใน พ.ศ. 2398 สมัยรัชกาลที่ 4'],
+['h_kingdom',2,'ผลสำคัญของสนธิสัญญาเบาว์ริงต่อเศรษฐกิจไทยคือข้อใด',['ไทยเลิกค้าขายกับต่างประเทศ','ไทยเปิดการค้าเสรีกับตะวันตกและระบบผูกขาดโดยพระคลังสินค้าสิ้นสุดลง','ไทยได้ดินแดนเพิ่ม','ไทยเปลี่ยนไปใช้เงินปอนด์'],1,'การค้าเสรีทำให้ระบบผูกขาดของพระคลังสินค้าสิ้นสุด และข้าวกลายเป็นสินค้าออกสำคัญ'],
+['h_kingdom',2,'การปฏิรูปการปกครองแผ่นดินครั้งใหญ่โดยตั้งกระทรวงแบบใหม่เกิดขึ้นในรัชสมัยใด',['รัชกาลที่ 3','รัชกาลที่ 4','รัชกาลที่ 5','รัชกาลที่ 6'],2,'รัชกาลที่ 5 ทรงปฏิรูปการปกครองใน พ.ศ. 2435 โดยจัดตั้งกระทรวงต่างๆ'],
+['h_kingdom',2,'ระบบการปกครองส่วนภูมิภาคที่รัชกาลที่ 5 ทรงนำมาใช้เรียกว่าอะไร',['ระบบจตุสดมภ์','ระบบมณฑลเทศาภิบาล','ระบบไพร่และทาส','ระบบศักดินา'],1,'มณฑลเทศาภิบาลรวมหัวเมืองเข้าเป็นมณฑลโดยส่งข้าหลวงจากส่วนกลางไปปกครอง'],
+['h_kingdom',2,'พระราชกรณียกิจใดของรัชกาลที่ 5 ที่ทำให้คนไทยมีสิทธิเสรีภาพเท่าเทียมกันมากขึ้น',['การเลิกทาสและเลิกระบบไพร่','การสร้างพระบรมมหาราชวัง','การเสด็จประพาสยุโรป','การตั้งกรมไปรษณีย์'],0,'การเลิกทาสและเลิกไพร่ทำให้คนไทยเป็นอิสระและมีสิทธิเท่าเทียมกันมากขึ้น'],
+['h_kingdom',2,'ทางรถไฟสายแรกของไทยที่รัฐบาลสร้างเชื่อมกรุงเทพฯ กับเมืองใด',['เชียงใหม่','นครราชสีมา','หาดใหญ่','อุบลราชธานี'],1,'ทางรถไฟหลวงสายแรกคือกรุงเทพฯ - นครราชสีมา สมัยรัชกาลที่ 5'],
+['h_kingdom',2,'ธงไตรรงค์เริ่มใช้เป็นธงชาติไทยในรัชสมัยใด',['รัชกาลที่ 4','รัชกาลที่ 5','รัชกาลที่ 6','รัชกาลที่ 7'],2,'รัชกาลที่ 6 โปรดให้ใช้ธงไตรรงค์เป็นธงชาติเมื่อ พ.ศ. 2460'],
+['h_kingdom',2,'สีของธงไตรรงค์มีความหมายตรงกับข้อใด',['แดงคือชาติ ขาวคือศาสนา น้ำเงินคือพระมหากษัตริย์','แดงคือศาสนา ขาวคือชาติ น้ำเงินคือประชาชน','แดงคือพระมหากษัตริย์ ขาวคือชาติ น้ำเงินคือศาสนา','แดงคือแผ่นดิน ขาวคือสันติภาพ น้ำเงินคือทะเล'],0,'แดงหมายถึงชาติ ขาวหมายถึงศาสนา น้ำเงินหมายถึงพระมหากษัตริย์'],
+['h_kingdom',3,'การใช้นามสกุลของคนไทยเริ่มขึ้นในรัชสมัยใด',['รัชกาลที่ 4','รัชกาลที่ 5','รัชกาลที่ 6','รัชกาลที่ 7'],2,'พระราชบัญญัติขนานนามสกุลประกาศใช้ในรัชสมัยรัชกาลที่ 6'],
+['h_kingdom',3,'รัฐธรรมนูญฉบับถาวรฉบับแรกของไทยประกาศใช้เมื่อวันที่เท่าใด',['24 มิถุนายน พ.ศ. 2475','10 ธันวาคม พ.ศ. 2475','5 ธันวาคม พ.ศ. 2475','1 มกราคม พ.ศ. 2476'],1,'ประกาศใช้เมื่อ 10 ธันวาคม พ.ศ. 2475 จึงถือเป็นวันรัฐธรรมนูญ'],
+['h_kingdom',3,'คณะบุคคลที่ทำการเปลี่ยนแปลงการปกครอง พ.ศ. 2475 เรียกว่าอะไร',['คณะราษฎร','คณะปฏิรูป','คณะกรรมการราษฎร','คณะองคมนตรี'],0,'คณะราษฎรเป็นผู้ดำเนินการเปลี่ยนแปลงการปกครองเมื่อ 24 มิถุนายน 2475'],
+['h_kingdom',3,'พระมหากษัตริย์พระองค์ใดทรงสละราชสมบัติภายหลังการเปลี่ยนแปลงการปกครอง',['รัชกาลที่ 6','รัชกาลที่ 7','รัชกาลที่ 8','รัชกาลที่ 9'],1,'พระบาทสมเด็จพระปกเกล้าเจ้าอยู่หัวทรงสละราชสมบัติใน พ.ศ. 2477'],
+['h_kingdom',3,'ประเทศไทยเปลี่ยนชื่อจาก "สยาม" มาเป็น "ไทย" ในช่วงใด',['สมัยรัชกาลที่ 5','สมัยรัชกาลที่ 6','หลังเปลี่ยนแปลงการปกครอง ในรัชสมัยรัชกาลที่ 8','สมัยรัชกาลที่ 9'],2,'เปลี่ยนชื่อประเทศเมื่อ พ.ศ. 2482 ในรัชสมัยรัชกาลที่ 8'],
+['h_kingdom',3,'ปัจจัยใดที่ช่วยให้ไทยรอดพ้นจากการตกเป็นอาณานิคมของชาติตะวันตก',['ไทยมีกองทัพใหญ่ที่สุดในภูมิภาค','การปฏิรูปประเทศให้ทันสมัยและการดำเนินนโยบายทางการทูตอย่างชาญฉลาด','ไทยไม่มีทรัพยากรที่ชาติตะวันตกต้องการ','ไทยปิดประเทศไม่ติดต่อกับใคร'],1,'การปรับปรุงประเทศให้ทันสมัยควบคู่กับการทูตที่ยืดหยุ่นช่วยรักษาเอกราชไว้ได้'],
+['h_kingdom',3,'เหตุการณ์ ร.ศ. 112 ที่ไทยต้องเสียดินแดนฝั่งซ้ายแม่น้ำโขงเกิดขึ้นกับชาติใด',['อังกฤษ','ฝรั่งเศส','ฮอลันดา','โปรตุเกส'],1,'ฝรั่งเศสส่งเรือรบเข้ามาปิดปากแม่น้ำเจ้าพระยาใน ร.ศ. 112 ตรงกับ พ.ศ. 2436'],
+['h_kingdom',3,'ปัจจัยใดส่งเสริมความเจริญทางเศรษฐกิจของไทยสมัยรัตนโกสินทร์ตอนต้นมากที่สุด',['การค้าสำเภากับจีนและการเก็บภาษีจากการค้า','การส่งออกน้ำมัน','การท่องเที่ยวจากชาติตะวันตก','อุตสาหกรรมรถยนต์'],0,'การค้าสำเภากับจีนเป็นรายได้หลักของราชสำนักในช่วงต้นรัตนโกสินทร์'],
+['h_kingdom',3,'ข้าวกลายเป็นสินค้าส่งออกสำคัญของไทยเพราะเหตุใด',['เพราะมีการขุดคลองขยายพื้นที่นาและเปิดการค้าเสรีหลังสนธิสัญญาเบาว์ริง','เพราะรัฐบาลห้ามปลูกพืชชนิดอื่น','เพราะไทยนำเข้าข้าวจากต่างประเทศมาขายต่อ','เพราะคนไทยเลิกกินข้าว'],0,'การขุดคลองขยายที่นาและการค้าเสรีทำให้ข้าวกลายเป็นสินค้าออกอันดับหนึ่ง'],
+['h_kingdom',2,'ชื่อเต็มของกรุงเทพมหานครขึ้นต้นด้วยคำใด',['กรุงเทพมหานคร อมรรัตนโกสินทร์','กรุงศรีอยุธยา ราชธานี','กรุงธนบุรี ศรีมหาสมุทร','นครรัตนโกสินทร์ อินทร์อโยธยา'],0,'ชื่อเต็มขึ้นต้นว่า กรุงเทพมหานคร อมรรัตนโกสินทร์ มหินทรายุธยา'],
+['h_kingdom',3,'ในสมัยรัชกาลที่ 6 ไทยเข้าร่วมสงครามโลกครั้งที่ 1 โดยอยู่ฝ่ายใด',['ฝ่ายมหาอำนาจกลาง','ฝ่ายสัมพันธมิตร','เป็นกลางไม่เข้าร่วม','ตั้งกลุ่มของตนเอง'],1,'ไทยเข้าร่วมกับฝ่ายสัมพันธมิตรและได้ประโยชน์ในการแก้ไขสนธิสัญญาที่ไม่เป็นธรรม'],
+['h_kingdom',4,'ข้อใดอธิบายพัฒนาการของไทยสมัยรัตนโกสินทร์ได้ครอบคลุมที่สุด',['ไทยไม่มีการเปลี่ยนแปลงใดๆ ตลอด 200 ปี','ไทยพัฒนาจากรัฐจารีตแบบเดิม สู่การปฏิรูปให้ทันสมัย และเปลี่ยนสู่ระบอบประชาธิปไตยในที่สุด','ไทยตกเป็นอาณานิคมแล้วได้เอกราชคืน','ไทยเปลี่ยนราชธานีหลายครั้งตลอดสมัย'],1,'เส้นทางหลักคือจากรัฐจารีต สู่การปฏิรูปให้ทันสมัย และสู่ระบอบประชาธิปไตยใน พ.ศ. 2475'],
+
+/* ---------- บุคคลสำคัญ (20 ข้อ) ---------- */
+['h_person',1,'พระมหากษัตริย์พระองค์ใดได้รับการถวายพระราชสมัญญาว่า "พระปิยมหาราช"',['รัชกาลที่ 4','รัชกาลที่ 5','รัชกาลที่ 6','รัชกาลที่ 9'],1,'ประชาชนถวายพระราชสมัญญานี้แด่รัชกาลที่ 5 ซึ่งแปลว่ามหาราชผู้เป็นที่รัก'],
+['h_person',1,'พระมหากษัตริย์พระองค์ใดได้รับการยกย่องเป็น "พระบิดาแห่งวิทยาศาสตร์ไทย"',['รัชกาลที่ 3','รัชกาลที่ 4','รัชกาลที่ 5','รัชกาลที่ 6'],1,'รัชกาลที่ 4 ทรงคำนวณการเกิดสุริยุปราคาที่ตำบลหว้ากอได้อย่างแม่นยำ'],
+['h_person',1,'กวีเอกผู้แต่งเรื่องพระอภัยมณีคือผู้ใด',['สุนทรภู่','ศรีปราชญ์','เจ้าฟ้าธรรมธิเบศร','นายมี'],0,'สุนทรภู่เป็นผู้แต่งพระอภัยมณีในสมัยรัตนโกสินทร์ตอนต้น'],
+['h_person',1,'พระมหากษัตริย์พระองค์ใดทรงริเริ่มหลักปรัชญาของเศรษฐกิจพอเพียง',['รัชกาลที่ 6','รัชกาลที่ 7','รัชกาลที่ 8','รัชกาลที่ 9'],3,'พระบาทสมเด็จพระบรมชนกาธิเบศร มหาภูมิพลอดุลยเดชมหาราช บรมนาถบพิตร พระราชทานแนวคิดนี้'],
+['h_person',2,'สุนทรภู่ได้รับการยกย่องจากองค์การใดให้เป็นบุคคลสำคัญของโลกด้านวรรณกรรม',['องค์การอนามัยโลก','ยูเนสโก','องค์การการค้าโลก','สหภาพยุโรป'],1,'ยูเนสโกยกย่องสุนทรภู่เป็นบุคคลสำคัญของโลกเมื่อ พ.ศ. 2529'],
+['h_person',2,'บุคคลใดได้รับการยกย่องเป็น "พระบิดาแห่งประวัติศาสตร์ไทย"',['สมเด็จฯ กรมพระยาดำรงราชานุภาพ','สมเด็จฯ เจ้าฟ้ากรมพระยานริศรานุวัดติวงศ์','เจ้าพระยาพระคลัง (หน)','พระยาอนุมานราชธน'],0,'สมเด็จฯ กรมพระยาดำรงราชานุภาพทรงวางรากฐานการศึกษาประวัติศาสตร์ไทยสมัยใหม่'],
+['h_person',2,'สมเด็จพระมหิตลาธิเบศร อดุลยเดชวิกรม พระบรมราชชนก ทรงได้รับการยกย่องเป็นพระบิดาแห่งวงการใด',['การแพทย์แผนปัจจุบันของไทย','การเกษตรไทย','การศึกษาไทย','กฎหมายไทย'],0,'ทรงวางรากฐานการแพทย์และการสาธารณสุขสมัยใหม่ของไทย'],
+['h_person',2,'ผู้แปลและเรียบเรียงวรรณกรรมเรื่องสามก๊กเป็นภาษาไทยในสมัยรัชกาลที่ 1 คือผู้ใด',['เจ้าพระยาพระคลัง (หน)','สุนทรภู่','พระยาอนุมานราชธน','กรมพระยาดำรงราชานุภาพ'],0,'เจ้าพระยาพระคลัง (หน) อำนวยการแปลสามก๊กเป็นร้อยแก้วภาษาไทย'],
+['h_person',2,'รัชกาลที่ 2 ทรงมีพระปรีชาสามารถโดดเด่นด้านใด',['วรรณคดีและศิลปกรรม','การทหาร','ดาราศาสตร์','การค้ากับตะวันตก'],0,'ทรงพระราชนิพนธ์วรรณคดีหลายเรื่องและทรงแกะสลักบานประตูวัดสุทัศนเทพวราราม'],
+['h_person',2,'สมเด็จพระศรีนครินทราบรมราชชนนีทรงมีพระราชกรณียกิจเด่นด้านใด',['การแพทย์และสาธารณสุขในถิ่นทุรกันดาร','การทหาร','การค้าระหว่างประเทศ','การกีฬา'],0,'ทรงก่อตั้งหน่วยแพทย์อาสาสมเด็จพระศรีนครินทราบรมราชชนนี (พอ.สว.)'],
+['h_person',3,'พระราชกรณียกิจใดของรัชกาลที่ 6 ที่ส่งผลต่อการศึกษาของเด็กไทยโดยตรง',['ประกาศใช้พระราชบัญญัติประถมศึกษาให้เด็กทุกคนต้องเรียนหนังสือ','การตั้งกรมไปรษณีย์','การสร้างทางรถไฟ','การเลิกทาส'],0,'พระราชบัญญัติประถมศึกษา พ.ศ. 2464 กำหนดให้การศึกษาระดับประถมเป็นภาคบังคับ'],
+['h_person',3,'มหาวิทยาลัยแห่งแรกของประเทศไทยตั้งขึ้นในรัชสมัยใด',['รัชกาลที่ 4','รัชกาลที่ 5','รัชกาลที่ 6','รัชกาลที่ 7'],2,'จุฬาลงกรณ์มหาวิทยาลัยสถาปนาขึ้นใน พ.ศ. 2459 รัชสมัยรัชกาลที่ 6'],
+['h_person',3,'กิจการลูกเสือไทยเริ่มต้นขึ้นในรัชสมัยใด',['รัชกาลที่ 4','รัชกาลที่ 5','รัชกาลที่ 6','รัชกาลที่ 9'],2,'รัชกาลที่ 6 ทรงตั้งกองลูกเสือไทยเมื่อ พ.ศ. 2454'],
+['h_person',3,'บุคคลใดได้รับการยกย่องเป็น "นายช่างใหญ่แห่งกรุงสยาม"',['สมเด็จฯ เจ้าฟ้ากรมพระยานริศรานุวัดติวงศ์','ขรัวอินโข่ง','พระยาอนุมานราชธน','สมเด็จฯ กรมพระยาดำรงราชานุภาพ'],0,'ทรงเป็นผู้ออกแบบงานสถาปัตยกรรมและศิลปกรรมสำคัญหลายแห่ง เช่น พระอุโบสถวัดเบญจมบพิตร'],
+['h_person',3,'จิตรกรไทยคนแรกที่นำเทคนิคการเขียนภาพแบบตะวันตกมาใช้ในงานจิตรกรรมไทยคือผู้ใด',['ขรัวอินโข่ง','สุนทรภู่','เฟื้อ หริพิทักษ์','ศิลป์ พีระศรี'],0,'ขรัวอินโข่งเป็นจิตรกรสมัยรัชกาลที่ 4 ที่ใช้หลักทัศนียภาพแบบตะวันตก'],
+['h_person',3,'บุคคลใดได้รับการยกย่องเป็นบิดาแห่งศิลปะร่วมสมัยของไทยและก่อตั้งมหาวิทยาลัยศิลปากร',['ศิลป์ พีระศรี','ขรัวอินโข่ง','เฟื้อ หริพิทักษ์','ถวัลย์ ดัชนี'],0,'ศาสตราจารย์ศิลป์ พีระศรี ชาวอิตาลี เป็นผู้วางรากฐานศิลปะสมัยใหม่ของไทย'],
+['h_person',3,'พระราชกรณียกิจใดของรัชกาลที่ 9 ที่ช่วยแก้ปัญหาภัยแล้งให้เกษตรกร',['โครงการฝนหลวง','โครงการแกล้งดิน','กังหันน้ำชัยพัฒนา','โครงการหลวง'],0,'โครงการฝนหลวงเป็นการทำฝนเทียมเพื่อบรรเทาปัญหาภัยแล้ง'],
+['h_person',3,'"กังหันน้ำชัยพัฒนา" ที่เป็นสิ่งประดิษฐ์ตามแนวพระราชดำริใช้แก้ปัญหาใด',['น้ำท่วม','น้ำเสีย','ดินเค็ม','ไฟป่า'],1,'กังหันน้ำชัยพัฒนาช่วยเติมออกซิเจนในน้ำเพื่อบำบัดน้ำเสีย'],
+['h_person',3,'"โครงการแกล้งดิน" ตามแนวพระราชดำริมีเป้าหมายแก้ปัญหาใด',['ดินเปรี้ยวจัดจนปลูกพืชไม่ได้','น้ำท่วมฉับพลัน','มลพิษทางอากาศ','ขยะในทะเล'],0,'เป็นวิธีปรับปรุงดินเปรี้ยวในพื้นที่พรุให้กลับมาใช้เพาะปลูกได้'],
+['h_person',4,'ข้อใดคือคุณค่าที่ควรเรียนรู้จากผลงานของบุคคลสำคัญสมัยรัตนโกสินทร์มากที่สุด',['การมีชื่อเสียงและยศถาบรรดาศักดิ์','ความมุ่งมั่นทำประโยชน์เพื่อส่วนรวมและการปรับตัวให้ทันการเปลี่ยนแปลงของโลก','การมีทรัพย์สินจำนวนมาก','การได้เดินทางไปต่างประเทศ'],1,'สิ่งที่ทำให้ผลงานเหล่านั้นทรงคุณค่าคือการทำเพื่อส่วนรวมและการปรับตัวให้ทันยุคสมัย'],
+
+/* ---------- ภูมิปัญญาและวัฒนธรรม (16 ข้อ) ---------- */
+['h_culture',1,'วัดใดเป็นวัดประจำพระบรมมหาราชวังในสมัยรัตนโกสินทร์',['วัดพระศรีรัตนศาสดาราม','วัดโพธิ์','วัดอรุณราชวราราม','วัดสุทัศนเทพวราราม'],0,'วัดพระศรีรัตนศาสดารามหรือวัดพระแก้ว อยู่ในเขตพระบรมมหาราชวัง'],
+['h_culture',1,'วัดใดได้ชื่อว่าเป็นมหาวิทยาลัยแห่งแรกของไทยเพราะมีการจารึกตำราความรู้ไว้ตามศาลาราย',['วัดพระเชตุพนวิมลมังคลาราม (วัดโพธิ์)','วัดอรุณราชวราราม','วัดสระเกศ','วัดเบญจมบพิตร'],0,'รัชกาลที่ 3 โปรดให้จารึกตำราแขนงต่างๆ ไว้ที่วัดโพธิ์เพื่อให้ประชาชนศึกษา'],
+['h_culture',1,'ภูมิปัญญาไทยด้านการรักษาโรคที่สืบทอดมาจนได้รับความนิยมทั่วโลกคือข้อใด',['การนวดแผนไทย','การผ่าตัดหัวใจ','การฉายรังสี','การปลูกถ่ายอวัยวะ'],0,'การนวดแผนไทยเป็นภูมิปัญญาด้านการแพทย์ที่สืบทอดกันมายาวนาน'],
+['h_culture',2,'ศิลปะการแสดงใดของไทยที่ยูเนสโกขึ้นทะเบียนเป็นมรดกภูมิปัญญาทางวัฒนธรรมที่จับต้องไม่ได้',['โขน','ลิเก','หมอลำ','ลำตัด'],0,'โขนได้รับการขึ้นทะเบียนจากยูเนสโกเมื่อ พ.ศ. 2561'],
+['h_culture',2,'ประเพณีใดของไทยที่ยูเนสโกขึ้นทะเบียนเป็นมรดกภูมิปัญญาทางวัฒนธรรมเมื่อ พ.ศ. 2566',['ประเพณีสงกรานต์','ประเพณีลอยกระทง','ประเพณีบุญบั้งไฟ','ประเพณีวิ่งควาย'],0,'สงกรานต์ในประเทศไทยได้รับการขึ้นทะเบียนเมื่อเดือนธันวาคม พ.ศ. 2566'],
+['h_culture',2,'เครื่องปั้นดินเผาเคลือบหลากสีที่เป็นงานประณีตศิลป์ชั้นสูงของไทยเรียกว่าอะไร',['เครื่องเบญจรงค์','เครื่องสังคโลก','เครื่องถ้วยชาม','เครื่องจักสาน'],0,'เครื่องเบญจรงค์ใช้สีหลักห้าสีลงบนภาชนะเคลือบ'],
+['h_culture',2,'วรรณคดีเรื่องอิเหนาเป็นพระราชนิพนธ์ในรัชกาลใด',['รัชกาลที่ 1','รัชกาลที่ 2','รัชกาลที่ 4','รัชกาลที่ 6'],1,'บทละครเรื่องอิเหนาเป็นพระราชนิพนธ์ในรัชกาลที่ 2'],
+['h_culture',2,'ภูมิปัญญาด้านการจัดการน้ำของคนไทยในอดีตที่ยังใช้ได้ในปัจจุบันคือข้อใด',['การขุดคลองเพื่อระบายน้ำและใช้สัญจร','การสร้างเขื่อนคอนกรีตขนาดใหญ่','การสูบน้ำด้วยไฟฟ้า','การนำเข้าน้ำจากต่างประเทศ'],0,'การขุดคลองช่วยทั้งการเกษตร การระบายน้ำ และการคมนาคมมาแต่โบราณ'],
+['h_culture',2,'ผ้าไหมไทยที่มีชื่อเสียงระดับโลกส่วนใหญ่ผลิตในภาคใด',['ภาคเหนือ','ภาคตะวันออกเฉียงเหนือ','ภาคใต้','ภาคตะวันออก'],1,'ภาคอีสานเป็นแหล่งผลิตผ้าไหมสำคัญ เช่น ผ้าไหมมัดหมี่และผ้าแพรวา'],
+['h_culture',2,'สถาปัตยกรรมใดในสมัยรัชกาลที่ 5 ที่แสดงการผสมผสานศิลปะไทยกับตะวันตกอย่างชัดเจน',['พระที่นั่งอนันตสมาคม','ปราสาทหินพิมาย','เจดีย์ชัยมงคล','พระปรางค์วัดอรุณ'],0,'พระที่นั่งอนันตสมาคมสร้างด้วยหินอ่อนตามแบบสถาปัตยกรรมยุโรป'],
+['h_culture',3,'ข้อใดเป็นภูมิปัญญาไทยด้านอาหารที่แสดงการถนอมอาหารในอดีต',['การทำปลาร้า ปลาแห้ง และการดองผัก','การใช้ตู้เย็นเก็บอาหาร','การใช้ไมโครเวฟอุ่นอาหาร','การซื้ออาหารสำเร็จรูป'],0,'การหมัก ตากแห้ง และดอง เป็นวิธีถนอมอาหารตามภูมิปัญญาดั้งเดิม'],
+['h_culture',3,'เพราะเหตุใดจึงควรอนุรักษ์ภูมิปัญญาไทย',['เพราะขายได้ราคาแพง','เพราะเป็นรากฐานทางวัฒนธรรมและเป็นเอกลักษณ์ที่แสดงตัวตนของชาติ','เพราะรัฐบาลบังคับ','เพราะชาวต่างชาติเรียกร้อง'],1,'ภูมิปัญญาเป็นรากเหง้าทางวัฒนธรรมและเอกลักษณ์ที่ทำให้ชาติมีตัวตน'],
+['h_culture',3,'ข้อใดเป็นวิธีอนุรักษ์ภูมิปัญญาไทยที่นักเรียนทำได้จริง',['เก็บภูมิปัญญาไว้ไม่ให้ใครรู้','เรียนรู้ ฝึกฝน และเผยแพร่ภูมิปัญญาในท้องถิ่นของตน','ปฏิเสธของไทยทุกอย่าง','ซื้อสินค้าต่างประเทศแทน'],1,'การเรียนรู้ ลงมือทำ และบอกต่อ ทำให้ภูมิปัญญายังมีชีวิตอยู่'],
+['h_culture',3,'การที่คนไทยรับวัฒนธรรมตะวันตกเข้ามาในสมัยรัชกาลที่ 5 เช่น การแต่งกายและการศึกษา สะท้อนสิ่งใด',['ความอ่อนแอของวัฒนธรรมไทย','การปรับตัวให้ทันสมัยเพื่อรักษาเอกราชของบ้านเมือง','การยอมแพ้ต่อชาติตะวันตก','การเลิกใช้วัฒนธรรมไทยทั้งหมด'],1,'การปรับตัวให้ทันสมัยเป็นยุทธศาสตร์สำคัญในการรักษาเอกราช'],
+['h_culture',3,'แหล่งมรดกโลกทางวัฒนธรรมแห่งใดของไทยที่เกี่ยวข้องกับแหล่งโบราณคดียุคก่อนประวัติศาสตร์',['บ้านเชียง จังหวัดอุดรธานี','อุทยานประวัติศาสตร์สุโขทัย','อุทยานประวัติศาสตร์อยุธยา','เมืองโบราณศรีเทพ'],0,'แหล่งโบราณคดีบ้านเชียงเป็นมรดกโลกที่แสดงวัฒนธรรมยุคก่อนประวัติศาสตร์'],
+['h_culture',4,'ข้อใดแสดงลักษณะเด่นของภูมิปัญญาไทยได้ชัดเจนที่สุด',['เกิดจากการลอกเลียนต่างชาติทั้งหมด','เกิดจากการสั่งสมประสบการณ์ในการอยู่ร่วมกับธรรมชาติ แล้วปรับใช้ให้เหมาะกับวิถีชีวิตของตน','เกิดจากคำสั่งของทางราชการ','เกิดจากเทคโนโลยีสมัยใหม่เท่านั้น'],1,'ภูมิปัญญาไทยเกิดจากการเรียนรู้ธรรมชาติและสั่งสมจนกลายเป็นวิถีชีวิต'],
+];
+
+/* ===========================================================
+   ประกอบคลังคำถามทั้งหมด
+   เพิ่มชุดใหม่: ประกาศตัวแปร Q_XXX_YY แล้วมาลงทะเบียนใน BANK_SETS
+   =========================================================== */
+const BANK_SETS = [
+  { subj:'hist', grade:'p5', rows: Q_HIST_P5 },
+  { subj:'hist', grade:'p6', rows: Q_HIST_P6 },
+];
+
+const QBANK_BUILTIN = [];
+for (const set of BANK_SETS){
+  set.rows.forEach((row, i) => {
+    const [unit, diff, q, ch, ans, exp] = row;
+    QBANK_BUILTIN.push({
+      id: `${set.subj}_${set.grade}_${i}`,
+      subj: set.subj, grade: set.grade, unit,
+      diff, q, ch: ch.slice(), ans, exp: exp || '', built: true
+    });
+  });
+}
+
+/* จำนวนข้อที่มีอยู่จริง แยกตามวิชาและระดับชั้น */
+function bankCount(subj, grade){
+  return QBANK_BUILTIN.filter(q => q.subj === subj && q.grade === grade).length;
+}
+
+/* ===================== เซฟข้อมูล ===================== */
+const MEM = {};
+const Store = {
+  async get(k){
+    if (typeof window !== 'undefined' && window.storage && window.storage.get){
+      try { const r = await window.storage.get(k); return r ? r.value : null; }
+      catch(e){ return null; }
+    }
+    try { return localStorage.getItem(k); } catch(e){ return MEM[k] ?? null; }
+  },
+  async set(k, v){
+    if (typeof window !== 'undefined' && window.storage && window.storage.set){
+      try { await window.storage.set(k, v); return; } catch(e){}
+    }
+    try { localStorage.setItem(k, v); } catch(e){ MEM[k] = v; }
+  }
+};
+
+/* ===================== สถานะเกม ===================== */
+let S = null;
+
+function newPet(sp, name){
+  const s = SPECIES[sp];
+  const mul = RARITY[s.rarity].statMul;
+  const base = {STR:5, VIT:5, AGI:5, INT:5, LUK:5};
+  base[s.main] += 3;
+  base[s.sub]  += 2;
+  for (const k in base) base[k] = Math.round(base[k] * mul);
+  return {
+    sp, name: name || s.name,
+    stage:0, branch:null,
+    lv:1, xp:0,
+    stats: base,
+    hunger:70, mood:70, hp:100, aff:5,
+    care:{body:0, mind:0, play:0},
+    born: Date.now(),
+    sick:false,
+  };
+}
+
+function freshSave(){
+  return {
+    v: VERSION,
+    uid: makeUid(),
+    created: Date.now(),
+    lastTick: Date.now(),
+    coins: 120, crystals: 0,
+    pet: null,
+    bag: { leaf:3, berry:1 },
+    garden: [],
+    seen: {},
+    room: new Array(12).fill(null),
+    book: {},              // formId -> วันที่ปลดล็อก
+    explore: null,         // {zone, endAt}
+    egg: null,           // {tier, pts, need, subj:{}}
+    qcustom: [],         // คำถามที่ผู้เล่นเพิ่มเอง
+    qoff: {},            // รหัสคำถามในคลังตั้งต้นที่ถูกปิด
+    qstate: {},          // รหัส -> {box, seen, right, wrong, lastDay}
+    qcount: 0,           // นับจำนวนข้อที่ตอบไปแล้วทั้งหมด (ใช้กับระบบทวนซ้ำ)
+    grade: 'p5',
+    prog: {},            // "subj|grade|unit" -> {r, w, recent:[]}
+    stats: { answered:0, correct:0, points:0, rounds:0, best:0, streak:0, bestStreak:0, lastDay:'' },
+    daily: { day:'', plays:0 },
+    settings: { timed:true, shuffle:true },
+  };
+}
+
+function makeUid(){
+  let s = '';
+  const c = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  for (let i=0;i<8;i++) s += c[Math.floor(Math.random()*c.length)];
+  return s;
+}
+
+/* ===================== ตัวช่วย ===================== */
+const clamp = (v,a,b)=>Math.max(a, Math.min(b, v));
+const todayKey = ()=>{ const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; };
+const pick = a => a[Math.floor(Math.random()*a.length)];
+
+function hashStr(str){
+  let h = 2166136261;
+  for (let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function rngFrom(seed){
+  let s = seed >>> 0;
+  return function(){ s ^= s<<13; s>>>=0; s ^= s>>17; s ^= s<<5; s>>>=0; return s/4294967296; };
+}
+// รหัสสะสม 13 หลัก ผูกกับบัญชี+ร่าง
+function collectCode(formIdStr){
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+  const r = rngFrom(hashStr(S.uid + '|' + formIdStr + '|' + S.created));
+  let out = '';
+  for (let i=0;i<13;i++){
+    if (i===4 || i===9) { out += '-'; continue; }
+    out += c[Math.floor(r()*c.length)];
+  }
+  return out;
+}
+
+function fmtTime(sec){
+  sec = Math.max(0, Math.round(sec));
+  const m = Math.floor(sec/60), s = sec%60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+function fmtLeft(ms){
+  const m = Math.ceil(ms/60000);
+  if (m >= 60) return `${Math.floor(m/60)} ชม. ${m%60} นาที`;
+  return `${m} นาที`;
+}
+function fmtDate(ts){
+  const d = new Date(ts);
+  return `${d.getDate()}/${d.getMonth()+1}/${(d.getFullYear()+543)%100}`;
+}
+
+/* ===================== โบนัสจากเฟอร์นิเจอร์ ===================== */
+function roomBonus(){
+  const b = {moodSlow:0, hungerSlow:0, focusXp:0, exploreLuck:0, aff:0, coin:0, light:0};
+  for (const k of S.room){
+    if (!k || !FURN[k]) continue;
+    for (const [ek, ev] of Object.entries(FURN[k].eff)) b[ek] = (b[ek]||0) + ev;
+  }
+  return b;
+}
+function isNight(){ const h = new Date().getHours(); return h >= 19 || h < 6; }
+
+/* ===================== ค่าประสบการณ์ / เลเวล ===================== */
+function xpNeed(lv){ return Math.round(20 + 5.3 * Math.pow(lv, 1.35)); }
+
+function gainXp(n){
+  const p = S.pet; if (!p) return {levels:0};
+  n = Math.round(n);
+  p.xp += n;
+  let levels = 0;
+  while (p.xp >= xpNeed(p.lv) && p.lv < 99){
+    p.xp -= xpNeed(p.lv);
+    p.lv++; levels++;
+    const sp = SPECIES[p.sp];
+    for (const k of ['STR','VIT','AGI','INT','LUK']){
+      p.stats[k] += (k === sp.main) ? 2 : (k === sp.sub ? 1 : (Math.random() < .5 ? 1 : 0));
+    }
+    // โบนัสตามความหายาก
+    const extra = (RARITY[sp.rarity].statMul - 1) * 3;
+    if (Math.random() < extra) p.stats[sp.main] += 1;
+    if (Math.random() < extra - 1) p.stats[sp.sub] += 1;
+  }
+  return {levels, xp:n};
+}
+
+/* ===================== วิวัฒนาการ ===================== */
+function dominantBranch(){
+  const c = S.pet.care;
+  let best = 'body', bv = -1;
+  for (const k of ['body','mind','play']) if (c[k] > bv){ bv = c[k]; best = k; }
+  return best;
+}
+function evoCheck(){
+  const p = S.pet; if (!p) return null;
+  const next = p.stage + 1;
+  if (next > 5) return null;
+  const needLv = STAGE_LV[next];
+  const needAff = [0, 10, 25, 45, 65, 85][next];
+  const br = p.stage >= 3 ? p.branch : dominantBranch();
+  const stoneKey = {body:'stone_b', mind:'stone_m', play:'stone_p'}[br];
+  const needStone = next === 5;
+  const ok = p.lv >= needLv && p.aff >= needAff && (!needStone || (S.bag[stoneKey]||0) > 0);
+  return { next, needLv, needAff, needStone, stoneKey, br, ok };
+}
+function doEvolve(){
+  const e = evoCheck();
+  if (!e || !e.ok) return null;
+  const p = S.pet;
+  if (e.needStone){ S.bag[e.stoneKey]--; if (!S.bag[e.stoneKey]) delete S.bag[e.stoneKey]; }
+  p.stage = e.next;
+  p.branch = e.next >= 5 ? 'anc' : (e.next >= 3 ? e.br : null);
+  for (const k of ['STR','VIT','AGI','INT','LUK']) p.stats[k] += 3;
+  p.mood = clamp(p.mood + 20, 0, 100);
+  p.hp = 100;
+  unlockForm();
+  return formName(p.sp, p.stage, p.branch);
+}
+function currentFormId(){
+  const p = S.pet;
+  return p.stage <= 2 ? formId(p.sp, p.stage) : formId(p.sp, p.stage, p.branch);
+}
+function unlockForm(){
+  const id = currentFormId();
+  if (!S.book[id]) S.book[id] = Date.now();
+  if (!S.seen) S.seen = {};
+  if (!S.seen[S.pet.sp]) S.seen[S.pet.sp] = Date.now();
+}
+
+/* ===================== สวน: เก็บวิญญาณหลายตัว ===================== */
+function gardenCount(){ return (S.garden || []).length; }
+function stashActive(){
+  if (!S.pet) return;
+  S.garden = S.garden || [];
+  S.garden.push(S.pet);
+  S.pet = null;
+}
+function swapWith(i){
+  S.garden = S.garden || [];
+  const other = S.garden[i];
+  if (!other) return false;
+  S.garden[i] = S.pet;
+  S.pet = other;
+  return true;
+}
+function releasePet(i){
+  S.garden = S.garden || [];
+  return S.garden.splice(i, 1)[0];
+}
+
+/* ===================== สุ่มสายพันธุ์จากเมล็ด ===================== */
+function rollSpecies(tier, n = 3){
+  const odds = SEED_ODDS[tier] || SEED_ODDS[1];
+  const out = [];
+  let guard = 0;
+  while (out.length < n && guard++ < 400){
+    let total = 0;
+    for (const r in odds) total += odds[r];
+    let roll = Math.random() * total, rar = 1;
+    for (const r in odds){ roll -= odds[r]; if (roll <= 0){ rar = +r; break; } }
+    const pool = SP_BY_RARITY(rar).filter(k => !out.includes(k));
+    if (!pool.length) continue;
+    out.push(pick(pool));
+  }
+  return out;
+}
+
+/* ===================== เวลาเดินจริง ===================== */
+function tickOffline(){
+  const now = Date.now();
+  const hrs = (now - S.lastTick) / 3600000;
+  S.lastTick = now;
+  if (hrs <= 0) return;
+  const t0 = todayKey();
+  if (S.daily.day !== t0){ S.daily.day = t0; S.daily.plays = 0; }
+  if (!S.pet) return;
+  const b = roomBonus();
+  const p = S.pet;
+  const hMul = RARITY[SPECIES[p.sp].rarity].hungerMul;
+  p.hunger = clamp(p.hunger - hrs * 4.2 * hMul * (1 - Math.min(.5, b.hungerSlow)), 0, 100);
+  p.mood   = clamp(p.mood   - hrs * 3.0 * (1 - Math.min(.5, b.moodSlow)), 0, 100);
+  if (b.light && isNight()) p.mood = clamp(p.mood + hrs * 2, 0, 100);
+  if (p.hunger <= 0) p.hp = clamp(p.hp - hrs * 5, 1, 100);
+  else if (p.hunger > 50 && p.mood > 40) p.hp = clamp(p.hp + hrs * 3, 0, 100);
+  if (p.hp < 30) p.sick = true;
+  if (p.hp >= 60) p.sick = false;
+
+  // รีเซ็ตรายวัน
+  const t = todayKey();
+  if (S.daily.day !== t){ S.daily.day = t; S.daily.plays = 0; }
+}
+
+/* ===================== การกระทำกับสัตว์เลี้ยง ===================== */
+function useItem(key){
+  const it = ITEMS[key]; const p = S.pet;
+  if (!it || !p || !(S.bag[key] > 0)) return null;
+  const b = roomBonus();
+  let msg = '';
+  if (it.t === 'food'){
+    if (p.hunger >= 99) return {err:'อิ่มจนกินไม่ลงแล้ว'};
+    p.hunger = clamp(p.hunger + it.hunger, 0, 100);
+    p.mood = clamp(p.mood + (it.mood||0), 0, 100);
+    p.aff = clamp(p.aff + (it.aff||0) * (1 + b.aff), 0, 100);
+    p.care.body += 1;
+    gainXp(6);
+    msg = `ให้${it.n}แล้ว ความอิ่ม +${it.hunger}`;
+  } else if (it.t === 'heal'){
+    if (p.hp >= 100) return {err:'สุขภาพเต็มอยู่แล้ว'};
+    p.hp = clamp(p.hp + it.heal, 0, 100);
+    p.mood = clamp(p.mood + (it.mood||0), 0, 100);
+    p.care.body += 2;
+    if (p.hp >= 60) p.sick = false;
+    msg = `ใช้${it.n} สุขภาพ +${it.heal}`;
+  } else if (it.t === 'egg'){
+    return {egg:true};
+  } else {
+    return {err:'ไอเทมนี้ใช้กับวิญญาณไม่ได้'};
+  }
+  S.bag[key]--; if (!S.bag[key]) delete S.bag[key];
+  return {msg};
+}
+
+function addItem(key, n=1){
+  S.bag[key] = (S.bag[key]||0) + n;
+}
+function bagCount(){ return Object.values(S.bag).reduce((a,b)=>a+b, 0); }
+function petPower(p){ p = p || S.pet; return ['STR','VIT','AGI','INT','LUK'].reduce((a,k)=>a+p.stats[k], 0); }
+
+
+/* ===================== คลังคำถาม ===================== */
+function allQuestions(){
+  const off = S.qoff || {};
+  const built = QBANK_BUILTIN.filter(q => !off[q.id]);
+  return built.concat(S.qcustom || []);
+}
+function questionsBy(subj, grade){
+  let all = allQuestions();
+  if (grade) all = all.filter(q => q.grade === grade);
+  return subj === 'mix' ? all : all.filter(q => q.subj === subj);
+}
+/* วิชาที่มีคำถามพร้อมใช้ในระดับชั้นนั้น */
+function subjectsReady(grade){
+  return SUBJ_KEYS.filter(k => questionsBy(k, grade).length > 0);
+}
+function gradesReady(){
+  return GRADE_KEYS.filter(g => questionsBy('mix', g).length > 0);
+}
+function qstate(id){
+  S.qstate = S.qstate || {};
+  if (!S.qstate[id]) S.qstate[id] = {box:1, seen:0, right:0, wrong:0, at:-999, lastDay:''};
+  return S.qstate[id];
+}
+
+/* เลือกคำถามถัดไป: ข้อที่ถึงกำหนดทวนก่อน กล่องต่ำมาก่อน */
+function pickQuestion(subj, grade, exclude){
+  const pool = questionsBy(subj, grade).filter(q => !exclude.includes(q.id));
+  if (!pool.length) return null;
+  const now = S.qcount || 0;
+  const scored = pool.map(q => {
+    const st = qstate(q.id);
+    const gap = LEITNER_GAP[Math.min(5, st.box)] || 0;
+    const overdue = (now - st.at) - gap;        // > 0 คือถึงกำหนดแล้ว
+    const fresh = st.seen === 0 ? 40 : 0;       // ข้อที่ยังไม่เคยเจอมาก่อน
+    const weight = fresh + Math.max(0, overdue) * 2 + (6 - st.box) * 6 + Math.random() * 18;
+    return {q, weight, ready: st.seen === 0 || overdue >= 0};
+  });
+  const ready = scored.filter(x => x.ready);
+  const use = ready.length ? ready : scored;
+  use.sort((a, b) => b.weight - a.weight);
+  return use[0].q;
+}
+
+/* ===================== ให้คะแนนคำตอบ ===================== */
+function scoreAnswer(q, correct, msLeft, msTotal, streak){
+  const base = DIFF[q.diff].pt;
+  if (!correct) return {pts:0, speed:0, mult:0, base};
+  const speed = msTotal > 0 ? clamp(msLeft / msTotal, 0, 1) * SPEED_BONUS_MAX : 0;
+  const mult = 1 + Math.min(STREAK_CAP, streak) * (1 / STREAK_CAP);   // 1.0 → 2.0
+  const st = qstate(q.id);
+  const repeat = (st.lastDay === todayKey() && st.seen > 0) ? REPEAT_PENALTY : 1;
+  return {
+    pts: Math.max(1, Math.round(base * (1 + speed) * mult * repeat)),
+    speed, mult, base, repeat
+  };
+}
+
+/* บันทึกผลสัมฤทธิ์แยกตามวิชา ระดับชั้น และหน่วยการเรียนรู้ */
+function progKey(q){ return `${q.subj}|${q.grade}|${q.unit}`; }
+function progOf(key){
+  S.prog = S.prog || {};
+  if (!S.prog[key]) S.prog[key] = {r:0, w:0, recent:[]};
+  return S.prog[key];
+}
+function recordProgress(q, correct){
+  const p = progOf(progKey(q));
+  if (correct) p.r++; else p.w++;
+  p.recent.push(correct ? 1 : 0);
+  if (p.recent.length > 40) p.recent.shift();
+}
+/* แนวโน้ม: เทียบครึ่งหลังกับครึ่งแรกของผลล่าสุด */
+function trendOf(p){
+  const n = p.recent.length;
+  if (n < 10) return null;
+  const half = Math.floor(n/2);
+  const a = p.recent.slice(0, half), b = p.recent.slice(half);
+  const av = a.reduce((x,y)=>x+y,0)/a.length, bv = b.reduce((x,y)=>x+y,0)/b.length;
+  return { diff: bv - av, before: av, after: bv };
+}
+
+/* บันทึกผลลงกล่องทวนซ้ำ */
+function recordAnswer(q, correct){
+  const st = qstate(q.id);
+  st.seen++;
+  st.at = S.qcount || 0;
+  st.lastDay = todayKey();
+  if (correct){ st.right++; st.box = Math.min(5, st.box + 1); }
+  else { st.wrong++; st.box = 1; }
+  S.qcount = (S.qcount || 0) + 1;
+  recordProgress(q, correct);
+}
+
+/* ===================== ไข่ ===================== */
+/* ---- สุ่มผังธาตุประจำไข่แต่ละใบ ----
+   หน่วยการเรียนรู้เดิมจะให้ธาตุไม่เหมือนกันในไข่คนละใบ
+   ทำให้ฟาร์มหน่วยเดิมซ้ำๆ ไม่ได้สายพันธุ์เดิมเสมอไป */
+function rollEggMap(){
+  const units = Object.keys(UNITS);
+  const pool = [];
+  while (pool.length < units.length){
+    pool.push(...EL_KEYS.slice().sort(() => Math.random() - .5));
+  }
+  const order = units.slice().sort(() => Math.random() - .5);
+  const map = {};
+  order.forEach((u, i) => { map[u] = pool[i]; });
+  return map;
+}
+function eggMap(){
+  if (!S.egg) return null;
+  if (!S.egg.map) S.egg.map = rollEggMap();
+  return S.egg.map;
+}
+function unitEl(u){
+  const m = eggMap();
+  return (m && m[u]) || (UNITS[u] ? UNITS[u].el : 'wood');
+}
+
+function startEgg(tier){
+  const key = {1:'seed_r', 2:'seed_g', 3:'seed_m'}[tier];
+  S.egg = { tier, pts:0, need: ITEMS[key].need, el:{}, unit:{}, map: rollEggMap() };
+}
+/* ไข่รับคะแนนพร้อมหน่วยการเรียนรู้ ธาตุของหน่วยเป็นตัวกำหนดสายพันธุ์ */
+function eggAddPoints(pts, unitCounts){
+  if (!S.egg) return false;
+  S.egg.pts += pts;
+  S.egg.el = S.egg.el || {}; S.egg.unit = S.egg.unit || {};
+  const m = eggMap();
+  for (const u in unitCounts){
+    if (!UNITS[u]) continue;
+    const el = m[u] || UNITS[u].el;
+    S.egg.unit[u] = (S.egg.unit[u] || 0) + unitCounts[u];
+    S.egg.el[el] = (S.egg.el[el] || 0) + unitCounts[u];
+  }
+  return S.egg.pts >= S.egg.need;
+}
+/* สัดส่วนธาตุที่สะสมในไข่ */
+function eggElShare(){
+  const e = S.egg; if (!e || !e.el) return {};
+  let tot = 0;
+  for (const k in e.el) tot += e.el[k];
+  const out = {};
+  if (tot <= 0) return out;
+  for (const k in e.el) out[k] = e.el[k] / tot;
+  return out;
+}
+/* หน่วยการเรียนรู้ที่สะสมมากที่สุดในไข่ */
+function eggTopUnit(){
+  const e = S.egg; if (!e || !e.unit) return null;
+  let best = null, bv = -1;
+  for (const k in e.unit) if (e.unit[k] > bv){ bv = e.unit[k]; best = k; }
+  return best;
+}
+/* น้ำหนักของแต่ละสายพันธุ์ตอนฟัก
+   ขั้นที่ 1 สุ่มความหายากจากชั้นของไข่  ขั้นที่ 2 สุ่มสายพันธุ์ในระดับนั้น
+   โดยถ่วงน้ำหนักด้วยสัดส่วนวิชาที่ตอบระหว่างฟัก */
+const AFFINITY_K = 10;
+const CHAOS_CHANCE = 0.15;   // โอกาสที่ไข่จะสุ่มธาตุเองโดยไม่สนหน่วยที่ตอบ
+
+function hatchWeights(ignoreAffinity){
+  const e = S.egg;
+  const odds = SEED_ODDS[e ? e.tier : 1] || SEED_ODDS[1];
+  const share = ignoreAffinity ? {} : eggElShare();
+  const w = {}; for (const k of SP_KEYS) w[k] = 0;
+  let tot = 0; for (const r in odds) tot += odds[r];
+  for (const r in odds){
+    const p = odds[r] / tot;
+    if (p <= 0) continue;
+    const pool = SP_BY_RARITY(+r);
+    if (!pool.length) continue;
+    const ws = {}; let sum = 0;
+    for (const k of pool){
+      const a = 1 + AFFINITY_K * (share[SPECIES[k].elk] || 0);
+      ws[k] = a; sum += a;
+    }
+    for (const k of pool) w[k] += p * ws[k] / sum;
+  }
+  return w;   // รวมกันได้ 1
+}
+/* โอกาสเป็นเปอร์เซ็นต์ รวมตามธาตุ */
+function hatchOddsByEl(ignoreAffinity){
+  const w = hatchWeights(ignoreAffinity);
+  const out = {};
+  for (const k in w){
+    const e = SPECIES[k].elk;
+    out[e] = (out[e] || 0) + w[k];
+  }
+  return out;
+}
+function hatchRoll(ignoreAffinity){
+  const w = hatchWeights(ignoreAffinity);
+  let tot = 0; for (const k in w) tot += w[k];
+  let r = Math.random() * tot;
+  for (const k in w){ r -= w[k]; if (r <= 0) return k; }
+  return SP_KEYS[0];
+}
+
+/* ===================== แคนวาส: กระถาง + รอยราน + วิญญาณ ===================== */
+const CW = 420, CH = 340;
+let canvas, ctx, rafId = null, t0 = performance.now();
+let crackle = null, crackleSeed = 0;
+
+function initCanvas(el){
+  canvas = el; ctx = el.getContext && el.getContext('2d');
+  if (!ctx) return;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  canvas.width = CW * dpr; canvas.height = CH * dpr;
+  canvas.style.aspectRatio = `${CW}/${CH}`;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  if (!crackle) buildCrackle(hashStr(S.uid || 'pot'));
+  if (rafId) cancelAnimationFrame(rafId);
+  loop();
+}
+
+/* ---- สร้างเส้นรอยรานแบบสุ่มคงที่ ---- */
+function buildCrackle(seed){
+  crackleSeed = seed;
+  const r = rngFrom(seed || 12345);
+  const lines = [];
+  for (let i=0;i<26;i++){
+    const x = 90 + r()*240, y = 200 + r()*100;
+    const pts = [[x,y]];
+    let ang = r()*Math.PI*2;
+    const n = 3 + Math.floor(r()*4);
+    for (let j=0;j<n;j++){
+      ang += (r()-.5)*1.5;
+      const len = 8 + r()*22;
+      const p = pts[pts.length-1];
+      pts.push([p[0] + Math.cos(ang)*len, p[1] + Math.sin(ang)*len*.6]);
+    }
+    lines.push(pts);
+  }
+  crackle = lines;
+}
+
+/* ---- สถานะที่ใช้วาด ---- */
+const View = { progress:0, focusing:false, drift:false, mood:70, bounce:0 };
+
+function loop(){
+  const t = (performance.now() - t0) / 1000;
+  draw(t);
+  rafId = requestAnimationFrame(loop);
+}
+
+function draw(t){
+  if (!ctx || !S) return;
+  if (!S.pet && !S.egg) return;
+  ctx.clearRect(0,0,CW,CH);
+  const p = S.pet, sp = p ? SPECIES[p.sp] : null;
+  const night = isNight();
+  const lit = roomBonus().light > 0;
+
+  /* พื้นหลังวงกลมนุ่ม */
+  const g = ctx.createRadialGradient(CW/2, 150, 20, CW/2, 160, 200);
+  const warm = (!night || lit);
+  g.addColorStop(0, warm ? 'rgba(124,174,155,.20)' : 'rgba(90,130,170,.16)');
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g; ctx.fillRect(0,0,CW,CH);
+
+  /* วงแหวนโฟกัส */
+  drawRing(t);
+
+  /* วิญญาณ หรือไข่ */
+  if (p) drawSpirit(t, p, sp);
+  if (S.egg) drawEgg(t, !p);
+
+  /* กระถาง */
+  drawPot(t);
+}
+
+/* ---- วงแหวนรอบกระถาง แสดงความคืบหน้าโฟกัส ---- */
+function drawRing(t){
+  const cx = CW/2, cy = 172, R = 128;
+  ctx.save();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = 'rgba(190,222,210,.10)';
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.stroke();
+  if (View.focusing || View.progress > 0){
+    ctx.lineWidth = 3.5;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = View.drift ? '#d8b04a' : '#a8d3c2';
+    ctx.shadowColor = View.drift ? 'rgba(216,176,74,.6)' : 'rgba(168,211,194,.55)';
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, -Math.PI/2, -Math.PI/2 + Math.PI*2*clamp(View.progress,0,1));
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    // จุดหัวเส้น
+    const a = -Math.PI/2 + Math.PI*2*clamp(View.progress,0,1);
+    ctx.fillStyle = View.drift ? '#e8cf8a' : '#dff0e7';
+    ctx.beginPath(); ctx.arc(cx + Math.cos(a)*R, cy + Math.sin(a)*R, 4.5, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+/* ---- กระถางสังคโลก ---- */
+function drawPot(t){
+  const cx = CW/2;
+  const topY = 214, botY = 316, topR = 84, botR = 58;
+
+  ctx.save();
+  // เงา
+  ctx.fillStyle = 'rgba(0,0,0,.28)';
+  ctx.beginPath(); ctx.ellipse(cx, botY+6, botR+14, 10, 0, 0, Math.PI*2); ctx.fill();
+
+  // ตัวกระถาง
+  const body = new Path2D();
+  body.moveTo(cx-topR, topY);
+  body.bezierCurveTo(cx-topR-6, topY+42, cx-botR-8, botY-34, cx-botR, botY);
+  body.lineTo(cx+botR, botY);
+  body.bezierCurveTo(cx+botR+8, botY-34, cx+topR+6, topY+42, cx+topR, topY);
+  body.closePath();
+
+  const pg = ctx.createLinearGradient(cx-topR, topY, cx+topR, botY);
+  pg.addColorStop(0, '#8fbba9');
+  pg.addColorStop(.45, '#6d9d8b');
+  pg.addColorStop(1, '#3f6455');
+  ctx.fillStyle = pg; ctx.fill(body);
+
+  // เคลือบสะท้อนแสง
+  ctx.save(); ctx.clip(body);
+  const sh = ctx.createLinearGradient(cx-70, topY, cx-10, botY);
+  sh.addColorStop(0, 'rgba(255,255,255,.22)');
+  sh.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = sh; ctx.fillRect(cx-topR, topY, topR, botY-topY);
+
+  // รอยรานตามความคืบหน้า
+  const prog = clamp(View.progress, 0, 1);
+  const show = Math.floor(crackle.length * prog);
+  ctx.lineWidth = 1;
+  for (let i=0;i<crackle.length;i++){
+    const full = i < show;
+    const partial = (i === show) ? (crackle.length*prog - show) : 0;
+    if (!full && partial <= 0) continue;
+    const pts = crackle[i];
+    const lim = full ? pts.length : Math.max(2, Math.ceil(pts.length * partial));
+    ctx.strokeStyle = View.drift ? 'rgba(216,176,74,.5)' : 'rgba(233,247,240,.42)';
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    for (let j=1;j<lim;j++) ctx.lineTo(pts[j][0], pts[j][1]);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // ขอบปากกระถาง
+  ctx.strokeStyle = 'rgba(220,240,232,.35)'; ctx.lineWidth = 1.5; ctx.stroke(body);
+  ctx.fillStyle = '#a9cfbe';
+  ctx.beginPath(); ctx.ellipse(cx, topY, topR, 15, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#2c4a3f';
+  ctx.beginPath(); ctx.ellipse(cx, topY+3, topR-9, 11, 0, 0, Math.PI*2); ctx.fill();
+  // ดิน
+  ctx.fillStyle = '#3a3026';
+  ctx.beginPath(); ctx.ellipse(cx, topY+4, topR-13, 9, 0, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+/* ---- ตัววิญญาณ ---- */
+function bodyPath(shape, R){
+  const P = new Path2D();
+  if (shape === 'tall'){
+    P.moveTo(0, -R*1.16);
+    P.bezierCurveTo(R*0.80, -R*1.05, R*0.86, R*0.62, 0, R*0.98);
+    P.bezierCurveTo(-R*0.86, R*0.62, -R*0.80, -R*1.05, 0, -R*1.16);
+  } else if (shape === 'tear'){
+    P.moveTo(0, -R*1.24);
+    P.bezierCurveTo(R*0.62, -R*0.72, R*1.02, R*0.42, 0, R*0.96);
+    P.bezierCurveTo(-R*1.02, R*0.42, -R*0.62, -R*0.72, 0, -R*1.24);
+  } else if (shape === 'chunky'){
+    P.moveTo(0, -R*0.88);
+    P.bezierCurveTo(R*1.18, -R*0.86, R*1.24, R*0.58, 0, R*0.88);
+    P.bezierCurveTo(-R*1.24, R*0.58, -R*1.18, -R*0.86, 0, -R*0.88);
+  } else {
+    P.moveTo(0, -R);
+    P.bezierCurveTo(R*0.95, -R*0.95, R*1.05, R*0.6, 0, R*0.92);
+    P.bezierCurveTo(-R*1.05, R*0.6, -R*0.95, -R*0.95, 0, -R);
+  }
+  P.closePath();
+  return P;
+}
+const BODY_TOP = { round:1.0, tall:1.16, tear:1.24, chunky:0.88 };
+const BODY_SIDE = { round:1.0, tall:0.84, tear:0.86, chunky:1.18 };
+
+function drawTail(kind, R, sp, t){
+  if (kind === 'none') return;
+  ctx.save();
+  ctx.strokeStyle = sp.a(.75); ctx.lineWidth = Math.max(2, R*0.10); ctx.lineCap = 'round';
+  const sway = Math.sin(t*1.8)*R*0.16;
+  if (kind === 'wisp'){
+    ctx.beginPath();
+    ctx.moveTo(R*0.5, R*0.5);
+    ctx.quadraticCurveTo(R*1.3, R*0.7 + sway, R*1.5, R*0.05 + sway);
+    ctx.stroke();
+  } else if (kind === 'plume'){
+    ctx.fillStyle = sp.a(.55);
+    for (let i=0;i<3;i++){
+      ctx.beginPath();
+      ctx.moveTo(R*0.45, R*0.55);
+      ctx.quadraticCurveTo(R*(1.1+i*0.12), R*(0.5-i*0.35) + sway, R*(1.35+i*0.1), R*(0.1-i*0.42) + sway);
+      ctx.quadraticCurveTo(R*(0.95+i*0.1), R*(0.35-i*0.2) + sway, R*0.45, R*0.55);
+      ctx.fill();
+    }
+  } else if (kind === 'curl'){
+    ctx.beginPath();
+    ctx.moveTo(R*0.5, R*0.45);
+    ctx.bezierCurveTo(R*1.35, R*0.55 + sway, R*1.45, -R*0.35 + sway, R*0.85, -R*0.15 + sway);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawEars(kind, R, sp, t){
+  if (kind === 'none') return;
+  ctx.save();
+  ctx.fillStyle = sp.c2;
+  const wob = Math.sin(t*1.5)*0.08;
+  for (const d of [-1, 1]){
+    ctx.save(); ctx.translate(d*R*0.62, -R*0.62); ctx.rotate(d*(0.35 + wob));
+    ctx.beginPath();
+    if (kind === 'leaf'){
+      ctx.moveTo(0,0); ctx.quadraticCurveTo(d*R*0.42, -R*0.30, d*R*0.12, -R*0.60);
+      ctx.quadraticCurveTo(-d*R*0.06, -R*0.28, 0, 0);
+    } else if (kind === 'long'){
+      ctx.moveTo(0,0); ctx.quadraticCurveTo(d*R*0.24, -R*0.75, d*R*0.06, -R*1.05);
+      ctx.quadraticCurveTo(-d*R*0.16, -R*0.62, 0, 0);
+    } else { // fin
+      ctx.moveTo(0,0); ctx.lineTo(d*R*0.52, -R*0.22); ctx.lineTo(d*R*0.30, -R*0.52);
+      ctx.closePath();
+    }
+    ctx.fill(); ctx.restore();
+  }
+  ctx.restore();
+}
+
+function drawHorn(kind, R, sp, top){
+  if (kind === 'none') return;
+  ctx.save();
+  ctx.fillStyle = sp.accent; ctx.strokeStyle = sp.accent;
+  ctx.lineWidth = Math.max(2, R*0.09); ctx.lineCap = 'round';
+  const y = -R*top;
+  if (kind === 'single'){
+    ctx.beginPath(); ctx.moveTo(-R*0.10, y+R*0.10); ctx.lineTo(0, y-R*0.45); ctx.lineTo(R*0.10, y+R*0.10); ctx.fill();
+  } else if (kind === 'pair'){
+    for (const d of [-1,1]){
+      ctx.beginPath();
+      ctx.moveTo(d*R*0.24, y+R*0.16); ctx.lineTo(d*R*0.36, y-R*0.34); ctx.lineTo(d*R*0.44, y+R*0.10);
+      ctx.fill();
+    }
+  } else if (kind === 'curved'){
+    for (const d of [-1,1]){
+      ctx.beginPath();
+      ctx.moveTo(d*R*0.28, y+R*0.16);
+      ctx.quadraticCurveTo(d*R*0.72, y-R*0.30, d*R*0.34, y-R*0.52);
+      ctx.stroke();
+    }
+  } else if (kind === 'antler'){
+    for (const d of [-1,1]){
+      ctx.beginPath();
+      ctx.moveTo(d*R*0.22, y+R*0.14); ctx.lineTo(d*R*0.40, y-R*0.48);
+      ctx.moveTo(d*R*0.32, y-R*0.18); ctx.lineTo(d*R*0.62, y-R*0.30);
+      ctx.moveTo(d*R*0.37, y-R*0.34); ctx.lineTo(d*R*0.20, y-R*0.62);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+function drawMarks(kind, R, sp, seed){
+  if (kind === 'none') return;
+  const r = rngFrom(seed);
+  ctx.save();
+  if (kind === 'spots'){
+    ctx.fillStyle = sp.a(.42);
+    for (let i=0;i<6;i++){
+      const a = r()*Math.PI*2, d = r()*R*0.8;
+      ctx.beginPath(); ctx.arc(Math.cos(a)*d, Math.sin(a)*d*0.9, R*(0.07+r()*0.07), 0, Math.PI*2); ctx.fill();
+    }
+  } else if (kind === 'stripes'){
+    ctx.strokeStyle = sp.a(.38); ctx.lineWidth = R*0.11; ctx.lineCap='round';
+    for (let i=0;i<3;i++){
+      const y = -R*0.35 + i*R*0.42;
+      ctx.beginPath(); ctx.moveTo(-R*1.1, y); ctx.quadraticCurveTo(0, y+R*0.16, R*1.1, y); ctx.stroke();
+    }
+  } else if (kind === 'veins'){
+    ctx.strokeStyle = sp.a(.5); ctx.lineWidth = R*0.05; ctx.lineCap='round';
+    for (let i=0;i<5;i++){
+      const a = -Math.PI/2 + (i-2)*0.42;
+      ctx.beginPath(); ctx.moveTo(0, R*0.55);
+      ctx.quadraticCurveTo(Math.cos(a)*R*0.4, R*0.05, Math.cos(a)*R*0.92, Math.sin(a)*R*0.9);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+function drawSpirit(t, p, sp){
+  const T = sp.traits;
+  const cx = CW/2;
+  const scale = [0.55, 0.68, 0.82, 1.0, 1.16, 1.3][p.stage];
+  const breathe = Math.sin(t*1.6) * 3;
+  const happy = p.mood > 60 && p.hp > 40;
+  const hop = happy ? Math.abs(Math.sin(t*2.2)) * 5 : 0;
+  const cy = 168 - hop + breathe*0.4 + View.bounce;
+  const R = 42 * scale;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  // แสงเรืองตามความหายาก
+  if (sp.rarity >= 3){ ctx.shadowColor = sp.a(.85); ctx.shadowBlur = sp.rarity === 4 ? 26 : 15; }
+
+  // ออร่าร่างโบราณ / วงในตำนาน
+  if (p.stage === 5 || T.halo){
+    const n = p.stage === 5 ? 7 : 5;
+    for (let i=0;i<n;i++){
+      const a = t*0.6 + i*Math.PI*2/n;
+      const rr = R*1.7 + Math.sin(t*2+i)*6;
+      ctx.fillStyle = sp.a(.7);
+      ctx.beginPath(); ctx.arc(Math.cos(a)*rr, Math.sin(a)*rr*.5, 3, 0, Math.PI*2); ctx.fill();
+    }
+  }
+
+  if (p.stage === 0){ drawSeed(R, sp, t); ctx.restore(); return; }
+
+  const top = BODY_TOP[T.body] || 1, side = BODY_SIDE[T.body] || 1;
+
+  // หาง หู เขา อยู่หลังตัว
+  drawTail(T.tail, R, sp, t);
+  drawEars(T.ear, R, sp, t);
+  drawHorn(T.horn, R, sp, top);
+
+  // ปีก / ริ้ว สายระบำ
+  if (p.stage >= 3 && p.branch === 'play'){
+    ctx.save();
+    ctx.strokeStyle = sp.a(.7); ctx.lineWidth = 3; ctx.lineCap = 'round';
+    for (const dir of [-1, 1]){
+      ctx.beginPath();
+      ctx.moveTo(dir*R*0.7, 4);
+      ctx.quadraticCurveTo(dir*R*1.8, -14 + Math.sin(t*3)*8, dir*R*2.1, 18 + Math.cos(t*2.4)*8);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  // เกราะเปลือก สายกายา
+  if (p.stage >= 3 && p.branch === 'body'){
+    ctx.fillStyle = sp.c2;
+    ctx.beginPath(); ctx.ellipse(0, R*0.15, R*side*1.05, R*0.85, 0, Math.PI*0.05, Math.PI*0.95); ctx.fill();
+  }
+  // วงแหวนฌาน
+  if (p.stage >= 3 && p.branch === 'mind'){
+    ctx.save();
+    ctx.strokeStyle = sp.a(.85); ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.ellipse(0, -R*(top+0.18), R*0.72, R*0.20 + Math.sin(t*1.5)*2, 0, 0, Math.PI*2); ctx.stroke();
+    ctx.restore();
+  }
+
+  // ตัว
+  const P = bodyPath(T.body, R);
+  const bg = ctx.createRadialGradient(-R*.3, -R*.35, R*.2, 0, 0, R*1.15);
+  bg.addColorStop(0, sp.accent);
+  bg.addColorStop(.55, sp.c1);
+  bg.addColorStop(1, sp.c2);
+  ctx.fillStyle = bg;
+  ctx.fill(P);
+  ctx.shadowBlur = 0;
+
+  // ลายบนตัว
+  ctx.save(); ctx.clip(P);
+  drawMarks(T.mark, R, sp, hashStr('mk:' + sp.id));
+  ctx.restore();
+
+  // ใบบนหัวสำหรับสายไม้
+  if (sp.elk === 'wood'){
+    ctx.fillStyle = sp.c2;
+    ctx.save(); ctx.translate(0, -R*(top-0.02)); ctx.rotate(Math.sin(t*1.2)*0.12);
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.quadraticCurveTo(R*0.42, -R*0.32, R*0.10, -R*0.72);
+    ctx.quadraticCurveTo(-R*0.06, -R*0.36, 0, 0);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // แก้ม
+  if (happy){
+    ctx.fillStyle = 'rgba(220,120,120,.28)';
+    ctx.beginPath(); ctx.ellipse(-R*side*0.48, R*0.16, R*0.15, R*0.10, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse( R*side*0.48, R*0.16, R*0.15, R*0.10, 0, 0, Math.PI*2); ctx.fill();
+  }
+
+  // ตา
+  const blink = (Math.sin(t*0.9) > 0.985) ? 0.12 : 1;
+  const sleepy = p.hp < 35 || p.mood < 20;
+  ctx.fillStyle = '#15242c';
+  for (const dx of [-R*0.27*side, R*0.27*side]){
+    if (sleepy || View.focusing){
+      ctx.strokeStyle = '#15242c'; ctx.lineWidth = 2.6; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(dx - R*0.11, -R*0.06); ctx.quadraticCurveTo(dx, R*0.04, dx + R*0.11, -R*0.06); ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.ellipse(dx, -R*0.06, R*0.085, R*0.115*blink, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,.85)';
+      ctx.beginPath(); ctx.arc(dx + R*0.03, -R*0.11, R*0.03, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#15242c';
+    }
+  }
+
+  // ปาก
+  ctx.strokeStyle = '#15242c'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+  ctx.beginPath();
+  if (p.mood > 55){ ctx.moveTo(-R*0.12, R*0.24); ctx.quadraticCurveTo(0, R*0.38, R*0.12, R*0.24); }
+  else if (p.mood > 25){ ctx.moveTo(-R*0.10, R*0.28); ctx.lineTo(R*0.10, R*0.28); }
+  else { ctx.moveTo(-R*0.12, R*0.32); ctx.quadraticCurveTo(0, R*0.18, R*0.12, R*0.32); }
+  ctx.stroke();
+
+  if (p.sick){
+    ctx.font = '18px serif'; ctx.textAlign='center';
+    ctx.fillText('\u{1FA79}', R*0.75, -R*0.75);
+  }
+  ctx.restore();
+}
+
+function drawSeed(R, sp, t){
+  ctx.fillStyle = '#6b5540';
+  ctx.beginPath(); ctx.ellipse(0, R*0.2, R*0.62, R*0.78, 0, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = '#48382a'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(-R*0.2, -R*0.3); ctx.quadraticCurveTo(0, R*0.2, -R*0.1, R*0.7); ctx.stroke();
+  ctx.fillStyle = sp.c1;
+  ctx.save(); ctx.translate(0, -R*0.5); ctx.rotate(Math.sin(t*1.4)*0.15);
+  ctx.beginPath();
+  ctx.moveTo(0,0); ctx.quadraticCurveTo(R*0.5, -R*0.25, R*0.14, -R*0.62);
+  ctx.quadraticCurveTo(0, -R*0.3, 0, 0); ctx.fill();
+  ctx.restore();
+}
+
+/* ---- ไข่ ---- */
+function eggTint(){
+  const odds = hatchOddsByEl();
+  let best = null, bv = -1;
+  for (const k in odds) if (odds[k] > bv){ bv = odds[k]; best = k; }
+  const E = ELEMENTS[best] || ELEMENTS.wood;
+  // ยิ่งธาตุนำมาก สียิ่งชัด
+  const lean = clamp((bv - 0.125) / 0.5, 0, 1);
+  return { h: E.h, s: 10 + 42 * lean, l: 62 - 6 * lean, lean, el: best };
+}
+
+function drawEgg(t, big){
+  const e = S.egg; if (!e) return;
+  const prog = clamp(e.pts / e.need, 0, 1);
+  const tint = eggTint();
+  const R = big ? 52 : 22;
+  const cx = big ? CW/2 : CW/2 + 96;
+  const cy = big ? (168 + Math.sin(t*1.4)*3) : 214;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  // ตัวไข่
+  const g = ctx.createRadialGradient(-R*0.3, -R*0.45, R*0.2, 0, 0, R*1.3);
+  g.addColorStop(0, _hsl(tint.h, tint.s, tint.l + 18));
+  g.addColorStop(.6, _hsl(tint.h, tint.s, tint.l));
+  g.addColorStop(1, _hsl(tint.h + 6, tint.s + 8, tint.l - 20));
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(0, -R*1.26);
+  ctx.bezierCurveTo(R*0.86, -R*0.92, R*0.98, R*0.55, 0, R*1.02);
+  ctx.bezierCurveTo(-R*0.98, R*0.55, -R*0.86, -R*0.92, 0, -R*1.26);
+  ctx.closePath();
+  ctx.fill();
+
+  // ลายจุดตามธาตุ
+  const rr = rngFrom(hashStr('egg' + tint.el));
+  ctx.fillStyle = _hsla(tint.h, tint.s + 14, tint.l - 26, .45);
+  for (let i=0;i<7;i++){
+    const a = rr()*Math.PI*2, d = rr()*R*0.72;
+    ctx.beginPath(); ctx.arc(Math.cos(a)*d, Math.sin(a)*d*1.05, R*(0.06+rr()*0.06), 0, Math.PI*2); ctx.fill();
+  }
+
+  // รอยร้าวตามความคืบหน้าการฟัก
+  if (prog > 0.05){
+    const n = Math.floor(prog * 7);
+    ctx.strokeStyle = 'rgba(20,32,40,.55)'; ctx.lineWidth = Math.max(1, R*0.045);
+    const cr = rngFrom(hashStr('crack' + e.tier));
+    for (let i=0;i<n;i++){
+      let x = (cr()-.5)*R*1.2, y = (cr()-.5)*R*1.6;
+      ctx.beginPath(); ctx.moveTo(x, y);
+      for (let j=0;j<3;j++){
+        x += (cr()-.5)*R*0.5; y += (cr()-.5)*R*0.5;
+        ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+  }
+  // แสงตอนใกล้ฟัก
+  if (prog > 0.85){
+    ctx.shadowColor = _hsla(tint.h, 70, 70, .9);
+    ctx.shadowBlur = 18 + Math.sin(t*4)*8;
+    ctx.strokeStyle = _hsla(tint.h, 60, 78, .5); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(0, -R*0.1, R*0.9, R*1.12, 0, 0, Math.PI*2); ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+  ctx.restore();
+}
+
+/* ---- ตราสัญลักษณ์การ์ด (พิกเซล 7x7) ---- */
+function sigilSVG(seedStr, color, size=44){
+  const r = rngFrom(hashStr(seedStr));
+  const n = 7, cell = size/n;
+  let rects = '';
+  for (let y=0;y<n;y++){
+    for (let x=0;x<Math.ceil(n/2);x++){
+      if (r() > .48){
+        const o = 0.5 + r()*0.5;
+        rects += `<rect x="${x*cell}" y="${y*cell}" width="${cell}" height="${cell}" fill="${color}" opacity="${o.toFixed(2)}"/>`;
+        const mx = n-1-x;
+        if (mx !== x) rects += `<rect x="${mx*cell}" y="${y*cell}" width="${cell}" height="${cell}" fill="${color}" opacity="${o.toFixed(2)}"/>`;
+      }
+    }
+  }
+  return `<svg class="sigil" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${rects}</svg>`;
+}
+
+/* ===================== UI พื้นฐาน ===================== */
+const $ = s => document.querySelector(s);
+const view = () => $('#view');
+let TAB = 'pot';
+
+function toast(msg, kind=''){
+  const box = $('#toast');
+  const el = document.createElement('div');
+  el.className = 'tst ' + kind;
+  el.textContent = msg;
+  box.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .4s'; }, 2100);
+  setTimeout(()=>el.remove(), 2600);
+}
+function sheet(html){
+  $('#sheet').innerHTML = html;
+  $('#veil').classList.add('show');
+}
+function closeSheet(){ $('#veil').classList.remove('show'); }
+$('#veil').addEventListener('click', e => { if (e.target.id === 'veil') closeSheet(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ===================== แถบบน ===================== */
+function paintTop(){
+  $('#coins').textContent = Math.floor(S.coins).toLocaleString('th-TH');
+  $('#crys').textContent  = Math.floor(S.crystals).toLocaleString('th-TH');
+  const p = S.pet;
+  $('#petline').textContent = p ? `— ${p.name} · Lv.${p.lv} · ${formName(p.sp,p.stage,p.branch)}` : '';
+  document.body.classList.toggle('night', isNight() && !roomBonus().light);
+  // จุดแจ้งเตือนสำรวจเสร็จ
+  const eb = document.querySelector('#tabs button[data-tab="explore"]');
+  const old = eb.querySelector('.dot'); if (old) old.remove();
+  if (S.explore && Date.now() >= S.explore.endAt){
+    const d = document.createElement('span'); d.className = 'dot'; eb.appendChild(d);
+  }
+}
+
+/* ===================== แท็บ ===================== */
+document.querySelectorAll('#tabs button').forEach(b => {
+  b.addEventListener('click', () => {
+    if (QUIZ.running && !QUIZ.locked) return;
+    TAB = b.dataset.tab;
+    document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
+    render();
+  });
+});
+
+function render(){
+  tickOffline();
+  paintTop();
+  const v = view();
+  if (TAB === 'pot')      v.innerHTML = viewPot();
+  else if (TAB === 'quiz')    v.innerHTML = viewQuiz();
+  else if (TAB === 'explore') v.innerHTML = viewExplore();
+  else if (TAB === 'bag')     v.innerHTML = viewBag();
+  else if (TAB === 'home')    v.innerHTML = viewHome();
+  else if (TAB === 'book')    v.innerHTML = viewBook();
+  else if (TAB === 'sum')     v.innerHTML = viewSummary();
+  bindView();
+  const cv = document.getElementById('pot');
+  if (cv) initCanvas(cv);
+  save();
+}
+
+/* ===================== ชิ้นส่วนที่ใช้ซ้ำ ===================== */
+function eggBlock(){
+  const e = S.egg; if (!e) return '';
+  const key = {1:'seed_r',2:'seed_g',3:'seed_m'}[e.tier];
+  const prog = clamp(e.pts / e.need * 100, 0, 100);
+  const odds = hatchOddsByEl();
+  const rows = Object.entries(odds).sort((a,b)=>b[1]-a[1]).slice(0, 5).map(([el, v]) =>
+    `<div class="odd">
+      <span class="nm">${ELEMENTS[el].g} ${ELEMENTS[el].n}</span>
+      <span class="tr"><i style="width:${(v*100).toFixed(1)}%;background:hsl(${ELEMENTS[el].h},52%,58%)"></i></span>
+      <span class="pc">${(v*100).toFixed(1)}%</span>
+    </div>`).join('');
+  const topUnit = eggTopUnit();
+  return `<div class="card">
+    <div class="eyebrow">${ITEMS[key].g} ${ITEMS[key].n}</div>
+    <div class="row spread"><span class="sub">${e.pts >= e.need ? 'พร้อมฟักแล้ว' : `อีก ${e.need - e.pts} คะแนนจะฟัก`}</span>
+      <b class="mono">${Math.min(e.pts, e.need)}/${e.need}</b></div>
+    <div class="gap" style="height:6px"></div>
+    <div class="eggbar"><i style="width:${prog}%"></i></div>
+    ${topUnit ? `<div class="tiny" style="margin-top:8px">หน่วยที่สะสมมากที่สุด — ${UNITS[topUnit].n} → ธาตุ${ELEMENTS[unitEl(topUnit)].n} ${ELEMENTS[unitEl(topUnit)].g}</div>` : `<div class="tiny" style="margin-top:8px">ยังไม่มีหน่วยใดนำ ตอบคำถามเพื่อกำหนดธาตุของไข่</div>`}
+    <div class="odds">${rows}</div>
+    <div class="tiny" style="margin-top:6px">ไข่โตจากคะแนนฐานของข้อที่ตอบถูก ไม่รวมโบนัสความเร็วและตัวคูณต่อเนื่อง · ไข่ใบนี้สุ่มผังธาตุมาเองแล้ว ${Math.round(CHAOS_CHANCE*100)}% ที่ตอนฟักจะแปรปรวนไม่สนผัง</div>
+    <div class="gap" style="height:6px"></div>
+    <button class="btn sm block" data-act="eggmap">ดูผังธาตุประจำไข่ใบนี้</button>
+    ${e.pts >= e.need ? `<div class="gap"></div><button class="btn pri block" data-act="hatch">ฟักไข่</button>` : ''}
+  </div>`;
+}
+
+function stageBlock(){
+  const p = S.pet;
+  if (!p) return `<div class="card">
+    <div class="stage"><canvas id="pot" width="420" height="340" aria-label="ไข่ในกระถาง"></canvas></div>
+    <div style="text-align:center;margin-top:6px">
+      <h2>ยังไม่มีวิญญาณ</h2>
+      <div class="sub">ตอบคำถามเพื่อสะสมคะแนนให้ไข่ฟัก</div>
+    </div>
+  </div>`;
+  return `<div class="card">
+    <div class="stage">
+      <canvas id="pot" width="420" height="340" aria-label="กระถางและวิญญาณ"></canvas>
+    </div>
+    <div class="row spread" style="margin-top:6px">
+      <div>
+        <h2>${esc(p.name)}</h2>
+        <div class="sub">${formName(p.sp,p.stage,p.branch)} · ธาตุ${SPECIES[p.sp].el} · Lv.${p.lv}</div>
+      </div>
+      <div style="text-align:right">
+        <span class="pill" style="color:${RARITY[SPECIES[p.sp].rarity].c};border-color:${RARITY[SPECIES[p.sp].rarity].c}55">${RARITY[SPECIES[p.sp].rarity].star}</span>
+        <div class="tiny" style="margin-top:3px">${STAGE_NAMES[p.stage] || (p.stage===5?'โบราณ':BRANCHES[p.branch]||'')}</div>
+      </div>
+    </div>
+    ${metersBlock()}
+  </div>`;
+}
+
+function metersBlock(){
+  const p = S.pet;
+  const need = xpNeed(p.lv);
+  const m = (cls, lab, val, txt) => `<div class="meter">
+      <div class="lab"><span>${lab}</span><span class="mono">${txt}</span></div>
+      <div class="bar ${cls}"><i style="width:${clamp(val,0,100)}%"></i></div>
+    </div>`;
+  return `<div class="meters">
+    ${m('hp','สุขภาพ', p.hp, Math.round(p.hp))}
+    ${m('hu','ความอิ่ม', p.hunger, Math.round(p.hunger))}
+    ${m('mo','อารมณ์', p.mood, Math.round(p.mood))}
+    ${m('af','ความสนิท', p.aff, Math.round(p.aff))}
+    ${m('xp','ประสบการณ์', p.xp/need*100, `${p.xp}/${need}`)}
+  </div>`;
+}
+
+function statsBlock(){
+  const p = S.pet, sp = SPECIES[p.sp];
+  return `<div class="stats">` + ['STR','VIT','AGI','INT','LUK'].map(k =>
+    `<div class="stat" style="${k===sp.main?'border-color:rgba(216,176,74,.45)':(k===sp.sub?'border-color:rgba(168,211,194,.35)':'')}">
+      <b>${p.stats[k]}</b><span>${k}</span></div>`).join('') + `</div>`;
+}
+
+/* ===================== หน้า: กระถาง ===================== */
+function viewPot(){
+  const p = S.pet;
+  if (!p) return stageBlock() + eggBlock() + `<div class="card">
+    <div class="eyebrow">เริ่มต้น</div>
+    <div class="row wrap"><button class="btn pri" data-act="goQuiz">ไปตอบคำถาม</button></div>
+  </div>`;
+  const e = evoCheck();
+  const b = roomBonus();
+  const foods = Object.keys(S.bag).filter(k => ITEMS[k] && ITEMS[k].t === 'food');
+  const dom = dominantBranch();
+
+  let evoHtml = '';
+  if (e){
+    const lines = [
+      `เลเวล ${p.lv}/${e.needLv}`,
+      `ความสนิท ${Math.round(p.aff)}/${e.needAff}`,
+      e.needStone ? `${ITEMS[e.stoneKey].n} ${(S.bag[e.stoneKey]||0)}/1` : null
+    ].filter(Boolean).join(' · ');
+    evoHtml = `<div class="card">
+      <div class="eyebrow">ร่างถัดไป</div>
+      <div class="row spread">
+        <div class="grow">
+          <b>${formName(p.sp, e.next, e.next>=5?'anc':(e.next>=3?e.br:null))}</b>
+          <div class="sub">${lines}</div>
+          ${p.stage < 3 ? `<div class="tiny" style="margin-top:4px">สายที่นำอยู่ตอนนี้: <b style="color:var(--glaze-lt)">${BRANCHES[dom]}</b> — วิธีดูแลจะเป็นตัวกำหนดร่างที่แตกออกไป</div>` : ''}
+        </div>
+        <button class="btn ${e.ok?'pri':''}" data-act="evolve" ${e.ok?'':'disabled'}>วิวัฒนาการ</button>
+      </div>
+    </div>`;
+  }
+
+  return `
+  ${stageBlock()}
+  ${statsBlock()}
+  <div class="card">
+    <div class="eyebrow">ดูแล</div>
+    <div class="row wrap">
+      <button class="btn" data-act="feed">ให้อาหาร${foods.length?'':' (ไม่มีอาหาร)'}</button>
+      <button class="btn" data-act="play">เล่นด้วยกัน</button>
+      <button class="btn" data-act="rest">พาพัก</button>
+      <button class="btn pri" data-act="goQuiz">ไปตอบคำถาม</button>
+    </div>
+    <div class="tiny" style="margin-top:8px">
+      สายการเลี้ยง — กายา ${p.care.body} · ฌาน ${p.care.mind} · ระบำ ${p.care.play}
+    </div>
+  </div>
+  ${evoHtml}
+  ${eggBlock()}
+  <div class="card">
+    <div class="eyebrow">บันทึก</div>
+    <div class="row spread"><span class="sub">ตอบคำถามไปแล้ว</span><b class="mono">${S.stats.answered} ข้อ</b></div>
+    <div class="row spread"><span class="sub">ความแม่นยำ</span><b class="mono">${S.stats.answered ? Math.round(S.stats.correct/S.stats.answered*100) : 0}%</b></div>
+    <div class="row spread"><span class="sub">คะแนนสะสม</span><b class="mono">${S.stats.points.toLocaleString('th-TH')}</b></div>
+    <div class="row spread"><span class="sub">ตอบถูกติดกันสูงสุด</span><b class="mono">${S.stats.bestStreak} ข้อ</b></div>
+    <div class="row spread"><span class="sub">ตอบต่อเนื่อง</span><b class="mono">${S.stats.streak} วัน</b></div>
+    ${(b.focusXp||b.hungerSlow||b.moodSlow||b.exploreLuck)?`<hr class="sep"><div class="tiny">โบนัสจากบ้าน — โฟกัส +${Math.round(b.focusXp*100)}% · ของหายาก +${Math.round(b.exploreLuck*100)}% · หิวช้าลง ${Math.round(b.hungerSlow*100)}% · อารมณ์ลดช้าลง ${Math.round(b.moodSlow*100)}%</div>`:''}
+    <hr class="sep">
+    <div class="row wrap">
+      <button class="btn sm" data-act="garden">สวน ${gardenCount()+1}/${GARDEN_MAX}</button>
+      <button class="btn sm" data-act="rename">เปลี่ยนชื่อ</button>
+      <button class="btn sm" data-act="settings">ตั้งค่าและเซฟ</button>
+    </div>
+  </div>`;
+}
+
+/* ===================== หน้า: กระเป๋า ===================== */
+function viewBag(){
+  const keys = Object.keys(S.bag).filter(k => S.bag[k] > 0 && ITEMS[k]);
+  const order = {food:0, heal:1, stone:2, egg:3, mat:4};
+  keys.sort((a,b) => (order[ITEMS[a].t] - order[ITEMS[b].t]) || ITEMS[a].n.localeCompare(ITEMS[b].n,'th'));
+  const list = keys.length ? keys.map(k => {
+    const it = ITEMS[k];
+    const canUse = it.t === 'food' || it.t === 'heal' || it.t === 'egg';
+    return `<div class="item">
+      <div class="ic">${it.g}</div>
+      <div class="grow"><b>${it.n}</b><div class="sub">${it.d}</div></div>
+      <div style="text-align:right">
+        <div class="qty">×${S.bag[k]}</div>
+        <div class="row" style="gap:4px;margin-top:4px">
+          ${canUse?`<button class="btn sm" data-use="${k}">${it.t==='egg'?'เริ่มฟัก':'ใช้'}</button>`:''}
+          ${it.sell?`<button class="btn sm" data-sell="${k}">ขาย ${it.sell}</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('') : `<div class="tiny">กระเป๋าว่างเปล่า ส่งวิญญาณออกสำรวจเพื่อเก็บของ หรือโฟกัสให้ครบรอบเพื่อรับของติดมือ</div>`;
+
+  return `<div class="card">
+    <div class="eyebrow">กระเป๋า · ${bagCount()} ชิ้น</div>
+    <h2>ของที่เก็บมาได้</h2>
+    <div class="gap"></div>
+    <div class="list">${list}</div>
+  </div>
+  <div class="card">
+    <div class="eyebrow">ร้านผลึกสมาธิ</div>
+    <div class="row spread">
+      <div class="grow"><b>เมล็ดและของหายาก</b><div class="sub">แลกด้วยผลึกที่ได้จากการโฟกัสเท่านั้น</div></div>
+      <button class="btn gold" data-act="crystal">มี ${Math.floor(S.crystals)} ผลึก</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="eyebrow">ร้านค้า</div>
+    <h2>ซื้อของกิน</h2>
+    <div class="sub">ใช้เหรียญที่ได้จากการโฟกัส</div>
+    <div class="gap"></div>
+    <div class="list">
+      ${['leaf','berry','ricecake','honey','balm','elixir'].map(k=>{
+        const it = ITEMS[k], price = Math.round(it.sell*1.8);
+        return `<div class="item">
+          <div class="ic">${it.g}</div>
+          <div class="grow"><b>${it.n}</b><div class="sub">${it.d}</div></div>
+          <button class="btn sm ${S.coins>=price?'gold':''}" data-buy="${k}" data-price="${price}" ${S.coins>=price?'':'disabled'}>${price}</button>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+/* ===================== หน้า: บ้าน ===================== */
+function viewHome(){
+  const lit = roomBonus().light > 0;
+  const night = isNight();
+  const slots = S.room.map((k,i) =>
+    `<button class="slot ${k?'filled':''}" data-slot="${i}" title="${k?FURN[k].n:'ช่องว่าง'}">${k?FURN[k].g:''}</button>`).join('');
+  const owned = S.room.filter(Boolean).length;
+
+  return `<div class="card">
+    <div class="eyebrow">บ้าน · วางได้ ${owned}/12 ช่อง</div>
+    <h2>ห้องของ${esc(S.pet.name)}</h2>
+    <div class="sub">${night ? (lit ? 'กลางคืน — โคมไฟส่องห้องให้สว่างอยู่' : 'กลางคืน — ห้องมืด ลองวางโคมกระดาษดู') : 'กลางวัน — แสงเข้าห้องพอดี'}</div>
+    <div class="gap"></div>
+    <div id="room" class="${lit||!night?'lit':''}"><div class="slots">${slots}</div></div>
+    <div class="tiny" style="margin-top:8px">แตะช่องเพื่อวางหรือเก็บของ ของทุกชิ้นที่วางไว้จะให้โบนัสกับการเลี้ยงและการโฟกัส</div>
+  </div>
+  <div class="card">
+    <div class="eyebrow">ร้านของตกแต่ง</div>
+    <div class="list">
+      ${Object.entries(FURN).map(([k,f])=>{
+        const have = S.room.includes(k);
+        return `<div class="item">
+          <div class="ic">${f.g}</div>
+          <div class="grow"><b>${f.n}</b><div class="sub">${f.d}</div></div>
+          ${have ? `<span class="pill">วางแล้ว</span>`
+                 : `<button class="btn sm ${S.coins>=f.cost?'gold':''}" data-buyf="${k}" ${S.coins>=f.cost?'':'disabled'}>${f.cost}</button>`}
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+/* ===================== หน้า: สมุดสะสม ===================== */
+let BOOKEL = null;
+
+function viewBook(){
+  const EL = BOOKEL || (S.pet ? SPECIES[S.pet.sp].elk : 'wood');
+  const gotForms = Object.keys(S.book).length;
+  const gotSp = Object.keys(S.seen || {}).length;
+
+  const chips = EL_KEYS.map(e => {
+    const list = SP_BY_EL(e);
+    const n = list.reduce((a,k) => a + FORMS_BY_SP[k].filter(f => S.book[f.id]).length, 0);
+    const tot = list.length * 10;
+    return `<button class="chip ${e===EL?'on':''}" data-bookel="${e}">${ELEMENTS[e].g} ${ELEMENTS[e].n} <span class="mono" style="font-size:11px;opacity:.7">${n}/${tot}</span></button>`;
+  }).join('');
+
+  const groups = SP_BY_EL(EL).map(k => {
+    const sp = SPECIES[k];
+    const forms = FORMS_BY_SP[k];
+    const n = forms.filter(f => S.book[f.id]).length;
+    const seen = !!(S.seen && S.seen[k]);
+    const cards = forms.map(f => {
+      const has = !!S.book[f.id];
+      if (has) return `<button class="bcard" data-card="${f.id}">
+          ${sigilSVG(S.uid + f.id, sp.accent)}
+          <div class="nm">${formName(f.sp,f.stage,f.branch).replace(sp.name+' ','')}</div>
+          <div class="st">${collectCode(f.id).slice(0,4)}···</div>
+        </button>`;
+      return `<div class="bcard locked">
+          <svg class="sigil" width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" fill="rgba(255,255,255,.05)"/></svg>
+          <div class="nm">${seen ? formName(f.sp,f.stage,f.branch).replace(sp.name+' ','') : '???'}</div>
+          <div class="st">ขั้น ${f.stage}</div>
+        </div>`;
+    }).join('');
+    return `<div class="card">
+      <div class="row spread" style="align-items:baseline">
+        <div class="grow">
+          <b style="color:${seen?sp.accent:'inherit'}">${seen ? sp.name : '??? ยังไม่เคยพบ'}</b>
+          <div class="tiny">${seen ? sp.desc : 'ต้องปลูกเมล็ดให้เจอสายพันธุ์นี้ก่อน'}</div>
+        </div>
+        <span class="pill" style="color:${RARITY[sp.rarity].c};border-color:${RARITY[sp.rarity].c}55">${RARITY[sp.rarity].star}</span>
+      </div>
+      <div class="tiny" style="margin:6px 0 8px">เด่น ${sp.main} · รอง ${sp.sub} · พบแล้ว ${n}/10 ร่าง</div>
+      <div class="book">${cards}</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="card">
+    <div class="eyebrow">สมุดสะสม</div>
+    <h2>${gotSp}/${SP_KEYS.length} สายพันธุ์ · ${gotForms}/${ALL_FORMS.length} ร่าง</h2>
+    <div class="sub">ทุกใบมีรหัสสะสม 13 หลักที่คำนวณจากบัญชี ${S.uid} เครื่องอื่นได้รหัสคนละชุด</div>
+    <div class="gap"></div>
+    <div class="chips">${chips}</div>
+  </div>
+  ${groups}`;
+}
+
+function cardSheet(id){
+  const f = ALL_FORMS.find(x => x.id === id);
+  const sp = SPECIES[f.sp];
+  return `<div style="text-align:center">
+    <div class="eyebrow" style="text-align:center">การ์ดสะสม</div>
+    <div style="display:inline-block;border:1px solid ${sp.a(.45)};border-radius:16px;padding:18px 22px;background:linear-gradient(160deg,${sp.dim},transparent)">
+      ${sigilSVG(S.uid + f.id, sp.accent, 92)}
+      <h2 style="margin-top:10px">${formName(f.sp,f.stage,f.branch)}</h2>
+      <div class="sub">ธาตุ${sp.el} · ขั้นที่ ${f.stage}${f.branch&&f.branch!=='anc'?' · สาย'+BRANCHES[f.branch]:''}</div>
+      <div class="pill" style="display:inline-block;margin-top:6px;color:${RARITY[sp.rarity].c};border-color:${RARITY[sp.rarity].c}55">${RARITY[sp.rarity].star} ${RARITY[sp.rarity].n}</div>
+      <div class="tiny" style="margin-top:8px">${sp.desc}</div>
+      <hr class="sep">
+      <div class="mono" style="font-size:15px;letter-spacing:.12em;color:${sp.accent}">${collectCode(f.id)}</div>
+      <div class="tiny">ปลดล็อก ${fmtDate(S.book[f.id])} · บัญชี ${S.uid}</div>
+    </div>
+  </div>
+  <div class="gap"></div>
+  <button class="btn block" data-act="closeSheet">ปิด</button>`;
+}
+
+
+/* ===================== หน้า: สรุปผลสัมฤทธิ์ ===================== */
+function accColor(pct){
+  if (pct >= 80) return '#7cae9b';
+  if (pct >= 60) return '#a8c98a';
+  if (pct >= 40) return '#d8b04a';
+  return '#c26a6a';
+}
+function accBar(r, w){
+  const t = r + w;
+  const pct = t ? Math.round(r / t * 100) : 0;
+  return {pct, t, html:`<div class="pbar"><i style="width:${pct}%;background:${accColor(pct)}"></i></div>`};
+}
+function trendTag(p){
+  const tr = trendOf(p);
+  if (!tr) return `<span class="trend flat">—</span>`;
+  const d = Math.round(tr.diff * 100);
+  if (d >= 8)  return `<span class="trend up">▲ ${d}%</span>`;
+  if (d <= -8) return `<span class="trend down">▼ ${Math.abs(d)}%</span>`;
+  return `<span class="trend flat">คงที่</span>`;
+}
+
+function viewSummary(){
+  const st = S.stats;
+  const acc = st.answered ? Math.round(st.correct / st.answered * 100) : 0;
+
+  // รวมตามวิชา+ระดับชั้น และตามหน่วย
+  const bySG = {}, byUnit = {};
+  for (const key in (S.prog || {})){
+    const [subj, grade, unit] = key.split('|');
+    const p = S.prog[key];
+    const sg = subj + '|' + grade;
+    if (!bySG[sg]) bySG[sg] = {r:0, w:0, subj, grade};
+    bySG[sg].r += p.r; bySG[sg].w += p.w;
+    byUnit[key] = {subj, grade, unit, p};
+  }
+
+  const petCard = S.pet ? (() => {
+    const p = S.pet, sp = SPECIES[p.sp];
+    return `<div class="card">
+      <div class="stage"><canvas id="pot" width="420" height="340" aria-label="วิญญาณปัจจุบัน"></canvas></div>
+      <div style="text-align:center;margin-top:4px">
+        <h2>${esc(p.name)}</h2>
+        <div class="sub">${formName(p.sp,p.stage,p.branch)} · Lv.${p.lv}</div>
+        <div class="gap" style="height:6px"></div>
+        <span class="pill" style="color:${RARITY[sp.rarity].c};border-color:${RARITY[sp.rarity].c}55">${RARITY[sp.rarity].star} ${RARITY[sp.rarity].n}</span>
+        <span class="pill">ธาตุ${sp.el}</span>
+        <span class="pill">พลังรวม ${petPower(p)}</span>
+      </div>
+    </div>` ;
+  })() : `<div class="card"><div class="eyebrow">ยังไม่มีวิญญาณ</div>
+      <div class="stage"><canvas id="pot" width="420" height="340"></canvas></div>
+      <div class="sub" style="text-align:center">ตอบคำถามให้ไข่ฟักก่อน</div></div>`;
+
+  const sgRows = Object.values(bySG)
+    .sort((a,b) => (GRADES[a.grade].ord - GRADES[b.grade].ord) || a.subj.localeCompare(b.subj))
+    .map(x => {
+      const b = accBar(x.r, x.w);
+      const code = SUBJECTS[x.subj].code[x.grade];
+      return `<div class="prow">
+        <div class="lab">
+          <b>${SUBJECTS[x.subj].g} ${SUBJECTS[x.subj].short} · ${GRADES[x.grade].n}</b>
+          <div class="tiny">${code || ''} · ถูก ${x.r} ผิด ${x.w} จาก ${b.t} ข้อ</div>
+          ${b.html}
+        </div>
+        <div class="num" style="color:${accColor(b.pct)}">${b.pct}%</div>
+      </div>`;
+    }).join('');
+
+  const unitRows = Object.values(byUnit)
+    .sort((a,b) => (b.p.r + b.p.w) - (a.p.r + a.p.w))
+    .map(x => {
+      const b = accBar(x.p.r, x.p.w);
+      const el = ELEMENTS[UNITS[x.unit].el];
+      return `<div class="prow">
+        <div class="lab">
+          <b>${UNITS[x.unit].n}</b>
+          <div class="tiny">${SUBJECTS[x.subj].short} ${GRADES[x.grade].n} · ธาตุ${el.n} ${el.g} · ถูก ${x.p.r} ผิด ${x.p.w}</div>
+          ${b.html}
+        </div>
+        <div class="num" style="color:${accColor(b.pct)}">${b.pct}%</div>
+        ${trendTag(x.p)}
+      </div>`;
+    }).join('');
+
+  // หน่วยที่ควรทบทวน
+  const weak = Object.values(byUnit)
+    .filter(x => (x.p.r + x.p.w) >= 5)
+    .map(x => ({...x, pct: x.p.r / (x.p.r + x.p.w) * 100}))
+    .filter(x => x.pct < 70)
+    .sort((a,b) => a.pct - b.pct).slice(0, 3);
+
+  return `
+  ${petCard}
+  <div class="card">
+    <div class="eyebrow">ภาพรวม</div>
+    <div class="bigstat">
+      <div><b>${st.answered}</b><span>ตอบทั้งหมด</span></div>
+      <div><b style="color:${accColor(acc)}">${acc}%</b><span>ความแม่นยำ</span></div>
+      <div><b>${st.rounds}</b><span>รอบที่ทำ</span></div>
+    </div>
+    <div class="gap"></div>
+    <div class="bigstat">
+      <div><b style="color:var(--ok)">${st.correct}</b><span>ตอบถูก</span></div>
+      <div><b style="color:var(--bad)">${st.answered - st.correct}</b><span>ตอบผิด</span></div>
+      <div><b>${st.points.toLocaleString('th-TH')}</b><span>คะแนนสะสม</span></div>
+    </div>
+    <div class="tiny" style="margin-top:10px">ตอบถูกติดกันสูงสุด ${st.bestStreak} ข้อ · ตอบต่อเนื่อง ${st.streak} วัน · คะแนนสูงสุดในหนึ่งรอบ ${st.best}</div>
+  </div>
+  ${sgRows ? `<div class="card">
+    <div class="eyebrow">แยกตามวิชาและระดับชั้น</div>
+    ${sgRows}
+  </div>` : ''}
+  ${unitRows ? `<div class="card">
+    <div class="eyebrow">ผลสัมฤทธิ์รายหน่วยการเรียนรู้</div>
+    <div class="sub">ลูกศรเทียบผลครึ่งหลังกับครึ่งแรกของ 40 ข้อล่าสุดในหน่วยนั้น ต้องตอบอย่างน้อย 10 ข้อจึงเริ่มแสดง</div>
+    <div class="gap" style="height:6px"></div>
+    ${unitRows}
+  </div>` : `<div class="card"><div class="eyebrow">ยังไม่มีข้อมูล</div>
+    <div class="sub">ตอบคำถามสักรอบแล้วกลับมาดูผลสัมฤทธิ์รายหน่วยได้ที่นี่</div></div>`}
+  ${weak.length ? `<div class="card">
+    <div class="eyebrow">ควรทบทวน</div>
+    <div class="list">${weak.map(x => `<div class="item">
+      <div class="ic">${ELEMENTS[UNITS[x.unit].el].g}</div>
+      <div class="grow"><b>${UNITS[x.unit].n}</b>
+        <div class="sub">${SUBJECTS[x.subj].short} ${GRADES[x.grade].n} · ทำได้ ${Math.round(x.pct)}%</div></div>
+    </div>`).join('')}</div>
+    <div class="tiny" style="margin-top:8px">ข้อที่ตอบผิดจะถูกนำกลับมาถามซ้ำเร็วขึ้นโดยอัตโนมัติ</div>
+  </div>` : ''}`;
+}
+
+/* ===================== ระบบตอบคำถาม ===================== */
+const QUIZ = {
+  running:false, subj:'mix', grade:null, idx:0, used:[], cur:null, units:{},
+  streak:0, pts:0, eggPts:0, correct:0, marks:[], len:ROUND_LEN,
+  startAt:0, limitMs:0, locked:false, chosen:-1, gained:null, tickId:null
+};
+
+function viewQuiz(){
+  if (QUIZ.running) return quizQuestionHtml();
+
+  const grade = QUIZ.grade || S.grade;
+  const ready = gradesReady();
+  const counts = {};
+  for (const k of SUBJ_KEYS) counts[k] = questionsBy(k, grade).length;
+  const total = questionsBy('mix', grade).length;
+  const avail = QUIZ.subj === 'mix' ? total : counts[QUIZ.subj];
+
+  const gradeChips = GRADE_KEYS.map(g => {
+    const n = questionsBy('mix', g).length;
+    return `<button class="chip ${g===grade?'on':''}" data-grade="${g}" ${n?'':'disabled'}>
+      ${GRADES[g].n} <span class="mono" style="font-size:11px;opacity:.7">${n}</span></button>`;
+  }).join('');
+
+  const subjChips = [`<button class="chip ${QUIZ.subj==='mix'?'on':''}" data-subj="mix" ${total?'':'disabled'}>
+      🎲 ผสมทุกวิชา <span class="mono" style="font-size:11px;opacity:.7">${total}</span></button>`]
+    .concat(SUBJ_KEYS.map(k => {
+      const code = SUBJECTS[k].code[grade];
+      return `<button class="chip ${QUIZ.subj===k?'on':''}" data-subj="${k}" ${counts[k]?'':'disabled'}>
+        ${SUBJECTS[k].g} ${SUBJECTS[k].short}${code?` <span class="tiny">${code}</span>`:''}
+        <span class="mono" style="font-size:11px;opacity:.7">${counts[k]}</span></button>`;
+    })).join('');
+
+  // หน่วยการเรียนรู้ที่มีในชุดนี้
+  const pool = questionsBy(QUIZ.subj, grade);
+  const unitSet = {};
+  for (const q of pool) unitSet[q.unit] = (unitSet[q.unit] || 0) + 1;
+  const unitLine = Object.keys(unitSet).length
+    ? `<div class="tiny" style="margin-top:8px">หน่วยที่จะสุ่มมา — ${Object.keys(unitSet)
+        .map(u => `${UNITS[u].n} (${unitSet[u]})`).join(' · ')}</div>` : '';
+
+  return `
+  ${stageBlock()}
+  <div class="card">
+    <div class="eyebrow">ระดับชั้น</div>
+    <div class="chips">${gradeChips}</div>
+    ${ready.length < GRADE_KEYS.length ? `<div class="tiny" style="margin-top:8px">ระดับชั้นที่ยังไม่มีคำถามจะกดไม่ได้ ครูเพิ่มคำถามได้ที่คลังคำถามด้านล่าง</div>` : ''}
+  </div>
+  <div class="card">
+    <div class="eyebrow">เลือกวิชา</div>
+    <h2>จะตอบเรื่องอะไรดี</h2>
+    <div class="sub">หน่วยการเรียนรู้ที่ตอบจะกำหนดธาตุของไข่ที่กำลังฟักอยู่</div>
+    <div class="gap"></div>
+    <div class="chips">${subjChips}</div>
+    ${unitLine}
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="startQuiz" ${avail?'':'disabled'}>
+      ${avail ? `เริ่มรอบ ${Math.min(ROUND_LEN, avail)} ข้อ` : 'ยังไม่มีคำถามในชุดนี้'}</button>
+    <div class="tiny" style="margin-top:8px">
+      ตอบถูกได้คะแนนเต็มเสมอ ตอบเร็วได้โบนัสเพิ่มสูงสุด 50% และตอบถูกติดกันจะได้ตัวคูณสูงสุด ×2
+    </div>
+  </div>
+  <div class="card">
+    <div class="eyebrow">คลังคำถาม</div>
+    <div class="row spread">
+      <div class="grow"><b>${allQuestions().length} ข้อทั้งหมด</b>
+        <div class="sub">เพิ่มคำถามเอง หรือนำเข้าจาก Google Sheets ได้</div></div>
+      <button class="btn" data-act="qbank">จัดการ</button>
+    </div>
+  </div>`;
+}
+
+function quizQuestionHtml(){
+  const q = QUIZ.cur;
+  const d = DIFF[q.diff];
+  const dots = Array.from({length:QUIZ.len}, (_,i) => {
+    const m = QUIZ.marks[i];
+    return `<i class="${i===QUIZ.idx?'now':(m===1?'ok':(m===0?'no':''))}"></i>`;
+  }).join('');
+
+  const choices = q.ch.map((c, i) => {
+    let cls = '';
+    if (QUIZ.locked){
+      if (i === q.ans) cls = 'right';
+      else if (i === QUIZ.chosen) cls = 'wrong';
+    }
+    return `<button class="ch ${cls}" data-ans="${i}" ${QUIZ.locked?'disabled':''}>
+      <span class="k">${'กขคง'[i]}</span><span>${esc(c)}</span></button>`;
+  }).join('');
+
+  let after = '';
+  if (QUIZ.locked){
+    const ok = QUIZ.chosen === q.ans;
+    const g = QUIZ.gained;
+    after = `<div class="expl" style="border-left-color:${ok?'var(--glaze)':'var(--bad)'}">
+      <b>${ok ? `ถูกต้อง +${g.pts} คะแนน` : 'ยังไม่ใช่ คำตอบคือ ' + 'กขคง'[q.ans]}</b>
+      ${ok && (g.speed > 0.02 || g.mult > 1) ? `<div class="tiny" style="margin-top:2px">ฐาน ${g.base} · เร็ว +${Math.round(g.speed*100)}% · ต่อเนื่อง ×${g.mult.toFixed(1)}${g.repeat<1?' · ข้อซ้ำวันนี้ ×'+g.repeat:''}</div>` : ''}
+      ${q.exp ? `<div style="margin-top:6px">${esc(q.exp)}</div>` : ''}
+      ${!ok ? `<div class="tiny" style="margin-top:6px;color:var(--glaze-lt)">อ่านคำอธิบายแล้วได้ประสบการณ์เล็กน้อย ข้อนี้จะกลับมาถามอีกเร็วๆ นี้</div>` : ''}
+    </div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="nextQ">${QUIZ.idx + 1 >= QUIZ.len ? 'จบรอบ' : 'ข้อถัดไป'}</button>`;
+  }
+
+  return `
+  ${stageBlock()}
+  <div class="card">
+    <div class="qmeta">
+      <span>ข้อ ${QUIZ.idx+1}/${QUIZ.len} · ${SUBJECTS[q.subj].g} ${GRADES[q.grade].n}
+        · ${UNITS[q.unit].n} · <span style="color:${d.c}">${d.n}</span></span>
+      <span>${S.settings.timed && !QUIZ.locked ? `<span id="qclock">${Math.ceil(Math.max(0,QUIZ.limitMs-(Date.now()-QUIZ.startAt))/1000)} วิ</span>` : ''}
+        ${QUIZ.streak > 1 ? `<span class="combo">🔥 ${QUIZ.streak}</span>` : ''}</span>
+    </div>
+    <div class="dots" style="margin-bottom:10px">${dots}</div>
+    <div class="qtext">${esc(q.q)}</div>
+    <div class="choices">${choices}</div>
+    ${after}
+  </div>
+  <div class="card">
+    <div class="row spread">
+      <span class="sub">คะแนนรอบนี้</span><b class="mono" style="font-size:19px">${QUIZ.pts}</b>
+    </div>
+    ${QUIZ.locked ? '' : '<div class="gap"></div><button class="btn sm danger block" data-act="quitQuiz">ออกจากรอบนี้</button>'}
+  </div>`;
+}
+
+function startQuiz(){
+  QUIZ.grade = QUIZ.grade || S.grade;
+  const avail = questionsBy(QUIZ.subj, QUIZ.grade).length;
+  if (!avail) return toast('วิชานี้ยังไม่มีคำถามในคลัง', 'bad');
+  QUIZ.running = true; QUIZ.idx = 0; QUIZ.used = []; QUIZ.streak = 0;
+  QUIZ.pts = 0; QUIZ.eggPts = 0; QUIZ.correct = 0; QUIZ.marks = []; QUIZ.units = {};
+  QUIZ.len = Math.min(ROUND_LEN, avail);
+  nextQuestion();
+}
+
+function nextQuestion(){
+  const q = pickQuestion(QUIZ.subj, QUIZ.grade, QUIZ.used);
+  if (!q){ return finishQuiz(); }
+  QUIZ.used.push(q.id);
+  // สลับตัวเลือกไม่ให้จำตำแหน่ง
+  let cur = q;
+  if (S.settings.shuffle){
+    const order = q.ch.map((c,i) => i).sort(() => Math.random() - .5);
+    cur = Object.assign({}, q, {
+      ch: order.map(i => q.ch[i]),
+      ans: order.indexOf(q.ans)
+    });
+  }
+  QUIZ.cur = cur;
+  QUIZ.locked = false; QUIZ.chosen = -1; QUIZ.gained = null;
+  QUIZ.limitMs = S.settings.timed ? DIFF[cur.diff].sec * 1000 : 0;
+  QUIZ.startAt = Date.now();
+  View.focusing = true; View.progress = 0; View.drift = false;
+  clearInterval(QUIZ.tickId);
+  if (QUIZ.limitMs) QUIZ.tickId = setInterval(quizTick, 120);
+  render();
+}
+
+function quizTick(){
+  if (!QUIZ.running || QUIZ.locked || !QUIZ.limitMs) return;
+  const left = QUIZ.limitMs - (Date.now() - QUIZ.startAt);
+  View.progress = clamp(1 - left / QUIZ.limitMs, 0, 1);
+  View.drift = left < QUIZ.limitMs * 0.25;
+  const c = document.getElementById('qclock');
+  if (c){
+    c.textContent = Math.max(0, Math.ceil(left/1000)) + ' วิ';
+    c.classList.toggle('low', left < QUIZ.limitMs * 0.25);
+  }
+  if (left <= 0) answerQuestion(-1);
+}
+
+function answerQuestion(i){
+  if (QUIZ.locked) return;
+  clearInterval(QUIZ.tickId);
+  const q = QUIZ.cur;
+  const correct = i === q.ans;
+  const left = QUIZ.limitMs ? Math.max(0, QUIZ.limitMs - (Date.now() - QUIZ.startAt)) : 0;
+
+  QUIZ.chosen = i;
+  QUIZ.locked = true;
+  QUIZ.gained = scoreAnswer(q, correct, left, QUIZ.limitMs, QUIZ.streak);
+  QUIZ.marks[QUIZ.idx] = correct ? 1 : 0;
+
+  if (correct){
+    QUIZ.pts += QUIZ.gained.pts;
+    QUIZ.eggPts += QUIZ.gained.base;      // ไข่โตจากคะแนนฐานอย่างเดียว
+    QUIZ.units[q.unit] = (QUIZ.units[q.unit] || 0) + QUIZ.gained.base;
+    QUIZ.correct++;
+    QUIZ.streak++;
+    S.stats.bestStreak = Math.max(S.stats.bestStreak, QUIZ.streak);
+    if (S.pet){
+      const p = S.pet;
+      if (q.diff >= 3) p.care.mind += 2;
+      else if (QUIZ.gained.speed > 0.3) p.care.play += 1;
+      else p.care.mind += 1;
+    }
+  } else {
+    QUIZ.streak = 0;
+    if (S.pet) S.pet.mood = clamp(S.pet.mood - 2, 0, 100);
+  }
+  recordAnswer(q, correct);
+  S.stats.answered++;
+  if (correct) S.stats.correct++;
+  View.drift = false;
+  View.progress = correct ? 1 : View.progress;
+  save(); render();
+}
+
+function advanceQuiz(){
+  if (!QUIZ.locked) return;
+  if (!QUIZ.marks[QUIZ.idx] && S.pet) gainXp(3);   // อ่านคำอธิบายหลังตอบผิด
+  QUIZ.idx++;
+  if (QUIZ.idx >= QUIZ.len) return finishQuiz();
+  nextQuestion();
+}
+
+function finishQuiz(){
+  clearInterval(QUIZ.tickId);
+  QUIZ.running = false;
+  View.focusing = false; View.drift = false; View.progress = 0;
+
+  const b = roomBonus();
+  const pts = QUIZ.pts;
+  const answered = QUIZ.marks.length;
+  const acc = answered ? QUIZ.correct / answered : 0;
+  const perfect = answered > 0 && QUIZ.correct === answered && answered === QUIZ.len;
+
+  const xp = Math.round(pts * 0.6 * (1 + b.focusXp));
+  const coin = Math.round(pts * 0.35 * (1 + b.coin));
+  const aff = Math.round(pts / 40 * (1 + b.aff));
+  let lv = 0;
+
+  if (S.pet){
+    lv = gainXp(xp).levels;
+    S.pet.aff = clamp(S.pet.aff + aff, 0, 100);
+    S.pet.mood = clamp(S.pet.mood + (acc >= .7 ? 6 : 2), 0, 100);
+    S.pet.hunger = clamp(S.pet.hunger - 2, 0, 100);
+  }
+  S.coins += coin;
+  S.stats.points += pts;
+  S.stats.rounds++;
+  S.stats.best = Math.max(S.stats.best, pts);
+
+  // ต่อเนื่องรายวัน
+  const t = todayKey();
+  if (S.stats.lastDay !== t){
+    const y = new Date(Date.now() - 86400000);
+    const yk = `${y.getFullYear()}-${y.getMonth()+1}-${y.getDate()}`;
+    S.stats.streak = (S.stats.lastDay === yk) ? S.stats.streak + 1 : 1;
+    S.stats.lastDay = t;
+  }
+
+  // ผลึกสมาธิ
+  const cr = Math.floor(QUIZ.correct / 4) + (perfect ? 2 : 0);
+  if (cr > 0) S.crystals += cr;
+
+  // ของติดมือ
+  const got = [];
+  const pool = ['leaf','leaf','berry','clay','bamboo','ricecake','shard'];
+  for (let i=0;i<QUIZ.correct;i++){
+    if (Math.random() < .30 + b.exploreLuck){ const k = pick(pool); addItem(k); got.push(ITEMS[k].n); }
+  }
+  if (perfect && Math.random() < .25 + b.exploreLuck){
+    const k = pick(['stone_b','stone_m','stone_p']); addItem(k); got.push(ITEMS[k].n);
+  }
+
+  // ป้อนคะแนนให้ไข่
+  let hatchReady = false;
+  if (S.egg && QUIZ.eggPts > 0) hatchReady = eggAddPoints(QUIZ.eggPts, QUIZ.units);
+
+  save(); render();
+  sheet(quizResultSheet(pts, acc, perfect, xp, coin, aff, cr, got, lv, hatchReady));
+}
+
+function quizResultSheet(pts, acc, perfect, xp, coin, aff, cr, got, lv, hatchReady){
+  const line = (g, t, s2) => `<div class="item"><div class="ic">${g}</div><div class="grow"><b>${t}</b>${s2?`<div class="sub">${s2}</div>`:''}</div></div>`;
+  return `<div class="eyebrow">จบรอบ</div>
+  <h2>${perfect ? 'ถูกหมดทั้งรอบ' : `ตอบถูก ${QUIZ.correct} จาก ${QUIZ.marks.length} ข้อ`}</h2>
+  <div class="sub">ความแม่นยำ ${Math.round(acc*100)}% · คะแนนรวม ${pts}${pts > S.stats.best - pts ? '' : ''}</div>
+  <div class="gap"></div>
+  <div class="list">
+    ${S.pet ? line('⭐', `ประสบการณ์ +${xp}`, lv ? `เลื่อนขึ้น ${lv} เลเวล เป็น Lv.${S.pet.lv}` : '') : ''}
+    ${line('🪙', `เหรียญ +${coin}`)}
+    ${cr ? line('💠', `ผลึกสมาธิ +${cr}`, perfect ? 'โบนัสตอบถูกหมดทั้งรอบ' : '') : ''}
+    ${S.pet ? line('💞', `ความสนิท +${aff}`) : ''}
+    ${got.length ? line('🎁', 'ได้รับ', got.join(' · ')) : ''}
+    ${S.egg ? line('🥚', `ไข่ได้รับ +${QUIZ.eggPts} คะแนนฐาน`, `${Math.min(S.egg.pts,S.egg.need)}/${S.egg.need}`) : ''}
+    ${S.stats.streak > 1 ? line('🔥', `ตอบต่อเนื่อง ${S.stats.streak} วัน`) : ''}
+  </div>
+  <div class="gap"></div>
+  ${hatchReady ? `<button class="btn gold block" data-act="hatch">ไข่พร้อมฟักแล้ว</button><div class="gap"></div>` : ''}
+  <button class="btn pri block" data-act="closeSheet">ปิด</button>`;
+}
+
+/* ===================== ไข่ ===================== */
+function openEgg(key){
+  if (S.egg) return toast('มีไข่ที่กำลังฟักอยู่แล้ว ต้องฟักใบนี้ให้เสร็จก่อน', 'bad');
+  if (!(S.bag[key] > 0)) return toast('ไม่มีไข่ใบนี้', 'bad');
+  S.bag[key]--; if (!S.bag[key]) delete S.bag[key];
+  startEgg(ITEMS[key].tier);
+  save(); render();
+  toast(`เริ่มฟัก${ITEMS[key].n}แล้ว ตอบคำถามเพื่อสะสมคะแนน`, 'gold');
+}
+
+function doHatch(){
+  if (!S.egg || S.egg.pts < S.egg.need) return toast('คะแนนยังไม่ถึง', 'bad');
+  if (S.pet && gardenCount() + 1 >= GARDEN_MAX)
+    return toast(`สวนเต็ม ${GARDEN_MAX} ตัวแล้ว ปล่อยตัวใดตัวหนึ่งก่อน`, 'bad');
+
+  const chaos = Math.random() < CHAOS_CHANCE;
+  const sp = hatchRoll(chaos);
+  const topUnit = eggTopUnit();
+  S.egg = null;
+  const first = !S.pet;
+  if (!first) stashActive();
+  S.pet = newPet(sp);
+  unlockForm();
+  save(); render();
+
+  const R = RARITY[SPECIES[sp].rarity];
+  sheet(`<div class="eyebrow">ไข่ฟักแล้ว</div>
+    <h2 style="color:${SPECIES[sp].accent}">${SPECIES[sp].name} ${R.star}</h2>
+    <div class="sub">${SPECIES[sp].desc}</div>
+    <div class="gap"></div>
+    <div class="list">
+      <div class="item"><div class="ic" style="background:${SPECIES[sp].dim};border-color:${SPECIES[sp].a(.4)}">${SPECIES[sp].g}</div>
+        <div class="grow"><b>ธาตุ${SPECIES[sp].el} · ${R.n}</b>
+          <div class="sub">เด่น ${SPECIES[sp].main} · รอง ${SPECIES[sp].sub}</div>
+          ${chaos
+            ? `<div class="tiny" style="color:var(--gold)">ธาตุแปรปรวน — ไข่ใบนี้เลือกธาตุเองโดยไม่สนหน่วยที่ตอบ</div>`
+            : (topUnit ? `<div class="tiny">ธาตุนี้มาจากการตอบหน่วย "${UNITS[topUnit].n}" เป็นหลัก</div>` : '')}
+        </div></div>
+    </div>
+    <div class="gap"></div>
+    <input id="nameIn" maxlength="14" value="${esc(S.pet.name)}" class="fld" placeholder="ตั้งชื่อ">
+    <button class="btn pri block" data-act="saveName">เริ่มเลี้ยง</button>`);
+}
+
+/* ===================== คลังคำถาม ===================== */
+function qbankSheet(){
+  const custom = S.qcustom || [];
+  const off = Object.keys(S.qoff || {}).length;
+  const rows = [];
+  for (const k of SUBJ_KEYS){
+    for (const g of gradesOf(k)){
+      const n = questionsBy(k, g).length;
+      const mine = custom.filter(q => q.subj === k && q.grade === g).length;
+      rows.push(`<div class="item">
+        <div class="ic">${SUBJECTS[k].g}</div>
+        <div class="grow"><b>${SUBJECTS[k].short} ${GRADES[g].n}</b>
+          <div class="sub">${SUBJECTS[k].code[g]} · ${n} ข้อ${mine?` · เพิ่มเอง ${mine}`:''}${n?'':' · ยังไม่มีคำถาม'}</div></div>
+        ${n ? `<button class="btn sm" data-qlist="${k}:${g}">ดู</button>` : '<span class="pill">ว่าง</span>'}
+      </div>`);
+    }
+  }
+  sheet(`<div class="eyebrow">คลังคำถาม · ${allQuestions().length} ข้อ</div>
+    <h2>จัดการคำถาม</h2>
+    <div class="sub">คำถามที่เพิ่มเองบันทึกไว้ในเครื่องพร้อมกับเซฟเกม${off?` · ปิดใช้อยู่ ${off} ข้อ`:''}</div>
+    <div class="gap"></div>
+    <div class="list">${rows.join('')}</div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="qadd">เพิ่มคำถามใหม่</button>
+    <div class="gap"></div>
+    <button class="btn block" data-act="qimport">นำเข้าจาก CSV</button>
+    <div class="gap"></div>
+    <button class="btn block" data-act="qexport">ส่งออกเป็น CSV</button>
+    <div class="gap"></div>
+    <button class="btn block" data-act="closeSheet">ปิด</button>`);
+}
+
+function qlistSheet(tag){
+  const [subj, grade] = tag.split(':');
+  const list = questionsBy(subj, grade);
+  const byUnit = {};
+  for (const q of list) (byUnit[q.unit] = byUnit[q.unit] || []).push(q);
+  sheet(`<div class="eyebrow">${SUBJECTS[subj].g} ${SUBJECTS[subj].short} ${GRADES[grade].n}</div>
+    <h2>${list.length} ข้อ</h2>
+    <div class="gap"></div>
+    ${Object.keys(byUnit).map(u => `
+      <div class="eyebrow" style="margin-top:10px">${UNITS[u].n} · ${byUnit[u].length} ข้อ</div>
+      <div class="list">${byUnit[u].map(q => `<div class="item">
+        <div class="ic" style="font-size:11px;color:${DIFF[q.diff].c};text-align:center;line-height:1.2">${DIFF[q.diff].n}</div>
+        <div class="grow"><b style="font-size:13px;font-weight:400">${esc(q.q)}</b>
+          <div class="tiny">เฉลย ${'กขคง'[q.ans]} · ${esc(q.ch[q.ans])}${(S.qstate&&S.qstate[q.id])?` · ถูก ${S.qstate[q.id].right} ผิด ${S.qstate[q.id].wrong} · กล่อง ${S.qstate[q.id].box}`:''}</div></div>
+        <button class="btn sm danger" data-qdel="${q.id}">${q.built?'ปิด':'ลบ'}</button>
+      </div>`).join('')}</div>`).join('')}
+    <div class="gap"></div>
+    <button class="btn block" data-act="qbank">ย้อนกลับ</button>`);
+}
+
+let QADD_ANS = 0;
+function unitsOf(subj){ return Object.keys(UNITS).filter(u => UNITS[u].subj === subj); }
+
+function qaddSheet(){
+  const subj = SUBJ_KEYS[0];
+  sheet(`<div class="eyebrow">เพิ่มคำถาม</div><h2>คำถามใหม่</h2>
+    <div class="gap"></div>
+    <select id="qsubj" class="fld">${SUBJ_KEYS.map(k=>`<option value="${k}">${SUBJECTS[k].n}</option>`).join('')}</select>
+    <select id="qgrade" class="fld">${GRADE_KEYS.map(g=>`<option value="${g}" ${g===S.grade?'selected':''}>${GRADES[g].n}</option>`).join('')}</select>
+    <select id="qunit" class="fld">${Object.keys(UNITS).map(u=>`<option value="${u}" data-s="${UNITS[u].subj}">${SUBJECTS[UNITS[u].subj].short} — ${UNITS[u].n}</option>`).join('')}</select>
+    <select id="qdiff" class="fld">${[1,2,3,4].map(d=>`<option value="${d}" ${d===2?'selected':''}>${DIFF[d].n} · ${DIFF[d].pt} คะแนน · ${DIFF[d].sec} วิ</option>`).join('')}</select>
+    <textarea id="qtext" class="fld" placeholder="โจทย์"></textarea>
+    ${[0,1,2,3].map(i=>`<div class="row" style="gap:8px;margin-bottom:8px">
+      <button class="btn sm" data-pick="${i}" id="pk${i}" style="width:44px">${'กขคง'[i]}</button>
+      <input id="qc${i}" class="fld" style="margin:0" placeholder="ตัวเลือก ${'กขคง'[i]}">
+    </div>`).join('')}
+    <div class="tiny" style="margin-bottom:8px">แตะตัวอักษรหน้าตัวเลือกเพื่อกำหนดคำตอบที่ถูก (ตอนนี้เลือก <span id="ansNow">ก</span>)</div>
+    <textarea id="qexp" class="fld" placeholder="คำอธิบายเฉลย (ไม่ใส่ก็ได้)"></textarea>
+    <button class="btn pri block" data-act="qsave">บันทึกคำถาม</button>
+    <div class="gap"></div>
+    <button class="btn block" data-act="qbank">ยกเลิก</button>`);
+  QADD_ANS = 0; markPick();
+}
+function markPick(){
+  for (let i=0;i<4;i++){
+    const el = document.getElementById('pk'+i);
+    if (el) el.classList.toggle('on', i === QADD_ANS);
+  }
+  const a = document.getElementById('ansNow');
+  if (a) a.textContent = 'กขคง'[QADD_ANS];
+}
+
+function qsave(){
+  const subj = document.getElementById('qsubj').value;
+  const grade = document.getElementById('qgrade').value;
+  const unit = document.getElementById('qunit').value;
+  const diff = +document.getElementById('qdiff').value;
+  const q = document.getElementById('qtext').value.trim();
+  const ch = [0,1,2,3].map(i => document.getElementById('qc'+i).value.trim());
+  const exp = document.getElementById('qexp').value.trim();
+  if (!q) return toast('ยังไม่ได้ใส่โจทย์', 'bad');
+  if (ch.some(c => !c)) return toast('ต้องใส่ตัวเลือกให้ครบทั้ง 4 ข้อ', 'bad');
+  if (UNITS[unit].subj !== subj) return toast('หน่วยการเรียนรู้ไม่ตรงกับวิชาที่เลือก', 'bad');
+  if (!SUBJECTS[subj].code[grade]) return toast(`วิชา${SUBJECTS[subj].short}ไม่ได้สอนในระดับ ${GRADES[grade].n}`, 'bad');
+  S.qcustom = S.qcustom || [];
+  S.qcustom.push({ id:'c' + Date.now().toString(36), subj, grade, unit, diff, q, ch, ans:QADD_ANS, exp });
+  save(); render(); toast('บันทึกคำถามแล้ว');
+  qbankSheet();
+}
+
+/* ---- CSV ---- */
+function csvEscape(v){
+  v = String(v == null ? '' : v);
+  return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+function parseCSV(text){
+  const rows = []; let row = [], cell = '', q = false;
+  for (let i=0;i<text.length;i++){
+    const c = text[i];
+    if (q){
+      if (c === '"'){ if (text[i+1] === '"'){ cell += '"'; i++; } else q = false; }
+      else cell += c;
+    } else if (c === '"') q = true;
+    else if (c === ',' || c === '\t'){ row.push(cell); cell = ''; }
+    else if (c === '\n'){ row.push(cell); cell = ''; if (row.some(x => x.trim() !== '')) rows.push(row); row = []; }
+    else if (c !== '\r') cell += c;
+  }
+  row.push(cell);
+  if (row.some(x => x.trim() !== '')) rows.push(row);
+  return rows;
+}
+const SUBJ_BY_NAME = {};
+for (const k of SUBJ_KEYS){
+  SUBJ_BY_NAME[SUBJECTS[k].n] = k; SUBJ_BY_NAME[SUBJECTS[k].short] = k; SUBJ_BY_NAME[k] = k;
+  for (const g in SUBJECTS[k].code) SUBJ_BY_NAME[SUBJECTS[k].code[g]] = k;
+}
+const GRADE_BY_NAME = {};
+for (const g of GRADE_KEYS){ GRADE_BY_NAME[GRADES[g].n] = g; GRADE_BY_NAME[g] = g; GRADE_BY_NAME[GRADES[g].n.replace('.','')] = g; }
+const UNIT_BY_NAME = {};
+for (const u in UNITS){ UNIT_BY_NAME[UNITS[u].n] = u; UNIT_BY_NAME[u] = u; }
+const DIFF_BY_NAME = {'ง่าย':1,'ปานกลาง':2,'กลาง':2,'ยาก':3,'ท้าทาย':4,'1':1,'2':2,'3':3,'4':4};
+
+function qimportSheet(){
+  sheet(`<div class="eyebrow">นำเข้าคำถาม</div><h2>วางข้อมูลจาก CSV</h2>
+    <div class="sub">คัดลอกจาก Google Sheets แล้ววางลงช่องนี้ได้เลย รองรับทั้งคั่นด้วยจุลภาคและแท็บ</div>
+    <div class="gap"></div>
+    <div class="tiny" style="margin-bottom:8px">ลำดับคอลัมน์ — <b>วิชา, ระดับชั้น, หน่วยการเรียนรู้, ความยาก, โจทย์, ก, ข, ค, ง, เฉลย(1-4), คำอธิบาย</b><br>
+    วิชาใช้ชื่อไทยหรือรหัสวิชา (เช่น ส15102) · ระดับชั้นใช้ ป.5 หรือ ม.1 · ความยากใช้ ง่าย/ปานกลาง/ยาก/ท้าทาย หรือเลข 1-4 · ถ้าเว้นหน่วยว่างไว้ระบบจะใส่หน่วยแรกของวิชานั้นให้ · แถวหัวตารางระบบข้ามให้เอง</div>
+    <div class="tiny" style="margin-bottom:8px">หน่วยที่ใช้ได้ — ${Object.keys(UNITS).map(u=>UNITS[u].n).join(' · ')}</div>
+    <textarea id="csvIn" class="fld" style="min-height:150px;font-size:13px" placeholder="ประวัติศาสตร์,ป.5,พัฒนาการของอาณาจักร,ง่าย,กรุงศรีอยุธยาสถาปนาปีใด,1893,1782,2112,1238,1,สถาปนา พ.ศ. 1893"></textarea>
+    <button class="btn pri block" data-act="qdoimport">นำเข้า</button>
+    <div class="gap"></div>
+    <button class="btn block" data-act="qbank">ย้อนกลับ</button>`);
+}
+
+function qdoimport(){
+  const txt = document.getElementById('csvIn').value;
+  if (!txt.trim()) return toast('ยังไม่ได้วางข้อมูล', 'bad');
+  const rows = parseCSV(txt);
+  let added = 0, skipped = 0;
+  S.qcustom = S.qcustom || [];
+  for (const r of rows){
+    if (r.length < 10){ skipped++; continue; }
+    const subj = SUBJ_BY_NAME[(r[0]||'').trim()];
+    const grade = GRADE_BY_NAME[(r[1]||'').trim()];
+    let unit = UNIT_BY_NAME[(r[2]||'').trim()];
+    const diff = DIFF_BY_NAME[(r[3]||'').trim()];
+    const q = (r[4]||'').trim();
+    const ch = [r[5],r[6],r[7],r[8]].map(x => (x||'').trim());
+    const ans = parseInt((r[9]||'').trim(), 10) - 1;
+    if (!subj || !grade || !diff || !q || ch.some(c => !c) || !(ans >= 0 && ans <= 3)){ skipped++; continue; }
+    if (!unit || UNITS[unit].subj !== subj) unit = unitsOf(subj)[0];
+    if (!SUBJECTS[subj].code[grade]){ skipped++; continue; }
+    S.qcustom.push({ id:'c' + Date.now().toString(36) + added, subj, grade, unit, diff, q, ch, ans, exp:(r[10]||'').trim() });
+    added++;
+  }
+  save();
+  if (!added) return toast(`นำเข้าไม่สำเร็จ ตรวจลำดับคอลัมน์อีกครั้ง (ข้าม ${skipped} แถว)`, 'bad');
+  render();
+  toast(`นำเข้า ${added} ข้อ${skipped?` · ข้าม ${skipped} แถว`:''}`, 'gold');
+  qbankSheet();
+}
+
+function qexport(){
+  const head = ['วิชา','ระดับชั้น','หน่วยการเรียนรู้','ความยาก','โจทย์','ก','ข','ค','ง','เฉลย','คำอธิบาย'];
+  const lines = [head.join(',')];
+  for (const q of allQuestions()){
+    lines.push([SUBJECTS[q.subj].n, GRADES[q.grade].n, UNITS[q.unit].n, DIFF[q.diff].n,
+      q.q, q.ch[0], q.ch[1], q.ch[2], q.ch[3], q.ans+1, q.exp].map(csvEscape).join(','));
+  }
+  const blob = new Blob(['\ufeff' + lines.join('\n')], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `คลังคำถาม-${allQuestions().length}ข้อ.csv`; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  toast('ส่งออกไฟล์ CSV แล้ว');
+}
+
+/* ===================== ระบบสำรวจ ===================== */
+function viewExplore(){
+  const p = S.pet;
+  if (!p) return `<div class="card"><div class="eyebrow">สำรวจ</div>
+    <h2>ยังไม่มีวิญญาณที่จะส่งไป</h2>
+    <div class="sub">ตอบคำถามให้ไข่ฟักก่อน แล้วค่อยออกสำรวจ</div></div>`;
+  if (S.explore){
+    const z = ZONES.find(x => x.id === S.explore.zone);
+    const left = S.explore.endAt - Date.now();
+    const done = left <= 0;
+    const prog = clamp(1 - left / (z.min * 60000), 0, 1);
+    return `<div class="card">
+      <div class="eyebrow">กำลังสำรวจ</div>
+      <h2>${z.g} ${z.n}</h2>
+      <div class="sub">${done ? `${esc(p.name)}กลับมาถึงบ้านแล้ว` : `เหลืออีก ${fmtLeft(left)}`}</div>
+      <div class="gap"></div>
+      <div class="bar xp" style="height:8px"><i style="width:${prog*100}%"></i></div>
+      <div class="gap"></div>
+      ${done ? `<button class="btn pri block" data-act="collect">รับของที่เก็บมา</button>`
+             : `<button class="btn block" data-act="recall">เรียกกลับก่อน (ได้ของครึ่งเดียว)</button>`}
+      <div class="tiny" style="margin-top:8px">ระหว่างสำรวจยังตอบคำถามต่อได้ตามปกติ เวลาเดินจริงแม้ปิดเกม</div>
+    </div>`;
+  }
+  const busy = p.hp < 30 ? 'สุขภาพต่ำเกินไป ต้องรักษาก่อน' : (p.hunger < 10 ? 'หิวเกินกว่าจะออกไปไหน' : '');
+  return `<div class="card">
+    <div class="eyebrow">สำรวจ</div>
+    <h2>ส่ง${esc(p.name)}ออกไปหาของ</h2>
+    <div class="sub">${busy || 'เวลาเดินจริง ปิดเกมได้ กลับมาค่อยเก็บของ'}</div>
+  </div>
+  <div class="list">
+    ${ZONES.map(z => {
+      const lock = p.lv < z.lv;
+      const ok = !lock && !busy;
+      return `<div class="item">
+        <div class="ic">${z.g}</div>
+        <div class="grow"><b>${z.n}</b><div class="sub">${z.d}</div>
+          <div class="tiny" style="margin-top:3px">${z.min} นาที · ความเสี่ยง ${Math.round(z.risk*100)}% · ต้อง Lv.${z.lv}</div></div>
+        <button class="btn sm ${ok?'pri':''}" data-go="${z.id}" ${ok?'':'disabled'}>${lock?'ล็อก':'ส่งไป'}</button>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function startExplore(id){
+  const z = ZONES.find(x => x.id === id);
+  S.explore = { zone:id, endAt: Date.now() + z.min * 60000 };
+  save(); render();
+  toast(`${S.pet.name}ออกเดินทางไป${z.n}แล้ว`);
+}
+
+function collectExplore(half){
+  const z = ZONES.find(x => x.id === S.explore.zone);
+  const p = S.pet, b = roomBonus();
+  S.explore = null;
+  const luck = 1 + b.exploreLuck + p.stats.LUK / 120;
+  const got = [];
+  for (const [key, chance] of z.loot){
+    if (Math.random() < chance * luck * (half ? .5 : 1)){
+      const n = 1 + (Math.random() < .18 ? 1 : 0);
+      addItem(key, n); got.push(`${ITEMS[key].n}${n>1?' ×'+n:''}`);
+    }
+  }
+  const xp = Math.round(z.min * 2.2 * (half ? .5 : 1));
+  const lv = gainXp(xp).levels;
+  S.coins += Math.round(z.min * (half ? .6 : 1.2));
+  p.hunger = clamp(p.hunger - z.min / 10, 0, 100);
+  p.care.body += 1;
+
+  let hurt = 0;
+  const dodge = (p.stats.AGI + p.stats.VIT) / 200;
+  if (!half && Math.random() < Math.max(.02, z.risk - dodge)){
+    hurt = Math.round(12 + Math.random() * 22);
+    p.hp = clamp(p.hp - hurt, 1, 100);
+    if (p.hp < 30) p.sick = true;
+  }
+  save(); render();
+  sheet(`<div class="eyebrow">กลับจาก${z.n}</div>
+    <h2>${got.length ? 'เก็บของมาได้' : 'ไม่เจออะไรเลย'}</h2>
+    <div class="sub">${got.length ? got.join(' · ') : 'บางวันก็เป็นแบบนี้ ลองใหม่คราวหน้า'}</div>
+    <div class="gap"></div>
+    <div class="list">
+      <div class="item"><div class="ic">⭐</div><div class="grow"><b>ประสบการณ์ +${xp}</b>${lv?`<div class="sub">เลื่อนเป็น Lv.${p.lv}</div>`:''}</div></div>
+      ${hurt?`<div class="item"><div class="ic">🩹</div><div class="grow"><b>บาดเจ็บ −${hurt} สุขภาพ</b><div class="sub">ใช้ยาหม่องหรือพาพักก่อนออกไปอีก</div></div></div>`:''}
+    </div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="closeSheet">ปิด</button>`);
+}
+
+/* ===================== มินิเกม ===================== */
+const RPS = [{k:'rock',n:'ค้อน',g:'✊'},{k:'paper',n:'กระดาษ',g:'✋'},{k:'sci',n:'กรรไกร',g:'✌️'}];
+function playSheet(){
+  const left = 8 - S.daily.plays;
+  sheet(`<div class="eyebrow">เล่นด้วยกัน</div>
+    <h2>เป่ายิงฉุบกับ${esc(S.pet.name)}</h2>
+    <div class="sub">${left > 0 ? `วันนี้ยังได้รางวัลอีก ${left} ครั้ง` : 'วันนี้ครบโควตารางวัลแล้ว เล่นได้แต่ไม่ได้ของ'}</div>
+    <div class="gap"></div>
+    <div class="row" style="gap:8px">
+      ${RPS.map(r => `<button class="btn grow" data-rps="${r.k}" style="font-size:26px;padding:16px 0">${r.g}<div style="font-size:12px">${r.n}</div></button>`).join('')}
+    </div>
+    <div id="rpsout" class="gap"></div>
+    <button class="btn block" data-act="closeSheet">พอแล้ว</button>`);
+}
+function doRps(k){
+  const mine = RPS.find(r => r.k === k), theirs = pick(RPS);
+  const beats = {rock:'sci', paper:'rock', sci:'paper'};
+  const p = S.pet;
+  let res, coin = 0;
+  if (mine.k === theirs.k) res = 'เสมอ';
+  else if (beats[mine.k] === theirs.k) res = 'คุณชนะ';
+  else res = `${p.name}ชนะ`;
+  p.care.play += 1;
+  if (S.daily.plays < 8){
+    S.daily.plays++;
+    coin = res === 'เสมอ' ? 8 : (res === 'คุณชนะ' ? 18 : 12);
+    S.coins += coin;
+    p.mood = clamp(p.mood + 6, 0, 100);
+    p.aff = clamp(p.aff + 1 * (1 + roomBonus().aff), 0, 100);
+    gainXp(8);
+  } else p.mood = clamp(p.mood + 2, 0, 100);
+  const out = document.getElementById('rpsout');
+  if (out) out.innerHTML = `<div class="item"><div class="ic">${theirs.g}</div>
+    <div class="grow"><b>${res}</b><div class="sub">${p.name}ออก${theirs.n}${coin?` · เหรียญ +${coin} · อารมณ์ +6`:''}</div></div></div>`;
+  save(); paintTop();
+}
+
+/* ===================== สวน ===================== */
+function gardenSheet(){
+  const g = S.garden || [], p = S.pet;
+  const row = (pet, i) => {
+    const sp = SPECIES[pet.sp];
+    return `<div class="item">
+      <div class="ic" style="background:${sp.dim};border-color:${sp.a(.4)}">${sp.g}</div>
+      <div class="grow">
+        <b>${esc(pet.name)}</b>
+        <span class="pill" style="margin-left:6px;color:${RARITY[sp.rarity].c};border-color:${RARITY[sp.rarity].c}55">${RARITY[sp.rarity].star}</span>
+        <div class="sub">${formName(pet.sp, pet.stage, pet.branch)} · Lv.${pet.lv}</div>
+        <div class="tiny">พลังรวม ${petPower(pet)} · อิ่ม ${Math.round(pet.hunger)} · อารมณ์ ${Math.round(pet.mood)}</div>
+      </div>
+      ${i < 0 ? `<span class="pill">กำลังเลี้ยง</span>` : `<div style="text-align:right">
+        <button class="btn sm pri" data-swap="${i}">สลับมาเลี้ยง</button>
+        <div class="gap" style="height:4px"></div>
+        <button class="btn sm danger" data-free="${i}">ปล่อย</button></div>`}
+    </div>`;
+  };
+  sheet(`<div class="eyebrow">สวน · ${g.length + (p?1:0)}/${GARDEN_MAX}</div>
+    <h2>วิญญาณที่คุณเลี้ยงอยู่</h2>
+    <div class="sub">สลับตัวที่เลี้ยงได้ทุกเมื่อ ค่าสถานะของทุกตัวเดินตามเวลาจริง</div>
+    <div class="gap"></div>
+    <div class="list">${p?row(p,-1):''}${g.map((x,i) => row(x,i)).join('')}</div>
+    <div class="gap"></div>
+    <button class="btn block" data-act="closeSheet">ปิด</button>`);
+}
+
+/* ===================== ร้านผลึก / ตั้งค่า ===================== */
+function eggMapSheet(){
+  if (!S.egg) return toast('ยังไม่มีไข่ที่กำลังฟัก', 'bad');
+  const m = eggMap();
+  const bySubj = {};
+  for (const u in UNITS) (bySubj[UNITS[u].subj] = bySubj[UNITS[u].subj] || []).push(u);
+  sheet(`<div class="eyebrow">ผังธาตุประจำไข่ใบนี้</div>
+    <h2>หน่วยไหนให้ธาตุอะไร</h2>
+    <div class="sub">ไข่แต่ละใบสุ่มผังนี้ใหม่ทุกครั้ง ใบหน้าหน่วยเดิมอาจให้ธาตุคนละอย่าง</div>
+    <div class="gap"></div>
+    ${SUBJ_KEYS.map(k => `
+      <div class="eyebrow" style="margin-top:10px">${SUBJECTS[k].g} ${SUBJECTS[k].n}</div>
+      <div class="list">${(bySubj[k]||[]).map(u => {
+        const el = m[u] || UNITS[u].el;
+        const got = (S.egg.unit && S.egg.unit[u]) || 0;
+        return `<div class="item">
+          <div class="ic" style="background:hsla(${ELEMENTS[el].h},40%,50%,.25)">${ELEMENTS[el].g}</div>
+          <div class="grow"><b style="font-size:13.5px">${UNITS[u].n}</b>
+            <div class="tiny">ให้ธาตุ${ELEMENTS[el].n}${got?` · สะสมแล้ว ${got} คะแนน`:''}</div></div>
+        </div>`;
+      }).join('')}</div>`).join('')}
+    <div class="gap"></div>
+    <div class="tiny">เวลาฟักมีโอกาส ${Math.round(CHAOS_CHANCE*100)}% ที่ไข่จะแปรปรวน แล้วสุ่มธาตุเองโดยไม่สนผังนี้</div>
+    <div class="gap"></div>
+    <button class="btn block" data-act="closeSheet">ปิด</button>`);
+}
+
+function crystalSheet(){
+  sheet(`<div class="eyebrow">ร้านผลึกสมาธิ · มีอยู่ ${Math.floor(S.crystals)} ผลึก</div>
+    <h2>ของที่แลกด้วยความรู้เท่านั้น</h2>
+    <div class="sub">ผลึกได้จากการตอบถูก ทุก 4 ข้อได้ 1 ผลึก และตอบถูกทั้งรอบได้เพิ่มอีก 2 ซื้อด้วยเหรียญไม่ได้</div>
+    <div class="gap"></div>
+    <div class="list">${CRYSTAL_SHOP.map(row => {
+      const it = ITEMS[row.k];
+      return `<div class="item">
+        <div class="ic">${it.g}</div>
+        <div class="grow"><b>${it.n}</b><div class="sub">${it.d}</div></div>
+        <button class="btn sm ${S.crystals>=row.cost?'gold':''}" data-cbuy="${row.k}" ${S.crystals>=row.cost?'':'disabled'}>${row.cost}</button>
+      </div>`;
+    }).join('')}</div>
+    <div class="gap"></div>
+    <button class="btn block" data-act="closeSheet">ปิด</button>`);
+}
+
+function settingsSheet(){
+  sheet(`<div class="eyebrow">ตั้งค่า</div><h2>บัญชีและเซฟ</h2>
+    <div class="sub">รหัสบัญชี ${S.uid} · เริ่มเล่น ${fmtDate(S.created)} · เวอร์ชัน ${VERSION}</div>
+    <div class="gap"></div>
+    <div class="list">
+      <div class="item"><div class="ic">⏱️</div>
+        <div class="grow"><b>จับเวลาแต่ละข้อ</b><div class="sub">ปิดไว้ถ้าอยากให้ค่อยๆ คิด จะไม่ได้โบนัสความเร็ว</div></div>
+        <button class="btn sm ${S.settings.timed?'on':''}" data-act="togTimed">${S.settings.timed?'เปิด':'ปิด'}</button></div>
+      <div class="item"><div class="ic">🔀</div>
+        <div class="grow"><b>สลับตำแหน่งตัวเลือก</b><div class="sub">กันการจำว่าเฉลยอยู่ข้อไหน</div></div>
+        <button class="btn sm ${S.settings.shuffle?'on':''}" data-act="togShuf">${S.settings.shuffle?'เปิด':'ปิด'}</button></div>
+    </div>
+      <div class="item"><div class="ic">🎓</div>
+        <div class="grow"><b>ระดับชั้นของฉัน</b><div class="sub">ใช้เป็นค่าเริ่มต้นเวลาเปิดหน้าตอบคำถาม</div></div>
+        <span class="pill">${GRADES[S.grade].n}</span></div>
+    </div>
+    <div class="gap"></div>
+    <button class="btn block" data-act="export">ดาวน์โหลดไฟล์เซฟ</button>
+    <div class="gap"></div>
+    <button class="btn block" data-act="import">โหลดไฟล์เซฟ</button>
+    <hr class="sep">
+    <button class="btn danger block" data-act="wipe">เริ่มใหม่ทั้งหมด</button>
+    <div class="gap"></div>
+    <button class="btn block" data-act="closeSheet">ปิด</button>`);
+}
+
+/* ===================== การกระทำ ===================== */
+function bindView(){
+  view().querySelectorAll('[data-subj]').forEach(b => b.onclick = () => { QUIZ.subj = b.dataset.subj; render(); });
+  view().querySelectorAll('[data-grade]').forEach(b => b.onclick = () => {
+    QUIZ.grade = b.dataset.grade; S.grade = b.dataset.grade;
+    const ok = subjectsReady(S.grade);
+    if (QUIZ.subj !== 'mix' && !ok.includes(QUIZ.subj)) QUIZ.subj = 'mix';
+    save(); render();
+  });
+  view().querySelectorAll('[data-ans]').forEach(b => b.onclick = () => answerQuestion(+b.dataset.ans));
+  view().querySelectorAll('[data-go]').forEach(b => b.onclick = () => startExplore(b.dataset.go));
+  view().querySelectorAll('[data-bookel]').forEach(b => b.onclick = () => { BOOKEL = b.dataset.bookel; render(); });
+  view().querySelectorAll('[data-card]').forEach(b => b.onclick = () => sheet(cardSheet(b.dataset.card)));
+  view().querySelectorAll('[data-use]').forEach(b => b.onclick = () => {
+    const r = useItem(b.dataset.use);
+    if (!r) return;
+    if (r.err) return toast(r.err, 'bad');
+    if (r.egg) return openEgg(b.dataset.use);
+    toast(r.msg); save(); render();
+  });
+  view().querySelectorAll('[data-sell]').forEach(b => b.onclick = () => {
+    const k = b.dataset.sell, it = ITEMS[k];
+    if (!(S.bag[k] > 0)) return;
+    S.bag[k]--; if (!S.bag[k]) delete S.bag[k];
+    S.coins += it.sell;
+    toast(`ขาย${it.n} ได้ ${it.sell} เหรียญ`); save(); render();
+  });
+  view().querySelectorAll('[data-buy]').forEach(b => b.onclick = () => {
+    const k = b.dataset.buy, price = +b.dataset.price;
+    if (S.coins < price) return toast('เหรียญไม่พอ', 'bad');
+    S.coins -= price; addItem(k);
+    toast(`ซื้อ${ITEMS[k].n}แล้ว`); save(); render();
+  });
+  view().querySelectorAll('[data-buyf]').forEach(b => b.onclick = () => {
+    const k = b.dataset.buyf, f = FURN[k];
+    if (S.coins < f.cost) return toast('เหรียญไม่พอ', 'bad');
+    const slot = S.room.indexOf(null);
+    if (slot < 0) return toast('ห้องเต็มแล้ว เก็บของบางชิ้นออกก่อน', 'bad');
+    S.coins -= f.cost; S.room[slot] = k;
+    toast(`วาง${f.n}ไว้ในห้องแล้ว`); save(); render();
+  });
+  view().querySelectorAll('[data-slot]').forEach(b => b.onclick = () => {
+    const i = +b.dataset.slot;
+    if (S.room[i]){
+      const f = FURN[S.room[i]];
+      S.room[i] = null;
+      S.coins += Math.round(f.cost * .5);
+      toast(`เก็บ${f.n} คืนมา ${Math.round(f.cost*.5)} เหรียญ`); save(); render();
+    } else toast('ซื้อของจากร้านด้านล่างเพื่อวางลงช่องนี้');
+  });
+  view().querySelectorAll('[data-act]').forEach(b => b.onclick = () => act(b.dataset.act));
+}
+
+document.getElementById('sheet').addEventListener('click', e => {
+  const b = e.target.closest('[data-act],[data-rps],[data-feed],[data-swap],[data-free],[data-freeyes],[data-cbuy],[data-qlist],[data-qdel],[data-pick]');
+  if (!b) return;
+  if (b.dataset.rps) return doRps(b.dataset.rps);
+  if (b.dataset.pick !== undefined && b.dataset.pick !== ''){ QADD_ANS = +b.dataset.pick; return markPick(); }
+  if (b.dataset.qlist) return qlistSheet(b.dataset.qlist);
+  if (b.dataset.qdel){
+    const id = b.dataset.qdel;
+    if (id.startsWith('c')){ S.qcustom = (S.qcustom||[]).filter(q => q.id !== id); toast('ลบคำถามแล้ว'); }
+    else { S.qoff = S.qoff || {}; S.qoff[id] = 1; toast('ปิดคำถามนี้แล้ว'); }
+    save(); render();
+    const q = QBANK_BUILTIN.concat(S.qcustom||[]).find(x => x.id === id);
+    return qlistSheet(q ? q.subj : SUBJ_KEYS[0]);
+  }
+  if (b.dataset.cbuy){
+    const row = CRYSTAL_SHOP.find(x => x.k === b.dataset.cbuy);
+    if (S.crystals < row.cost) return toast('ผลึกสมาธิไม่พอ', 'bad');
+    S.crystals -= row.cost; addItem(row.k);
+    save(); paintTop(); toast(`แลก${ITEMS[row.k].n}แล้ว`, 'gold');
+    return crystalSheet();
+  }
+  if (b.dataset.feed){
+    const r = useItem(b.dataset.feed);
+    if (r && r.err) return toast(r.err, 'bad');
+    if (r) toast(r.msg);
+    closeSheet(); save(); render(); return;
+  }
+  if (b.dataset.swap !== undefined && b.dataset.swap !== ''){
+    swapWith(+b.dataset.swap); save(); closeSheet(); render();
+    return toast(`สลับมาเลี้ยง${S.pet.name}แล้ว`);
+  }
+  if (b.dataset.free !== undefined && b.dataset.free !== ''){
+    const i = +b.dataset.free, nm = S.garden[i] && S.garden[i].name;
+    return sheet(`<h2>ปล่อย${esc(nm)}</h2>
+      <div class="sub">ตัวนี้จะกลับสู่ป่าถาวร เลเวลและค่าสถานะจะหายไป แต่ร่างที่เคยพบยังอยู่ในสมุดสะสม</div>
+      <div class="gap"></div>
+      <button class="btn danger block" data-freeyes="${i}">ปล่อยไป</button>
+      <div class="gap"></div>
+      <button class="btn pri block" data-act="garden">ไม่ปล่อย</button>`);
+  }
+  if (b.dataset.freeyes !== undefined && b.dataset.freeyes !== ''){
+    const pet = releasePet(+b.dataset.freeyes);
+    S.coins += 60 + pet.lv * 8;
+    save(); toast(`ปล่อย${pet.name}กลับป่า ได้ ${60 + pet.lv*8} เหรียญ`);
+    return gardenSheet();
+  }
+  act(b.dataset.act);
+});
+
+function act(a){
+  const p = S.pet;
+  if (a === 'closeSheet') return closeSheet();
+  if (a === 'goQuiz'){
+    TAB = 'quiz';
+    document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.tab === 'quiz'));
+    return render();
+  }
+  if (a === 'goQuizStart'){ closeSheet(); act('goQuiz'); return; }
+  if (a === 'startQuiz') return startQuiz();
+  if (a === 'nextQ') return advanceQuiz();
+  if (a === 'quitQuiz'){
+    return sheet(`<h2>ออกจากรอบนี้</h2>
+      <div class="sub">คะแนนที่ทำได้ ${QUIZ.pts} จะถูกเก็บตามปกติ แต่จะไม่ได้โบนัสตอบถูกทั้งรอบ</div>
+      <div class="gap"></div>
+      <button class="btn danger block" data-act="quitYes">ออก</button>
+      <div class="gap"></div>
+      <button class="btn pri block" data-act="closeSheet">ตอบต่อ</button>`);
+  }
+  if (a === 'quitYes'){ closeSheet(); return finishQuiz(); }
+  if (a === 'hatch'){ closeSheet(); return doHatch(); }
+  if (a === 'qbank') return qbankSheet();
+  if (a === 'qadd') return qaddSheet();
+  if (a === 'qsave') return qsave();
+  if (a === 'qimport') return qimportSheet();
+  if (a === 'qdoimport') return qdoimport();
+  if (a === 'qexport') return qexport();
+  if (a === 'eggmap') return eggMapSheet();
+  if (a === 'garden') return gardenSheet();
+  if (a === 'crystal') return crystalSheet();
+  if (a === 'settings') return settingsSheet();
+  if (a === 'togTimed'){ S.settings.timed = !S.settings.timed; save(); return settingsSheet(); }
+  if (a === 'togShuf'){ S.settings.shuffle = !S.settings.shuffle; save(); return settingsSheet(); }
+  if (a === 'feed'){
+    const foods = Object.keys(S.bag).filter(k => ITEMS[k] && ITEMS[k].t === 'food' && S.bag[k] > 0);
+    if (!foods.length) return toast('ไม่มีอาหารเลย ซื้อได้ที่กระเป๋า', 'bad');
+    return sheet(`<div class="eyebrow">ให้อาหาร</div><h2>จะให้อะไรดี</h2><div class="gap"></div>
+      <div class="list">${foods.map(k => `<button class="item" data-feed="${k}" style="text-align:left;width:100%">
+        <div class="ic">${ITEMS[k].g}</div>
+        <div class="grow"><b>${ITEMS[k].n}</b><div class="sub">อิ่ม +${ITEMS[k].hunger} · อารมณ์ +${ITEMS[k].mood}</div></div>
+        <span class="qty">×${S.bag[k]}</span></button>`).join('')}</div>
+      <div class="gap"></div><button class="btn block" data-act="closeSheet">ปิด</button>`);
+  }
+  if (a === 'play') return playSheet();
+  if (a === 'rest'){
+    const gap = Date.now() - (S.lastRest || 0);
+    if (gap < 1800000) return toast(`เพิ่งพักไป ลองอีกครั้งใน ${fmtLeft(1800000-gap)}`, 'bad');
+    S.lastRest = Date.now();
+    p.mood = clamp(p.mood + 8, 0, 100);
+    p.hp = clamp(p.hp + 6, 0, 100);
+    p.care.body += 1;
+    View.bounce = -12; setTimeout(()=>{ View.bounce = 0; }, 260);
+    toast(`${p.name}ได้พักแล้ว อารมณ์ +8 สุขภาพ +6`);
+    save(); return render();
+  }
+  if (a === 'evolve'){
+    const nm = doEvolve();
+    if (!nm) return toast('ยังไม่ครบเงื่อนไข', 'bad');
+    toast(`วิวัฒนาการเป็น ${nm}`, 'gold');
+    save(); render();
+    return sheet(`<div class="eyebrow">วิวัฒนาการ</div><h2>${nm}</h2>
+      <div class="sub">${SPECIES[p.sp].desc}</div><div class="gap"></div>
+      <div style="text-align:center">${sigilSVG(S.uid + currentFormId(), SPECIES[p.sp].accent, 88)}</div>
+      <div class="tiny" style="text-align:center">การ์ดใบใหม่ถูกบันทึกลงสมุดสะสมแล้ว · ${collectCode(currentFormId())}</div>
+      <div class="gap"></div><button class="btn pri block" data-act="closeSheet">ดีมาก</button>`);
+  }
+  if (a === 'collect') return collectExplore(false);
+  if (a === 'recall') return collectExplore(true);
+  if (a === 'rename'){
+    return sheet(`<div class="eyebrow">เปลี่ยนชื่อ</div><h2>จะเรียกว่าอะไรดี</h2><div class="gap"></div>
+      <input id="nameIn" maxlength="14" value="${esc(p.name)}" class="fld">
+      <button class="btn pri block" data-act="saveName">บันทึกชื่อ</button>`);
+  }
+  if (a === 'saveName'){
+    const el = document.getElementById('nameIn');
+    const v = (el && el.value || '').trim();
+    if (v && S.pet) S.pet.name = v.slice(0,14);
+    closeSheet(); save(); return render();
+  }
+  if (a === 'export'){
+    const blob = new Blob([JSON.stringify(S)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a2 = document.createElement('a');
+    a2.href = url; a2.download = `krathangjai-${S.uid}.json`; a2.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    return toast('ดาวน์โหลดไฟล์เซฟแล้ว');
+  }
+  if (a === 'import'){
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'application/json';
+    inp.onchange = () => {
+      const f = inp.files[0]; if (!f) return;
+      const rd = new FileReader();
+      rd.onload = () => {
+        try {
+          const d = JSON.parse(rd.result);
+          S = Object.assign(freshSave(), d);
+          crackle = null; buildCrackle(hashStr(S.uid));
+          save(); closeSheet(); render(); toast('โหลดเซฟเรียบร้อย');
+        } catch(e){ toast('ไฟล์นี้อ่านไม่ได้', 'bad'); }
+      };
+      rd.readAsText(f);
+    };
+    inp.click();
+    return;
+  }
+  if (a === 'wipe'){
+    return sheet(`<h2>เริ่มใหม่ทั้งหมด</h2>
+      <div class="sub">สมุดสะสม สวน คลังคำถามที่เพิ่มเอง และวิญญาณทุกตัวจะหายไปถาวร</div>
+      <div class="gap"></div>
+      <button class="btn danger block" data-act="wipeYes">ลบและเริ่มใหม่</button>
+      <div class="gap"></div><button class="btn pri block" data-act="closeSheet">ไม่ลบ</button>`);
+  }
+  if (a === 'wipeYes'){
+    S = freshSave(); crackle = null; buildCrackle(hashStr(S.uid));
+    startEgg(1); save(); closeSheet(); render(); return intro();
+  }
+}
+
+/* ===================== เริ่มระบบ ===================== */
+function intro(){
+  sheet(`<div class="eyebrow">กระถางใจ</div>
+    <h2>มีไข่ใบหนึ่งอยู่ในกระถาง</h2>
+    <div class="sub">ยังไม่มีใครรู้ว่าข้างในเป็นอะไร เพราะมันยังไม่ถูกกำหนด</div>
+    <div class="gap"></div>
+    <div class="list">
+      <div class="item"><div class="ic">❓</div><div class="grow"><b>ตอบคำถามเพื่อฟักไข่</b>
+        <div class="sub">ตอบถูกได้คะแนน ตอบเร็วได้โบนัส ตอบถูกติดกันได้ตัวคูณถึง ×2</div></div></div>
+      <div class="item"><div class="ic">🎨</div><div class="grow"><b>หน่วยที่เรียนกำหนดธาตุ</b>
+        <div class="sub">ตอบหน่วยพัฒนาการของอาณาจักรมาก ไข่จะเอนไปทางธาตุดิน ตอบหน่วยบุคคลสำคัญมากจะเอนไปทางธาตุไฟ ดูเปอร์เซ็นต์สดได้ที่หน้ากระถาง</div></div></div>
+      <div class="item"><div class="ic">🌱</div><div class="grow"><b>เลี้ยงต่อให้โต</b>
+        <div class="sub">มี 32 สายพันธุ์ 320 ร่างให้เก็บ วิธีดูแลจะกำหนดว่ามันจะแตกสายไปทางไหน</div></div></div>
+    </div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="goQuizStart">เริ่มตอบคำถาม</button>`);
+}
+
+let saveTimer = null;
+function save(){
+  if (!S) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => { Store.set(SAVEKEY, JSON.stringify(S)); }, 250);
+}
+
+async function boot(){
+  const raw = await Store.get(SAVEKEY);
+  if (raw){
+    try { S = Object.assign(freshSave(), JSON.parse(raw)); }
+    catch(e){ S = freshSave(); }
+  } else S = freshSave();
+
+  if (!Array.isArray(S.room) || S.room.length !== 12) S.room = new Array(12).fill(null);
+  if (!S.settings || typeof S.settings.timed === 'undefined') S.settings = {timed:true, shuffle:true};
+  if (!S.stats || typeof S.stats.answered === 'undefined')
+    S.stats = {answered:0, correct:0, points:0, rounds:0, best:0, streak:0, bestStreak:0, lastDay:''};
+  S.qcustom = S.qcustom || [];
+  S.qoff = S.qoff || {};
+  S.qstate = S.qstate || {};
+  S.garden = S.garden || [];
+  S.seen = S.seen || {};
+  S.prog = S.prog || {};
+  if (!S.grade || !GRADES[S.grade]) S.grade = (gradesReady()[0] || 'p5');
+  QUIZ.grade = S.grade;
+
+  buildCrackle(hashStr(S.uid));
+  tickOffline();
+
+  const firstTime = !S.pet && !S.egg;
+  if (firstTime) startEgg(1);
+  render();
+  if (firstTime) intro();
+
+  setInterval(() => {
+    if (QUIZ.running) return;
+    tickOffline(); paintTop();
+    if (TAB === 'explore' && S.explore) render();
+    save();
+  }, 20000);
+}
+
+/* จุดเข้าถึงสถานะสำหรับตรวจสอบ */
+window.__game = () => ({ S, QUIZ, TAB, VERSION });
+
+boot();
+
+</script>
+</body>
+</html>
