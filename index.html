@@ -30,7 +30,8 @@
   --warn:#d8b04a;
   --bad:#c26a6a;
   --r:14px;
-  --tabh:64px;
+  --tabh:68px;
+  --fs:1;              /* ตัวคูณขนาดตัวอักษร ปรับได้จากปุ่ม Aa */
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -41,8 +42,8 @@ body{
   color:var(--mist);
   font-family:'IBM Plex Sans Thai',system-ui,sans-serif;
   font-weight:400;
-  font-size:15px;
-  line-height:1.55;
+  font-size:calc(16px * var(--fs));
+  line-height:1.6;
   min-height:100vh;
   overflow-x:hidden;
 }
@@ -61,15 +62,15 @@ header.top{
 }
 .brand{display:flex;align-items:baseline;gap:8px;flex:1;min-width:0}
 .brand{flex-direction:column;align-items:flex-start;gap:0}
-.brand b{font-family:'Trirong',serif;font-size:17px;font-weight:700;letter-spacing:.01em;line-height:1.2;white-space:nowrap}
-.brand .tag{font-size:9.5px;color:var(--glaze);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em}
-.brand span.who{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-@media(max-width:420px){ .brand b{font-size:15px} }
+.brand b{font-family:'Trirong',serif;font-size:18px;font-weight:700;letter-spacing:.01em;line-height:1.2;white-space:nowrap}
+.brand .tag{font-size:10.5px;color:var(--glaze);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em}
+.brand span.who{font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+@media(max-width:420px){ .brand b{font-size:calc(15px * var(--fs))} }
 .purse{display:flex;gap:6px;flex-shrink:0}
 .coin{
   display:flex;align-items:center;gap:5px;
   background:rgba(255,255,255,.05);border:1px solid var(--line);
-  border-radius:999px;padding:4px 10px;font-size:13px;
+  border-radius:999px;padding:5px 11px;font-size:14px;
 }
 .coin i{width:9px;height:9px;border-radius:50%;display:block}
 .coin.g i{background:var(--gold);box-shadow:0 0 8px rgba(216,176,74,.5)}
@@ -81,10 +82,10 @@ header.top{
   border:1px solid var(--line);border-radius:var(--r);
   padding:14px;margin-bottom:12px;
 }
-.card h2{font-size:17px;margin-bottom:2px}
-.sub{font-size:12px;color:var(--dim)}
+.card h2{font-size:calc(18.5px * var(--fs));margin-bottom:2px}
+.sub{font-size:calc(13px * var(--fs));color:var(--dim)}
 .eyebrow{
-  font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  font-size:calc(11px * var(--fs));letter-spacing:.18em;text-transform:uppercase;
   color:var(--glaze);font-family:'IBM Plex Mono',monospace;margin-bottom:6px;
 }
 .row{display:flex;gap:10px;align-items:center}
@@ -93,7 +94,7 @@ header.top{
 .grow{flex:1;min-width:0}
 
 /* ---------- buttons ---------- */
-button{font-family:inherit;font-size:14px;color:inherit;cursor:pointer;border:none;background:none}
+button{font-family:inherit;font-size:calc(15px * var(--fs));color:inherit;cursor:pointer;border:none;background:none}
 .btn{
   background:rgba(255,255,255,.05);border:1px solid var(--line);
   border-radius:10px;padding:10px 14px;color:var(--mist);
@@ -106,7 +107,7 @@ button{font-family:inherit;font-size:14px;color:inherit;cursor:pointer;border:no
 .btn.pri:hover{background:#4f8471}
 .btn.gold{background:rgba(216,176,74,.16);border-color:rgba(216,176,74,.5);color:#f0dda6}
 .btn.danger{border-color:rgba(194,106,106,.45);color:#e8b4b4}
-.btn.sm{padding:6px 10px;font-size:12.5px;border-radius:8px}
+.btn.sm{padding:7px 11px;font-size:calc(13.5px * var(--fs));border-radius:8px}
 .btn.on{background:var(--glaze-dk);border-color:var(--glaze)}
 .btn.block{width:100%;display:block}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
@@ -116,12 +117,12 @@ button{font-family:inherit;font-size:14px;color:inherit;cursor:pointer;border:no
 #pot{width:100%;max-width:420px;height:auto;display:block;touch-action:manipulation}
 .stagelabel{
   position:absolute;left:50%;transform:translateX(-50%);bottom:-2px;
-  font-size:11px;color:var(--dim);letter-spacing:.14em;font-family:'IBM Plex Mono',monospace;
+  font-size:calc(11px * var(--fs));color:var(--dim);letter-spacing:.14em;font-family:'IBM Plex Mono',monospace;
 }
 
 /* ---------- meters ---------- */
 .meters{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 14px;margin-top:12px}
-.meter .lab{display:flex;justify-content:space-between;font-size:11.5px;color:var(--dim);margin-bottom:3px}
+.meter .lab{display:flex;justify-content:space-between;font-size:calc(12.5px * var(--fs));color:var(--dim);margin-bottom:3px}
 .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden}
 .bar>i{display:block;height:100%;border-radius:3px;transition:width .4s ease}
 .bar.hp>i{background:linear-gradient(90deg,#8fbfae,#c9e3d6)}
@@ -132,36 +133,36 @@ button{font-family:inherit;font-size:14px;color:inherit;cursor:pointer;border:no
 
 .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px;text-align:center}
 .stat{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:9px;padding:6px 2px}
-.stat b{display:block;font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:500}
-.stat span{font-size:9.5px;color:var(--dim);letter-spacing:.1em}
+.stat b{display:block;font-family:'IBM Plex Mono',monospace;font-size:calc(16.5px * var(--fs));font-weight:500}
+.stat span{font-size:calc(10.5px * var(--fs));color:var(--dim);letter-spacing:.1em}
 
 /* ---------- focus ---------- */
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{
-  border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;
+  border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:calc(14px * var(--fs));
   background:rgba(255,255,255,.03);transition:all .15s;
 }
 .chip.on{background:var(--glaze-dk);border-color:var(--glaze);color:#f2fbf6}
-#clock{font-family:'IBM Plex Mono',monospace;font-size:52px;font-weight:300;letter-spacing:-.02em;line-height:1;text-align:center;margin:4px 0 2px}
-#clocknote{text-align:center;font-size:12px;color:var(--dim);min-height:18px}
+#clock{font-family:'IBM Plex Mono',monospace;font-size:calc(52px * var(--fs));font-weight:300;letter-spacing:-.02em;line-height:1;text-align:center;margin:4px 0 2px}
+#clocknote{text-align:center;font-size:calc(12px * var(--fs));color:var(--dim);min-height:18px}
 .drift{color:var(--warn)}
 .focusing #tabs{opacity:.35;pointer-events:none}
 
 /* ---------- ตอบคำถาม ---------- */
-.qmeta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--dim);margin-bottom:8px}
-.qtext{font-size:18px;line-height:1.6;font-family:'Trirong',serif;font-weight:600;margin:2px 0 14px}
+.qmeta{display:flex;justify-content:space-between;align-items:center;font-size:calc(13px * var(--fs));color:var(--dim);margin-bottom:8px}
+.qtext{font-size:calc(20.5px * var(--fs));line-height:1.65;font-family:'Trirong',serif;font-weight:600;margin:2px 0 14px}
 .choices{display:flex;flex-direction:column;gap:8px}
 .ch{
   display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;
   background:rgba(255,255,255,.04);border:1px solid var(--line);
-  border-radius:11px;padding:12px 13px;font-size:15px;line-height:1.45;
+  border-radius:12px;padding:14px 14px;font-size:calc(16.5px * var(--fs));line-height:1.5;
   transition:background .15s,border-color .15s;
 }
 .ch:hover:not(:disabled){background:rgba(255,255,255,.08)}
 .ch .k{
   flex:none;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;
   background:rgba(255,255,255,.07);border:1px solid var(--line);
-  font-family:'IBM Plex Mono',monospace;font-size:12px;margin-top:1px;
+  font-family:'IBM Plex Mono',monospace;font-size:calc(13px * var(--fs));margin-top:1px;
 }
 .ch.right{background:rgba(124,174,155,.20);border-color:var(--glaze)}
 .ch.right .k{background:var(--glaze-dk);border-color:var(--glaze)}
@@ -170,12 +171,12 @@ button{font-family:inherit;font-size:14px;color:inherit;cursor:pointer;border:no
 .ch:disabled{opacity:.55}
 .ch.right:disabled,.ch.wrong:disabled{opacity:1}
 .expl{
-  margin-top:12px;padding:11px 13px;border-radius:10px;font-size:13.5px;line-height:1.6;
+  margin-top:12px;padding:11px 13px;border-radius:10px;font-size:calc(14.5px * var(--fs));line-height:1.65;
   background:rgba(255,255,255,.04);border-left:3px solid var(--glaze);
 }
-#qclock{font-family:'IBM Plex Mono',monospace;font-size:15px}
+#qclock{font-family:'IBM Plex Mono',monospace;font-size:calc(16px * var(--fs))}
 #qclock.low{color:var(--bad)}
-.combo{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:13px}
+.combo{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:calc(14px * var(--fs))}
 .dots{display:flex;gap:4px}
 .dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.14);display:block}
 .dots i.ok{background:var(--glaze)}
@@ -184,13 +185,13 @@ button{font-family:inherit;font-size:14px;color:inherit;cursor:pointer;border:no
 .eggbar{height:9px;border-radius:5px;background:rgba(255,255,255,.07);overflow:hidden}
 .eggbar>i{display:block;height:100%;background:linear-gradient(90deg,var(--glaze-dk),var(--gold));transition:width .5s}
 .odds{display:flex;flex-direction:column;gap:5px;margin-top:8px}
-.odd{display:flex;align-items:center;gap:8px;font-size:12px}
+.odd{display:flex;align-items:center;gap:8px;font-size:calc(13px * var(--fs))}
 .odd .nm{width:74px;flex:none;color:var(--dim)}
 .odd .tr{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden}
 .odd .tr>i{display:block;height:100%;border-radius:3px}
 .odd .pc{width:44px;text-align:right;font-family:'IBM Plex Mono',monospace}
 .fld{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);
-  background:rgba(255,255,255,.05);color:var(--mist);font-family:inherit;font-size:15px;margin-bottom:8px}
+  background:rgba(255,255,255,.05);color:var(--mist);font-family:inherit;font-size:calc(16px * var(--fs));margin-bottom:8px}
 textarea.fld{min-height:76px;resize:vertical;line-height:1.5}
 select.fld{appearance:none}
 
@@ -198,17 +199,17 @@ select.fld{appearance:none}
 .prow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--line)}
 .prow:last-child{border-bottom:none}
 .prow .lab{flex:1;min-width:0}
-.prow .lab b{display:block;font-size:13.5px;font-weight:500}
-.prow .lab .tiny{font-size:11px}
-.prow .num{font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-align:right;width:78px;flex:none}
+.prow .lab b{display:block;font-size:calc(14.5px * var(--fs));font-weight:500}
+.prow .lab .tiny{font-size:calc(12px * var(--fs))}
+.prow .num{font-family:'IBM Plex Mono',monospace;font-size:calc(13.5px * var(--fs));text-align:right;width:84px;flex:none}
 .pbar{height:7px;border-radius:4px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:5px}
 .pbar>i{display:block;height:100%;border-radius:4px}
-.trend{font-size:11px;font-family:'IBM Plex Mono',monospace;width:56px;flex:none;text-align:right}
+.trend{font-size:calc(12px * var(--fs));font-family:'IBM Plex Mono',monospace;width:60px;flex:none;text-align:right}
 .trend.up{color:var(--ok)} .trend.down{color:var(--bad)} .trend.flat{color:var(--dim)}
 .bigstat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
 .bigstat div{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:9px 4px}
-.bigstat b{display:block;font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:500}
-.bigstat span{font-size:10.5px;color:var(--dim)}
+.bigstat b{display:block;font-family:'IBM Plex Mono',monospace;font-size:calc(21px * var(--fs));font-weight:500}
+.bigstat span{font-size:calc(11.5px * var(--fs));color:var(--dim)}
 
 /* ---------- lists ---------- */
 .list{display:flex;flex-direction:column;gap:8px}
@@ -218,13 +219,13 @@ select.fld{appearance:none}
   border-radius:11px;padding:10px 12px;
 }
 .item .ic{
-  width:38px;height:38px;flex:none;border-radius:9px;
+  width:42px;height:42px;flex:none;border-radius:9px;
   background:rgba(255,255,255,.05);border:1px solid var(--line);
-  display:grid;place-items:center;font-size:19px;
+  display:grid;place-items:center;font-size:calc(20px * var(--fs));
 }
-.item b{display:block;font-size:14px;font-weight:500}
-.item .sub{font-size:11.5px}
-.qty{font-family:'IBM Plex Mono',monospace;color:var(--glaze-lt);font-size:13px}
+.item b{display:block;font-size:calc(15px * var(--fs));font-weight:500}
+.item .sub{font-size:calc(12.5px * var(--fs))}
+.qty{font-family:'IBM Plex Mono',monospace;color:var(--glaze-lt);font-size:calc(14px * var(--fs))}
 
 /* ---------- room ---------- */
 #room{
@@ -236,7 +237,7 @@ select.fld{appearance:none}
 .slots{position:absolute;inset:8%;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:4px}
 .slot{
   border:1px dashed rgba(190,222,210,.16);border-radius:8px;
-  display:grid;place-items:center;font-size:26px;line-height:1;
+  display:grid;place-items:center;font-size:calc(26px * var(--fs));line-height:1;
   transition:background .15s;
 }
 .slot:hover{background:rgba(255,255,255,.05)}
@@ -246,11 +247,11 @@ select.fld{appearance:none}
 .book{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
 .bcard{
   border:1px solid var(--line);border-radius:11px;padding:8px 6px;text-align:center;
-  background:rgba(255,255,255,.04);font-size:11px;
+  background:rgba(255,255,255,.04);font-size:calc(12px * var(--fs));
 }
 .bcard.locked{opacity:.32}
-.bcard .nm{font-size:11.5px;font-weight:500;margin-top:4px;line-height:1.3}
-.bcard .st{font-size:9.5px;color:var(--dim);font-family:'IBM Plex Mono',monospace}
+.bcard .nm{font-size:calc(12.5px * var(--fs));font-weight:500;margin-top:4px;line-height:1.3}
+.bcard .st{font-size:calc(10.5px * var(--fs));color:var(--dim);font-family:'IBM Plex Mono',monospace}
 .sigil{margin:0 auto;display:block;border-radius:5px;background:rgba(0,0,0,.25)}
 
 /* ---------- tabs ---------- */
@@ -263,9 +264,9 @@ select.fld{appearance:none}
 }
 #tabs button{
   flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-  font-size:9.5px;color:var(--dim);letter-spacing:0;white-space:nowrap;
+  font-size:10px;color:var(--dim);letter-spacing:0;white-space:nowrap;
 }
-#tabs button .g{font-size:19px;line-height:1;filter:grayscale(1) opacity(.7)}
+#tabs button .g{font-size:20px;line-height:1;filter:grayscale(1) opacity(.7)}
 #tabs button.on{color:var(--glaze-lt)}
 #tabs button.on .g{filter:none}
 #tabs button .dot{position:absolute;margin:-14px 0 0 20px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
@@ -287,7 +288,7 @@ select.fld{appearance:none}
 }
 .tst{
   background:rgba(21,36,48,.97);border:1px solid var(--glaze-dk);
-  border-radius:999px;padding:8px 16px;font-size:13px;
+  border-radius:999px;padding:9px 17px;font-size:calc(14px * var(--fs));
   animation:pop .2s ease;box-shadow:0 6px 20px rgba(0,0,0,.4);
 }
 .tst.gold{border-color:var(--gold);color:#f0dda6}
@@ -295,10 +296,10 @@ select.fld{appearance:none}
 @keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
 
 .hide{display:none !important}
-.tiny{font-size:11.5px;color:var(--dim)}
+.tiny{font-size:calc(12.5px * var(--fs));color:var(--dim)}
 .gap{height:8px}
 hr.sep{border:none;border-top:1px solid var(--line);margin:12px 0}
-.pill{font-size:10.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;border:1px solid var(--line);border-radius:999px;padding:2px 8px;color:var(--dim)}
+.pill{font-size:calc(11.5px * var(--fs));font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;border:1px solid var(--line);border-radius:999px;padding:2px 8px;color:var(--dim)}
 
 @media(min-width:760px){
   #app{padding-bottom:24px}
@@ -306,6 +307,39 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:12px 0}
   .meters{grid-template-columns:repeat(4,1fr)}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+
+/* ---------- ปรับขนาดตัวอักษร ---------- */
+#fsbtn{
+  flex:none;width:38px;height:38px;border-radius:11px;
+  border:1px solid var(--line);background:rgba(255,255,255,.05);
+  color:var(--mist);font-family:'Trirong',serif;font-size:16px;font-weight:600;
+  display:grid;place-items:center;line-height:1;
+}
+#fsbtn:active{transform:scale(.94)}
+.fsrow{display:flex;gap:8px;align-items:stretch}
+.fsopt{
+  flex:1;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.04);
+  padding:12px 4px;text-align:center;color:var(--mist);line-height:1.2;
+}
+.fsopt.on{background:var(--glaze-dk);border-color:var(--glaze)}
+.fsopt b{display:block;font-family:'Trirong',serif;font-weight:600}
+.fsopt span{display:block;font-size:10.5px;color:var(--dim);margin-top:3px}
+.fsopt.on span{color:#dff0e7}
+.fspreview{
+  border:1px solid var(--line);border-radius:12px;padding:14px;
+  background:rgba(255,255,255,.03);
+}
+.fspreview .q{font-family:'Trirong',serif;font-weight:600;font-size:calc(20.5px * var(--fs));line-height:1.6}
+.fspreview .c{
+  margin-top:10px;display:flex;gap:10px;align-items:center;
+  border:1px solid var(--line);border-radius:12px;padding:12px;
+  font-size:calc(16.5px * var(--fs));
+}
+.fspreview .c .k{
+  width:calc(26px * var(--fs));height:calc(26px * var(--fs));flex:none;border-radius:7px;
+  background:rgba(255,255,255,.07);border:1px solid var(--line);
+  display:grid;place-items:center;font-family:'IBM Plex Mono',monospace;font-size:calc(13px * var(--fs));
+}
 </style>
 </head>
 <body>
@@ -316,6 +350,7 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:12px 0}
       <b>ห้องเรียนไร้ขีดจำกัด</b>
       <span class="who" id="petline">#ห้องเรียนครูชัช</span>
     </div>
+    <button id="fsbtn" title="ปรับขนาดตัวอักษร" aria-label="ปรับขนาดตัวอักษร">Aa</button>
     <div class="purse">
       <div class="coin g"><i></i><span class="mono" id="coins">0</span></div>
       <div class="coin c"><i></i><span class="mono" id="crys">0</span></div>
@@ -968,7 +1003,7 @@ function freshSave(){
     prog: {},            // "subj|grade|unit" -> {r, w, recent:[]}
     stats: { answered:0, correct:0, points:0, rounds:0, best:0, streak:0, bestStreak:0, lastDay:'' },
     daily: { day:'', plays:0 },
-    settings: { timed:true, shuffle:true },
+    settings: { timed:true, shuffle:true, fs:1 },
   };
 }
 
@@ -2189,11 +2224,11 @@ function viewHome(){
 
   return `<div class="card">
     <div class="eyebrow">บ้าน · วางได้ ${owned}/12 ช่อง</div>
-    <h2>ห้องของ${esc(S.pet.name)}</h2>
+    <h2>${S.pet ? `ห้องของ${esc(S.pet.name)}` : 'ห้องว่างรอเจ้าของ'}</h2>
     <div class="sub">${night ? (lit ? 'กลางคืน — โคมไฟส่องห้องให้สว่างอยู่' : 'กลางคืน — ห้องมืด ลองวางโคมกระดาษดู') : 'กลางวัน — แสงเข้าห้องพอดี'}</div>
     <div class="gap"></div>
     <div id="room" class="${lit||!night?'lit':''}"><div class="slots">${slots}</div></div>
-    <div class="tiny" style="margin-top:8px">แตะช่องเพื่อวางหรือเก็บของ ของทุกชิ้นที่วางไว้จะให้โบนัสกับการเลี้ยงและการโฟกัส</div>
+    <div class="tiny" style="margin-top:8px">${S.pet?'':'ตกแต่งล่วงหน้าได้เลย ของที่วางไว้จะให้โบนัสทันทีที่ไข่ฟัก · '}แตะช่องเพื่อวางหรือเก็บของ ของทุกชิ้นที่วางไว้จะให้โบนัสกับการเลี้ยงและการโฟกัส</div>
   </div>
   <div class="card">
     <div class="eyebrow">ร้านของตกแต่ง</div>
@@ -2223,7 +2258,7 @@ function viewBook(){
     const list = SP_BY_EL(e);
     const n = list.reduce((a,k) => a + FORMS_BY_SP[k].filter(f => S.book[f.id]).length, 0);
     const tot = list.length * 10;
-    return `<button class="chip ${e===EL?'on':''}" data-bookel="${e}">${ELEMENTS[e].g} ${ELEMENTS[e].n} <span class="mono" style="font-size:11px;opacity:.7">${n}/${tot}</span></button>`;
+    return `<button class="chip ${e===EL?'on':''}" data-bookel="${e}">${ELEMENTS[e].g} ${ELEMENTS[e].n} <span class="mono" style="font-size:calc(11px * var(--fs));opacity:.7">${n}/${tot}</span></button>`;
   }).join('');
 
   const groups = SP_BY_EL(EL).map(k => {
@@ -2279,7 +2314,7 @@ function cardSheet(id){
       <div class="pill" style="display:inline-block;margin-top:6px;color:${RARITY[sp.rarity].c};border-color:${RARITY[sp.rarity].c}55">${RARITY[sp.rarity].star} ${RARITY[sp.rarity].n}</div>
       <div class="tiny" style="margin-top:8px">${sp.desc}</div>
       <hr class="sep">
-      <div class="mono" style="font-size:15px;letter-spacing:.12em;color:${sp.accent}">${collectCode(f.id)}</div>
+      <div class="mono" style="font-size:calc(15px * var(--fs));letter-spacing:.12em;color:${sp.accent}">${collectCode(f.id)}</div>
       <div class="tiny">ปลดล็อก ${fmtDate(S.book[f.id])} · บัญชี ${S.uid}</div>
     </div>
   </div>
@@ -2438,16 +2473,16 @@ function viewQuiz(){
   const gradeChips = GRADE_KEYS.map(g => {
     const n = questionsBy('mix', g).length;
     return `<button class="chip ${g===grade?'on':''}" data-grade="${g}" ${n?'':'disabled'}>
-      ${GRADES[g].n} <span class="mono" style="font-size:11px;opacity:.7">${n}</span></button>`;
+      ${GRADES[g].n} <span class="mono" style="font-size:calc(11px * var(--fs));opacity:.7">${n}</span></button>`;
   }).join('');
 
   const subjChips = [`<button class="chip ${QUIZ.subj==='mix'?'on':''}" data-subj="mix" ${total?'':'disabled'}>
-      🎲 ผสมทุกวิชา <span class="mono" style="font-size:11px;opacity:.7">${total}</span></button>`]
+      🎲 ผสมทุกวิชา <span class="mono" style="font-size:calc(11px * var(--fs));opacity:.7">${total}</span></button>`]
     .concat(SUBJ_KEYS.map(k => {
       const code = SUBJECTS[k].code[grade];
       return `<button class="chip ${QUIZ.subj===k?'on':''}" data-subj="${k}" ${counts[k]?'':'disabled'}>
         ${SUBJECTS[k].g} ${SUBJECTS[k].short}${code?` <span class="tiny">${code}</span>`:''}
-        <span class="mono" style="font-size:11px;opacity:.7">${counts[k]}</span></button>`;
+        <span class="mono" style="font-size:calc(11px * var(--fs));opacity:.7">${counts[k]}</span></button>`;
     })).join('');
 
   // หน่วยการเรียนรู้ที่มีในชุดนี้
@@ -2537,7 +2572,7 @@ function quizQuestionHtml(){
   </div>
   <div class="card">
     <div class="row spread">
-      <span class="sub">คะแนนรอบนี้</span><b class="mono" style="font-size:19px">${QUIZ.pts}</b>
+      <span class="sub">คะแนนรอบนี้</span><b class="mono" style="font-size:calc(19px * var(--fs))">${QUIZ.pts}</b>
     </div>
     ${QUIZ.locked ? '' : '<div class="gap"></div><button class="btn sm danger block" data-act="quitQuiz">ออกจากรอบนี้</button>'}
   </div>`;
@@ -2799,8 +2834,8 @@ function qlistSheet(tag){
     ${Object.keys(byUnit).map(u => `
       <div class="eyebrow" style="margin-top:10px">${UNITS[u].n} · ${byUnit[u].length} ข้อ</div>
       <div class="list">${byUnit[u].map(q => `<div class="item">
-        <div class="ic" style="font-size:11px;color:${DIFF[q.diff].c};text-align:center;line-height:1.2">${DIFF[q.diff].n}</div>
-        <div class="grow"><b style="font-size:13px;font-weight:400">${esc(q.q)}</b>
+        <div class="ic" style="font-size:calc(11px * var(--fs));color:${DIFF[q.diff].c};text-align:center;line-height:1.2">${DIFF[q.diff].n}</div>
+        <div class="grow"><b style="font-size:calc(13px * var(--fs));font-weight:400">${esc(q.q)}</b>
           <div class="tiny">เฉลย ${'กขคง'[q.ans]} · ${esc(q.ch[q.ans])}${(S.qstate&&S.qstate[q.id])?` · ถูก ${S.qstate[q.id].right} ผิด ${S.qstate[q.id].wrong} · กล่อง ${S.qstate[q.id].box}`:''}</div></div>
         <button class="btn sm danger" data-qdel="${q.id}">${q.built?'ปิด':'ลบ'}</button>
       </div>`).join('')}</div>`).join('')}
@@ -2897,7 +2932,7 @@ function qimportSheet(){
     <div class="tiny" style="margin-bottom:8px">ลำดับคอลัมน์ — <b>วิชา, ระดับชั้น, หน่วยการเรียนรู้, ความยาก, โจทย์, ก, ข, ค, ง, เฉลย(1-4), คำอธิบาย</b><br>
     วิชาใช้ชื่อไทยหรือรหัสวิชา (เช่น ส15102) · ระดับชั้นใช้ ป.5 หรือ ม.1 · ความยากใช้ ง่าย/ปานกลาง/ยาก/ท้าทาย หรือเลข 1-4 · ถ้าเว้นหน่วยว่างไว้ระบบจะใส่หน่วยแรกของวิชานั้นให้ · แถวหัวตารางระบบข้ามให้เอง</div>
     <div class="tiny" style="margin-bottom:8px">หน่วยที่ใช้ได้ — ${Object.keys(UNITS).map(u=>UNITS[u].n).join(' · ')}</div>
-    <textarea id="csvIn" class="fld" style="min-height:150px;font-size:13px" placeholder="ประวัติศาสตร์,ป.5,พัฒนาการของอาณาจักร,ง่าย,กรุงศรีอยุธยาสถาปนาปีใด,1893,1782,2112,1238,1,สถาปนา พ.ศ. 1893"></textarea>
+    <textarea id="csvIn" class="fld" style="min-height:150px;font-size:calc(13px * var(--fs))" placeholder="ประวัติศาสตร์,ป.5,พัฒนาการของอาณาจักร,ง่าย,กรุงศรีอยุธยาสถาปนาปีใด,1893,1782,2112,1238,1,สถาปนา พ.ศ. 1893"></textarea>
     <button class="btn pri block" data-act="qdoimport">นำเข้า</button>
     <div class="gap"></div>
     <button class="btn block" data-act="qbank">ย้อนกลับ</button>`);
@@ -3043,7 +3078,7 @@ function playSheet(){
     <div class="sub">${left > 0 ? `วันนี้ยังได้รางวัลอีก ${left} ครั้ง` : 'วันนี้ครบโควตารางวัลแล้ว เล่นได้แต่ไม่ได้ของ'}</div>
     <div class="gap"></div>
     <div class="row" style="gap:8px">
-      ${RPS.map(r => `<button class="btn grow" data-rps="${r.k}" style="font-size:26px;padding:16px 0">${r.g}<div style="font-size:12px">${r.n}</div></button>`).join('')}
+      ${RPS.map(r => `<button class="btn grow" data-rps="${r.k}" style="font-size:calc(26px * var(--fs));padding:16px 0">${r.g}<div style="font-size:calc(12px * var(--fs))">${r.n}</div></button>`).join('')}
     </div>
     <div id="rpsout" class="gap"></div>
     <button class="btn block" data-act="closeSheet">พอแล้ว</button>`);
@@ -3116,7 +3151,7 @@ function eggMapSheet(){
         const got = (S.egg.unit && S.egg.unit[u]) || 0;
         return `<div class="item">
           <div class="ic" style="background:hsla(${ELEMENTS[el].h},40%,50%,.25)">${ELEMENTS[el].g}</div>
-          <div class="grow"><b style="font-size:13.5px">${UNITS[u].n}</b>
+          <div class="grow"><b style="font-size:calc(13.5px * var(--fs))">${UNITS[u].n}</b>
             <div class="tiny">ให้ธาตุ${ELEMENTS[el].n}${got?` · สะสมแล้ว ${got} คะแนน`:''}</div></div>
         </div>`;
       }).join('')}</div>`).join('')}
@@ -3156,6 +3191,9 @@ function settingsSheet(){
         <div class="grow"><b>สลับตำแหน่งตัวเลือก</b><div class="sub">กันการจำว่าเฉลยอยู่ข้อไหน</div></div>
         <button class="btn sm ${S.settings.shuffle?'on':''}" data-act="togShuf">${S.settings.shuffle?'เปิด':'ปิด'}</button></div>
     </div>
+      <div class="item"><div class="ic">🔠</div>
+        <div class="grow"><b>ขนาดตัวอักษร</b><div class="sub">ปรับให้อ่านง่ายบนหน้าจอเล็ก</div></div>
+        <button class="btn sm" data-act="fontsize">${(FS_STEPS.find(x=>Math.abs(x.v-((S.settings&&S.settings.fs)||1))<0.001)||{d:'100%'}).d}</button></div>
       <div class="item"><div class="ic">🎓</div>
         <div class="grow"><b>ระดับชั้นของฉัน</b><div class="sub">ใช้เป็นค่าเริ่มต้นเวลาเปิดหน้าตอบคำถาม</div></div>
         <span class="pill">${GRADES[S.grade].n}</span></div>
@@ -3223,9 +3261,12 @@ function bindView(){
   view().querySelectorAll('[data-act]').forEach(b => b.onclick = () => act(b.dataset.act));
 }
 
+document.getElementById('fsbtn').addEventListener('click', fsSheet);
+
 document.getElementById('sheet').addEventListener('click', e => {
-  const b = e.target.closest('[data-act],[data-rps],[data-feed],[data-swap],[data-free],[data-freeyes],[data-cbuy],[data-qlist],[data-qdel],[data-pick]');
+  const b = e.target.closest('[data-fs],[data-act],[data-rps],[data-feed],[data-swap],[data-free],[data-freeyes],[data-cbuy],[data-qlist],[data-qdel],[data-pick]');
   if (!b) return;
+  if (b.dataset.fs) return setFS(+b.dataset.fs);
   if (b.dataset.rps) return doRps(b.dataset.rps);
   if (b.dataset.pick !== undefined && b.dataset.pick !== ''){ QADD_ANS = +b.dataset.pick; return markPick(); }
   if (b.dataset.qlist) return qlistSheet(b.dataset.qlist);
@@ -3299,6 +3340,7 @@ function act(a){
   if (a === 'qimport') return qimportSheet();
   if (a === 'qdoimport') return qdoimport();
   if (a === 'qexport') return qexport();
+  if (a === 'fontsize') return fsSheet();
   if (a === 'eggmap') return eggMapSheet();
   if (a === 'garden') return gardenSheet();
   if (a === 'crystal') return crystalSheet();
@@ -3391,6 +3433,49 @@ function act(a){
   }
 }
 
+/* ===================== ขนาดตัวอักษร ===================== */
+const FS_STEPS = [
+  {v:0.9,  n:'เล็ก',      d:'90%'},
+  {v:1.0,  n:'ปกติ',      d:'100%'},
+  {v:1.15, n:'ใหญ่',      d:'115%'},
+  {v:1.3,  n:'ใหญ่มาก',   d:'130%'},
+  {v:1.5,  n:'ใหญ่พิเศษ', d:'150%'},
+];
+function applyFS(){
+  const v = (S && S.settings && S.settings.fs) || 1;
+  document.documentElement.style.setProperty('--fs', v);
+}
+function setFS(v){
+  S.settings.fs = v;
+  applyFS(); save();
+  const box = document.getElementById('fsopts');
+  if (box) box.querySelectorAll('[data-fs]').forEach(b =>
+    b.classList.toggle('on', Math.abs(+b.dataset.fs - v) < 0.001));
+  const now = document.getElementById('fsnow');
+  if (now) now.textContent = (FS_STEPS.find(x => Math.abs(x.v - v) < 0.001) || {d:Math.round(v*100)+'%'}).d;
+}
+function fsSheet(){
+  const cur = (S.settings && S.settings.fs) || 1;
+  sheet(`<div class="eyebrow">ขนาดตัวอักษร</div>
+    <h2>ปรับให้อ่านสบายตา</h2>
+    <div class="sub">ตอนนี้ <span id="fsnow">${(FS_STEPS.find(x=>Math.abs(x.v-cur)<0.001)||{d:Math.round(cur*100)+'%'}).d}</span> · ตัวอย่างด้านล่างจะเปลี่ยนตามทันที</div>
+    <div class="gap"></div>
+    <div class="fsrow" id="fsopts">
+      ${FS_STEPS.map(x => `<button class="fsopt ${Math.abs(x.v-cur)<0.001?'on':''}" data-fs="${x.v}">
+        <b style="font-size:${Math.round(13*x.v)}px">ก</b><span>${x.n}</span></button>`).join('')}
+    </div>
+    <div class="gap"></div>
+    <div class="fspreview">
+      <div class="q">กรุงศรีอยุธยาสถาปนาขึ้นในปีใด</div>
+      <div class="c"><span class="k">ก</span><span>พ.ศ. 1781</span></div>
+      <div class="c"><span class="k">ข</span><span>พ.ศ. 1893</span></div>
+    </div>
+    <div class="gap"></div>
+    <div class="tiny">ค่านี้จะถูกจำไว้ในเครื่องนี้ เปิดเกมครั้งหน้าก็ยังเป็นขนาดเดิม · ถ้ายังเล็กไป ใช้การซูมของเบราว์เซอร์เพิ่มได้อีก</div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="closeSheet">เรียบร้อย</button>`);
+}
+
 /* ===================== เริ่มระบบ ===================== */
 function intro(){
   sheet(`<div class="eyebrow">ห้องเรียนไร้ขีดจำกัด · #ห้องเรียนครูชัช</div>
@@ -3424,7 +3509,9 @@ async function boot(){
   } else S = freshSave();
 
   if (!Array.isArray(S.room) || S.room.length !== 12) S.room = new Array(12).fill(null);
-  if (!S.settings || typeof S.settings.timed === 'undefined') S.settings = {timed:true, shuffle:true};
+  if (!S.settings || typeof S.settings.timed === 'undefined') S.settings = {timed:true, shuffle:true, fs:1};
+  if (typeof S.settings.fs !== 'number' || !(S.settings.fs > 0)) S.settings.fs = 1;
+  applyFS();
   if (!S.stats || typeof S.stats.answered === 'undefined')
     S.stats = {answered:0, correct:0, points:0, rounds:0, best:0, streak:0, bestStreak:0, lastDay:''};
   S.qcustom = S.qcustom || [];
