@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>กระถางใจ — ตอบคำถาม เลี้ยงวิญญาณ</title>
+<title>ห้องเรียนไร้ขีดจำกัด — #ห้องเรียนครูชัช</title>
 <meta name="theme-color" content="#101b22">
-<meta name="description" content="เกมเลี้ยงวิญญาณที่เติบโตจากคำถามที่ตอบได้ สื่อการเรียนรู้สำหรับวิชาประวัติศาสตร์ การป้องกันการทุจริต และคอมพิวเตอร์">
-<meta property="og:title" content="กระถางใจ — ตอบคำถาม เลี้ยงวิญญาณ">
+<meta name="description" content="ห้องเรียนไร้ขีดจำกัด #ห้องเรียนครูชัช — เกมตอบคำถามตามหลักสูตรที่เปลี่ยนคะแนนของนักเรียนให้กลายเป็นวิญญาณที่เลี้ยงและเติบโตได้">
+<meta property="og:title" content="ห้องเรียนไร้ขีดจำกัด #ห้องเรียนครูชัช">
 <meta property="og:description" content="ตอบคำถามตามหลักสูตร สะสมคะแนนฟักไข่ เลี้ยงวิญญาณ 32 สายพันธุ์ 320 ร่าง">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23142430'/%3E%3Cpath d='M7 18h18l-3 9H10z' fill='%236d9d8b'/%3E%3Cellipse cx='16' cy='18' rx='9' ry='2.4' fill='%23a9cfbe'/%3E%3Cellipse cx='16' cy='11' rx='5' ry='6' fill='%23d8b04a'/%3E%3C/svg%3E">
@@ -60,8 +60,11 @@ header.top{
   display:flex;align-items:center;gap:10px;
 }
 .brand{display:flex;align-items:baseline;gap:8px;flex:1;min-width:0}
-.brand b{font-family:'Trirong',serif;font-size:20px;font-weight:700;letter-spacing:.02em}
-.brand span{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand{flex-direction:column;align-items:flex-start;gap:0}
+.brand b{font-family:'Trirong',serif;font-size:17px;font-weight:700;letter-spacing:.01em;line-height:1.2;white-space:nowrap}
+.brand .tag{font-size:9.5px;color:var(--glaze);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em}
+.brand span.who{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+@media(max-width:420px){ .brand b{font-size:15px} }
 .purse{display:flex;gap:6px;flex-shrink:0}
 .coin{
   display:flex;align-items:center;gap:5px;
@@ -310,8 +313,8 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:12px 0}
 <div id="app">
   <header class="top">
     <div class="brand">
-      <b>กระถางใจ</b>
-      <span id="petline">— กำลังเปิดกระถาง…</span>
+      <b>ห้องเรียนไร้ขีดจำกัด</b>
+      <span class="who" id="petline">#ห้องเรียนครูชัช</span>
     </div>
     <div class="purse">
       <div class="coin g"><i></i><span class="mono" id="coins">0</span></div>
@@ -337,11 +340,12 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:12px 0}
 
 <script>
 /* ===========================================================
-   กระถางใจ (Krathang Jai) — v2.0
-   เกมเลี้ยงวิญญาณที่เติบโตจากคำถามที่คุณตอบได้
+   ห้องเรียนไร้ขีดจำกัด #ห้องเรียนครูชัช — v2.1
+   เกมเลี้ยงวิญญาณที่เติบโตจากคำถามที่นักเรียนตอบได้
    =========================================================== */
 
-const VERSION = '2.0';
+const VERSION = '2.1';
+// คงคีย์เดิมไว้ตั้งแต่ชื่อเก่า เพื่อไม่ให้เซฟของผู้เล่นเดิมหายตอนเปลี่ยนชื่อเกม
 const SAVEKEY = 'krathangjai:save:v1';
 
 /* ===================== ธาตุ ===================== */
@@ -1941,7 +1945,8 @@ function paintTop(){
   $('#coins').textContent = Math.floor(S.coins).toLocaleString('th-TH');
   $('#crys').textContent  = Math.floor(S.crystals).toLocaleString('th-TH');
   const p = S.pet;
-  $('#petline').textContent = p ? `— ${p.name} · Lv.${p.lv} · ${formName(p.sp,p.stage,p.branch)}` : '';
+  const line = $('#petline');
+  if (line) line.textContent = p ? `#ห้องเรียนครูชัช · ${p.name} Lv.${p.lv}` : '#ห้องเรียนครูชัช';
   document.body.classList.toggle('night', isNight() && !roomBonus().light);
   // จุดแจ้งเตือนสำรวจเสร็จ
   const eb = document.querySelector('#tabs button[data-tab="explore"]');
@@ -3141,6 +3146,7 @@ function crystalSheet(){
 function settingsSheet(){
   sheet(`<div class="eyebrow">ตั้งค่า</div><h2>บัญชีและเซฟ</h2>
     <div class="sub">รหัสบัญชี ${S.uid} · เริ่มเล่น ${fmtDate(S.created)} · เวอร์ชัน ${VERSION}</div>
+    <div class="tiny" style="margin-top:4px">ห้องเรียนไร้ขีดจำกัด #ห้องเรียนครูชัช</div>
     <div class="gap"></div>
     <div class="list">
       <div class="item"><div class="ic">⏱️</div>
@@ -3349,7 +3355,7 @@ function act(a){
     const blob = new Blob([JSON.stringify(S)], {type:'application/json'});
     const url = URL.createObjectURL(blob);
     const a2 = document.createElement('a');
-    a2.href = url; a2.download = `krathangjai-${S.uid}.json`; a2.click();
+    a2.href = url; a2.download = `kruchat-save-${S.uid}.json`; a2.click();
     setTimeout(()=>URL.revokeObjectURL(url), 1000);
     return toast('ดาวน์โหลดไฟล์เซฟแล้ว');
   }
@@ -3387,7 +3393,7 @@ function act(a){
 
 /* ===================== เริ่มระบบ ===================== */
 function intro(){
-  sheet(`<div class="eyebrow">กระถางใจ</div>
+  sheet(`<div class="eyebrow">ห้องเรียนไร้ขีดจำกัด · #ห้องเรียนครูชัช</div>
     <h2>มีไข่ใบหนึ่งอยู่ในกระถาง</h2>
     <div class="sub">ยังไม่มีใครรู้ว่าข้างในเป็นอะไร เพราะมันยังไม่ถูกกำหนด</div>
     <div class="gap"></div>
