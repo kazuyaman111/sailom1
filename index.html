@@ -1848,6 +1848,7 @@ function freshSave(){
     prog: {},            // "subj|grade|unit" -> {r, w, recent:[]}
     stats: { answered:0, correct:0, points:0, rounds:0, best:0, streak:0, bestStreak:0, lastDay:'' },
     daily: { day:'', plays:0 },
+    duel: { win:0, lose:0, draw:0, day:'', today:0 },
     settings: { timed:true, shuffle:true, fs:1 },
   };
 }
@@ -2312,7 +2313,7 @@ function buildCrackle(seed){
 }
 
 /* ---- สถานะที่ใช้วาด ---- */
-const View = { progress:0, focusing:false, drift:false, mood:70, bounce:0 };
+const View = { progress:0, focusing:false, drift:false, mood:70, bounce:0, duel:null };
 
 function loop(){
   const t = (performance.now() - t0) / 1000;
@@ -2339,8 +2340,13 @@ function draw(t){
   drawRing(t);
 
   /* วิญญาณ หรือไข่ */
-  if (p) drawSpirit(t, p, sp);
-  if (S.egg) drawEgg(t, !p);
+  if (View.duel && p){
+    drawSpirit(t, p, sp, {cx: CW*0.28, scale: 0.82});
+    drawSpirit(t, View.duel.foe, View.duel.foeSp, {cx: CW*0.72, scale: 0.82, flip: true});
+  } else {
+    if (p) drawSpirit(t, p, sp);
+    if (S.egg) drawEgg(t, !p);
+  }
 
   /* กระถาง */
   drawPot(t);
@@ -2570,10 +2576,10 @@ function drawMarks(kind, R, sp, seed){
   ctx.restore();
 }
 
-function drawSpirit(t, p, sp){
+function drawSpirit(t, p, sp, opt){
   const T = sp.traits;
-  const cx = CW/2;
-  const scale = [0.55, 0.68, 0.82, 1.0, 1.16, 1.3][p.stage];
+  const cx = (opt && opt.cx) || CW/2;
+  const scale = [0.55, 0.68, 0.82, 1.0, 1.16, 1.3][p.stage] * ((opt && opt.scale) || 1);
   const breathe = Math.sin(t*1.6) * 3;
   const happy = p.mood > 60 && p.hp > 40;
   const hop = happy ? Math.abs(Math.sin(t*2.2)) * 5 : 0;
@@ -2582,6 +2588,7 @@ function drawSpirit(t, p, sp){
 
   ctx.save();
   ctx.translate(cx, cy);
+  if (opt && opt.flip) ctx.scale(-1, 1);
 
   // แสงเรืองตามความหายาก
   if (sp.rarity >= 3){ ctx.shadowColor = sp.a(.85); ctx.shadowBlur = sp.rarity === 4 ? 26 : 15; }
@@ -2840,6 +2847,7 @@ function paintTop(){
 document.querySelectorAll('#tabs button').forEach(b => {
   b.addEventListener('click', () => {
     if (QUIZ.running && !QUIZ.locked) return;
+    if (DUEL.running && !DUEL.locked) return;
     TAB = b.dataset.tab;
     document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
     render();
@@ -2857,6 +2865,7 @@ function render(){
   else if (TAB === 'home')    v.innerHTML = viewHome();
   else if (TAB === 'book')    v.innerHTML = viewBook();
   else if (TAB === 'sum')     v.innerHTML = viewSummary();
+  else if (TAB === 'duel')    v.innerHTML = viewDuel();
   bindView();
   const cv = document.getElementById('pot');
   if (cv) initCanvas(cv);
@@ -2989,6 +2998,14 @@ function viewPot(){
     </div>
   </div>
   ${evoHtml}
+  <div class="card">
+    <div class="eyebrow">ดวลปริศนา</div>
+    <div class="row spread">
+      <div class="grow"><b>ท้าดวลกับเพื่อน</b>
+        <div class="sub">แลกรหัสกันแล้วดวลได้เลย ไม่ต้องต่อเน็ตหากัน${(S.duel&&(S.duel.win||S.duel.lose))?` · สถิติ ${S.duel.win||0}-${S.duel.draw||0}-${S.duel.lose||0}`:''}</div></div>
+      <button class="btn gold" data-act="duel">เปิด</button>
+    </div>
+  </div>
   ${eggBlock()}
   <div class="card">
     <div class="eyebrow">บันทึก</div>
@@ -4063,6 +4080,7 @@ function bindView(){
     save(); render();
   });
   view().querySelectorAll('[data-ans]').forEach(b => b.onclick = () => answerQuestion(+b.dataset.ans));
+  view().querySelectorAll('[data-dans]').forEach(b => b.onclick = () => duelAnswer(+b.dataset.dans));
   view().querySelectorAll('[data-go]').forEach(b => b.onclick = () => startExplore(b.dataset.go));
   view().querySelectorAll('[data-bookel]').forEach(b => b.onclick = () => { BOOKEL = b.dataset.bookel; render(); });
   view().querySelectorAll('[data-card]').forEach(b => b.onclick = () => sheet(cardSheet(b.dataset.card)));
@@ -4109,9 +4127,11 @@ function bindView(){
 document.getElementById('fsbtn').addEventListener('click', fsSheet);
 
 document.getElementById('sheet').addEventListener('click', e => {
-  const b = e.target.closest('[data-fs],[data-act],[data-rps],[data-feed],[data-swap],[data-free],[data-freeyes],[data-cbuy],[data-qlist],[data-qdel],[data-pick]');
+  const b = e.target.closest('[data-dgrade],[data-dsubj],[data-fs],[data-act],[data-rps],[data-feed],[data-swap],[data-free],[data-freeyes],[data-cbuy],[data-qlist],[data-qdel],[data-pick]');
   if (!b) return;
   if (b.dataset.fs) return setFS(+b.dataset.fs);
+  if (b.dataset.dgrade){ QUIZ.grade = b.dataset.dgrade; S.grade = b.dataset.dgrade; save(); return duelPasteSheet(); }
+  if (b.dataset.dsubj){ DUEL.subj = b.dataset.dsubj; return duelPasteSheet(); }
   if (b.dataset.rps) return doRps(b.dataset.rps);
   if (b.dataset.pick !== undefined && b.dataset.pick !== ''){ QADD_ANS = +b.dataset.pick; return markPick(); }
   if (b.dataset.qlist) return qlistSheet(b.dataset.qlist);
@@ -4160,7 +4180,15 @@ document.getElementById('sheet').addEventListener('click', e => {
 
 function act(a){
   const p = S.pet;
-  if (a === 'closeSheet') return closeSheet();
+  if (a === 'closeSheet'){
+    closeSheet();
+    if (TAB === 'duel' && !DUEL.running){
+      TAB = 'pot';
+      document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.tab === 'pot'));
+      render();
+    }
+    return;
+  }
   if (a === 'goQuiz'){
     TAB = 'quiz';
     document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.tab === 'quiz'));
@@ -4186,6 +4214,36 @@ function act(a){
   if (a === 'qdoimport') return qdoimport();
   if (a === 'qexport') return qexport();
   if (a === 'fontsize') return fsSheet();
+  if (a === 'duel'){ closeSheet(); return duelSheet(); }
+  if (a === 'duelMine') return duelMineSheet();
+  if (a === 'duelPaste') return duelPasteSheet();
+  if (a === 'duelCopy'){
+    const el = document.getElementById('duelOut');
+    if (!el) return;
+    el.select(); el.setSelectionRange(0, 99999);
+    try { document.execCommand('copy'); } catch(e){}
+    if (navigator.clipboard) navigator.clipboard.writeText(el.value).catch(()=>{});
+    return toast('คัดลอกรหัสแล้ว ส่งให้เพื่อนได้เลย', 'gold');
+  }
+  if (a === 'duelGo'){
+    const raw = (document.getElementById('duelIn') || {}).value || '';
+    const r = readDuelCode(raw);
+    if (!r.ok) return toast(r.err, 'bad');
+    const g = QUIZ.grade || S.grade;
+    if (!questionsBy(DUEL.subj, g).length) return toast('วิชานี้ยังไม่มีคำถามในระดับชั้นที่เลือก', 'bad');
+    closeSheet();
+    TAB = 'duel';
+    document.querySelectorAll('#tabs button').forEach(x => x.classList.remove('on'));
+    duelStart(r.foe, DUEL.subj, g);
+    return toast(`เริ่มดวลกับ ${r.foe.name}`, 'gold');
+  }
+  if (a === 'duelNext') return duelAdvance();
+  if (a === 'duelQuit'){
+    return sheet(`<h2>ยอมแพ้</h2><div class="sub">การดวลจะจบทันทีและนับเป็นแพ้</div>
+      <div class="gap"></div><button class="btn danger block" data-act="duelQuitYes">ยอมแพ้</button>
+      <div class="gap"></div><button class="btn pri block" data-act="closeSheet">สู้ต่อ</button>`);
+  }
+  if (a === 'duelQuitYes'){ closeSheet(); DUEL.hp = 0; return duelFinish(); }
   if (a === 'eggmap') return eggMapSheet();
   if (a === 'garden') return gardenSheet();
   if (a === 'crystal') return crystalSheet();
@@ -4365,6 +4423,7 @@ async function boot(){
   S.garden = S.garden || [];
   S.seen = S.seen || {};
   S.prog = S.prog || {};
+  S.duel = S.duel || { win:0, lose:0, draw:0, day:'', today:0 };
   if (!S.grade || !GRADES[S.grade]) S.grade = (gradesReady()[0] || 'p5');
   QUIZ.grade = S.grade;
 
@@ -4385,9 +4444,398 @@ async function boot(){
 }
 
 /* จุดเข้าถึงสถานะสำหรับตรวจสอบ */
-window.__game = () => ({ S, QUIZ, TAB, VERSION });
+window.__game = () => ({ S, QUIZ, DUEL, TAB, VERSION });
 
 boot();
+
+/* ===========================================================
+   ดวลปริศนา — ระบบท้าดวลด้วยรหัส (ไม่ต้องใช้เซิร์ฟเวอร์)
+   ผู้เล่นสร้างรหัสจากวิญญาณของตน ส่งให้เพื่อน เพื่อนวางรหัสแล้วดวลกับ "เงา" ของตัวนั้น
+   ตอบถูกเท่านั้นจึงจะโจมตีได้ ความแรงมาจากค่าสถานะและความเร็วในการตอบ
+   =========================================================== */
+
+const DUEL_VER = 1;
+const DUEL_ROUNDS = 10;          // จำนวนข้อสูงสุดต่อการดวลหนึ่งครั้ง
+const DUEL_WIN_CAP = 5;          // จำนวนครั้งต่อวันที่ยังได้รางวัลเต็ม
+const DIFF_POWER = [0, 1.0, 1.25, 1.6, 2.1];   // ตัวคูณความแรงตามความยากของข้อ
+
+/* ---------- เข้ารหัส / ถอดรหัส ---------- */
+function b64e(str){
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function b64d(s){
+  s = s.replace(/-/g,'+').replace(/_/g,'/');
+  while (s.length % 4) s += '=';
+  const bin = atob(s);
+  const arr = new Uint8Array(bin.length);
+  for (let i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(arr);
+}
+function shortSum(str){
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let h = hashStr(str), out = '';
+  for (let i=0;i<4;i++){ out += c[h % c.length]; h = Math.floor(h / c.length) + 7919; }
+  return out;
+}
+
+/* สร้างรหัสท้าดวลจากวิญญาณที่กำลังเลี้ยงอยู่ */
+function makeDuelCode(){
+  const p = S.pet;
+  if (!p) return null;
+  const acc = S.stats.answered ? Math.round(S.stats.correct / S.stats.answered * 100) : 60;
+  const payload = JSON.stringify([
+    DUEL_VER, p.sp, p.stage, p.branch || '', p.lv,
+    p.stats.STR, p.stats.VIT, p.stats.AGI, p.stats.INT, p.stats.LUK,
+    clamp(acc, 30, 98), String(p.name).slice(0, 12), S.uid
+  ]);
+  const body = b64e(payload);
+  return 'KJ' + DUEL_VER + '-' + body + '-' + shortSum(body);
+}
+
+/* ถอดรหัสท้าดวล คืนค่า {ok, foe} หรือ {ok:false, err} */
+function readDuelCode(raw){
+  const code = String(raw || '').trim().replace(/\s+/g, '');
+  const m = code.match(/^KJ(\d+)-([A-Za-z0-9\-_]+)-([A-Z2-9]{4})$/);
+  if (!m) return {ok:false, err:'รูปแบบรหัสไม่ถูกต้อง ลองคัดลอกใหม่ทั้งบรรทัด'};
+  if (+m[1] !== DUEL_VER) return {ok:false, err:'รหัสนี้มาจากเกมคนละรุ่น ให้เพื่อนอัปเดตเกมก่อน'};
+  if (shortSum(m[2]) !== m[3]) return {ok:false, err:'รหัสไม่สมบูรณ์หรือถูกแก้ไข ลองขอรหัสใหม่'};
+  let a;
+  try { a = JSON.parse(b64d(m[2])); } catch(e){ return {ok:false, err:'อ่านรหัสไม่ได้'}; }
+  if (!Array.isArray(a) || a.length < 13) return {ok:false, err:'ข้อมูลในรหัสไม่ครบ'};
+  const sp = a[1];
+  if (!SPECIES[sp]) return {ok:false, err:'ไม่รู้จักสายพันธุ์ในรหัสนี้'};
+  const stage = clamp(+a[2] || 0, 0, 5);
+  const foe = {
+    sp, stage,
+    branch: a[3] || null,
+    lv: clamp(+a[4] || 1, 1, 99),
+    stats: {
+      STR: clamp(+a[5]||5, 1, 999), VIT: clamp(+a[6]||5, 1, 999),
+      AGI: clamp(+a[7]||5, 1, 999), INT: clamp(+a[8]||5, 1, 999),
+      LUK: clamp(+a[9]||5, 1, 999)
+    },
+    acc: clamp(+a[10] || 60, 30, 98),
+    name: String(a[11] || 'คู่ต่อสู้').slice(0, 12),
+    uid: String(a[12] || '????'),
+    mood: 80, hp: 100, sick: false, care:{body:0,mind:0,play:0}
+  };
+  if (foe.uid === S.uid) return {ok:false, err:'นี่คือรหัสของตัวเอง ต้องใช้รหัสของเพื่อน'};
+  return {ok:true, foe};
+}
+
+/* ---------- สูตรการต่อสู้ ---------- */
+function duelMaxHp(p){ return Math.round(60 + p.stats.VIT * 3 + p.lv * 1.5); }
+function duelAtk(p){ return 6 + p.stats.STR * 0.55 + p.stats.INT * 0.25; }
+function duelDef(p){ return p.stats.VIT * 0.22; }
+
+/* คำนวณความเสียหาย: ต้องตอบถูกเท่านั้นจึงจะเข้า */
+function duelDamage(attacker, defender, diff, speed){
+  const base = Math.max(3, duelAtk(attacker) - duelDef(defender));
+  const crit = Math.random() < clamp(attacker.stats.LUK / 320, 0, 0.35);
+  const dmg = base * DIFF_POWER[diff] * (1 + 0.5 * clamp(speed, 0, 1)) * (crit ? 1.8 : 1);
+  return { dmg: Math.max(1, Math.round(dmg)), crit };
+}
+
+/* เงาของคู่ต่อสู้ตอบถูกหรือไม่ อิงจากความแม่นยำจริงของเจ้าของรหัส */
+function foeAnswers(foe, diff){
+  const mod = [0, 1.06, 1.0, 0.88, 0.76][diff];
+  return Math.random() < clamp(foe.acc / 100 * mod, 0.1, 0.97);
+}
+function foeSpeed(foe){
+  return clamp(foe.stats.AGI / (foe.stats.AGI + 45), 0, 1) * (0.6 + Math.random() * 0.4);
+}
+
+/* ---------- สถานะการดวล ---------- */
+const DUEL = {
+  running:false, foe:null, subj:'mix', grade:null,
+  hp:0, foeHp:0, maxHp:0, foeMax:0,
+  round:0, used:[], cur:null, locked:false, chosen:-1, units:{}, eggPts:0,
+  limitMs:0, startAt:0, tickId:null, log:[], result:null
+};
+
+function duelStart(foe, subj, grade){
+  const p = S.pet;
+  DUEL.running = true; DUEL.foe = foe;
+  DUEL.subj = subj; DUEL.grade = grade;
+  DUEL.maxHp = duelMaxHp(p); DUEL.foeMax = duelMaxHp(foe);
+  DUEL.hp = DUEL.maxHp; DUEL.foeHp = DUEL.foeMax;
+  DUEL.round = 0; DUEL.used = []; DUEL.log = []; DUEL.result = null;
+  DUEL.units = {}; DUEL.eggPts = 0;
+  View.duel = { foe, foeSp: SPECIES[foe.sp] };
+  duelNext();
+}
+
+function duelNext(){
+  const q = pickQuestion(DUEL.subj, DUEL.grade, DUEL.used);
+  if (!q || DUEL.round >= DUEL_ROUNDS) return duelFinish();
+  DUEL.used.push(q.id);
+  let cur = q;
+  if (S.settings.shuffle){
+    const order = q.ch.map((c,i)=>i).sort(() => Math.random() - .5);
+    cur = Object.assign({}, q, { ch: order.map(i => q.ch[i]), ans: order.indexOf(q.ans) });
+  }
+  DUEL.cur = cur;
+  DUEL.locked = false; DUEL.chosen = -1;
+  DUEL.limitMs = S.settings.timed ? DIFF[cur.diff].sec * 1000 : 0;
+  DUEL.startAt = Date.now();
+  View.focusing = true; View.progress = 0; View.drift = false;
+  clearInterval(DUEL.tickId);
+  if (DUEL.limitMs) DUEL.tickId = setInterval(duelTick, 120);
+  render();
+}
+
+function duelTick(){
+  if (!DUEL.running || DUEL.locked || !DUEL.limitMs) return;
+  const left = DUEL.limitMs - (Date.now() - DUEL.startAt);
+  View.progress = clamp(1 - left / DUEL.limitMs, 0, 1);
+  View.drift = left < DUEL.limitMs * 0.25;
+  const c = document.getElementById('qclock');
+  if (c){
+    c.textContent = Math.max(0, Math.ceil(left/1000)) + ' วิ';
+    c.classList.toggle('low', left < DUEL.limitMs * 0.25);
+  }
+  if (left <= 0) duelAnswer(-1);
+}
+
+function duelAnswer(i){
+  if (DUEL.locked) return;
+  clearInterval(DUEL.tickId);
+  const q = DUEL.cur, p = S.pet, foe = DUEL.foe;
+  const correct = i === q.ans;
+  const left = DUEL.limitMs ? Math.max(0, DUEL.limitMs - (Date.now() - DUEL.startAt)) : 0;
+  const speed = DUEL.limitMs ? left / DUEL.limitMs : 0.5;
+
+  DUEL.chosen = i; DUEL.locked = true; DUEL.round++;
+  const turn = { correct, my:null, foe:null };
+
+  if (correct){
+    const r = duelDamage(p, foe, q.diff, speed);
+    DUEL.foeHp = Math.max(0, DUEL.foeHp - r.dmg);
+    turn.my = r;
+    recordAnswer(q, true);
+    S.stats.answered++; S.stats.correct++;
+    DUEL.eggPts += DIFF[q.diff].pt;
+    DUEL.units[q.unit] = (DUEL.units[q.unit] || 0) + DIFF[q.diff].pt;
+  } else {
+    recordAnswer(q, false);
+    S.stats.answered++;
+  }
+
+  // ตาของเงาคู่ต่อสู้
+  if (DUEL.foeHp > 0){
+    if (foeAnswers(foe, q.diff)){
+      const r = duelDamage(foe, p, q.diff, foeSpeed(foe));
+      DUEL.hp = Math.max(0, DUEL.hp - r.dmg);
+      turn.foe = r;
+    }
+  }
+  DUEL.log.push(turn);
+  View.drift = false;
+  save(); render();
+  if (DUEL.foeHp <= 0 || DUEL.hp <= 0) setTimeout(duelFinish, 500);
+}
+
+function duelAdvance(){
+  if (!DUEL.locked) return;
+  if (DUEL.foeHp <= 0 || DUEL.hp <= 0 || DUEL.round >= DUEL_ROUNDS) return duelFinish();
+  duelNext();
+}
+
+function duelFinish(){
+  clearInterval(DUEL.tickId);
+  if (!DUEL.running) return;
+  DUEL.running = false;
+  View.focusing = false; View.drift = false; View.progress = 0; View.duel = null;
+
+  const myPct = DUEL.hp / DUEL.maxHp, foePct = DUEL.foeHp / DUEL.foeMax;
+  const win = DUEL.foeHp <= 0 ? true : (DUEL.hp <= 0 ? false : myPct > foePct);
+  const draw = DUEL.hp > 0 && DUEL.foeHp > 0 && Math.abs(myPct - foePct) < 0.02;
+
+  S.duel = S.duel || { win:0, lose:0, draw:0, day:'', today:0 };
+  const t = todayKey();
+  if (S.duel.day !== t){ S.duel.day = t; S.duel.today = 0; }
+  const full = S.duel.today < DUEL_WIN_CAP;
+  S.duel.today++;
+
+  const hit = DUEL.log.filter(x => x.correct).length;
+  let coin = 0, crys = 0, xp = 0;
+  if (draw){ S.duel.draw++; coin = 40; }
+  else if (win){ S.duel.win++; coin = 80 + S.pet.lv * 3; crys = full ? 2 : 0; }
+  else { S.duel.lose++; coin = 25; }
+  if (!full) coin = Math.round(coin * 0.3);
+  xp = Math.round(hit * 12 * (win ? 1.3 : 1));
+
+  S.coins += coin; S.crystals += crys;
+  const lv = gainXp(xp).levels;
+  S.pet.mood = clamp(S.pet.mood + (win ? 8 : 3), 0, 100);
+  if (S.egg && DUEL.eggPts > 0) eggAddPoints(DUEL.eggPts, DUEL.units);
+  DUEL.result = { win, draw, coin, crys, xp, lv, hit, full };
+  save(); render();
+  sheet(duelResultSheet());
+}
+
+/* ===================== หน้าจอดวล ===================== */
+function duelSheet(){
+  if (!S.pet) return toast('ต้องมีวิญญาณก่อนจึงจะดวลได้', 'bad');
+  const d = S.duel || {win:0, lose:0, draw:0};
+  sheet(`<div class="eyebrow">ดวลปริศนา</div>
+    <h2>ท้าดวลกับเพื่อน</h2>
+    <div class="sub">ตอบถูกเท่านั้นวิญญาณจึงจะโจมตีได้ ตอบเร็วยิ่งแรง ค่าสถานะเป็นตัวกำหนดพลังพื้นฐาน</div>
+    <div class="gap"></div>
+    <div class="bigstat">
+      <div><b style="color:var(--ok)">${d.win||0}</b><span>ชนะ</span></div>
+      <div><b>${d.draw||0}</b><span>เสมอ</span></div>
+      <div><b style="color:var(--bad)">${d.lose||0}</b><span>แพ้</span></div>
+    </div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="duelMine">สร้างรหัสของฉันให้เพื่อน</button>
+    <div class="gap"></div>
+    <button class="btn gold block" data-act="duelPaste">วางรหัสเพื่อนเพื่อเริ่มดวล</button>
+    <div class="gap"></div>
+    <div class="tiny">รหัสเป็นภาพนิ่งของวิญญาณ ณ ตอนที่สร้าง ถ้าเลี้ยงจนแข็งแรงขึ้นให้สร้างรหัสใหม่ส่งให้เพื่อนอีกครั้ง</div>
+    <div class="gap"></div>
+    <button class="btn block" data-act="closeSheet">ปิด</button>`);
+}
+
+function duelMineSheet(){
+  const code = makeDuelCode();
+  if (!code) return toast('ยังไม่มีวิญญาณ', 'bad');
+  const p = S.pet, sp = SPECIES[p.sp];
+  sheet(`<div class="eyebrow">รหัสท้าดวลของฉัน</div>
+    <h2>${esc(p.name)}</h2>
+    <div class="sub">${formName(p.sp,p.stage,p.branch)} · Lv.${p.lv} · พลังรวม ${petPower(p)}</div>
+    <div class="gap"></div>
+    <div class="list">
+      <div class="item"><div class="ic" style="background:${sp.dim};border-color:${sp.a(.4)}">${sp.g}</div>
+        <div class="grow"><b>เลือดสูงสุด ${duelMaxHp(p)}</b>
+          <div class="tiny">พลังโจมตี ${Math.round(duelAtk(p))} · เกราะ ${Math.round(duelDef(p))} · แม่นยำ ${S.stats.answered?Math.round(S.stats.correct/S.stats.answered*100):60}%</div></div></div>
+    </div>
+    <div class="gap"></div>
+    <textarea id="duelOut" class="fld" readonly style="min-height:96px;font-family:'IBM Plex Mono',monospace;font-size:calc(12px * var(--fs));word-break:break-all">${code}</textarea>
+    <button class="btn pri block" data-act="duelCopy">คัดลอกรหัส</button>
+    <div class="gap"></div>
+    <div class="tiny">ส่งรหัสนี้ให้เพื่อนทางไลน์หรือเขียนใส่กระดาษก็ได้ เพื่อนจะได้ดวลกับเงาของวิญญาณตัวนี้</div>
+    <div class="gap"></div>
+    <button class="btn block" data-act="duel">ย้อนกลับ</button>`);
+}
+
+function duelPasteSheet(){
+  const grade = QUIZ.grade || S.grade;
+  const total = questionsBy('mix', grade).length;
+  sheet(`<div class="eyebrow">รับคำท้า</div><h2>วางรหัสของเพื่อน</h2>
+    <div class="sub">คำถามที่ใช้ดวลจะมาจากระดับชั้นและวิชาที่เลือกด้านล่าง</div>
+    <div class="gap"></div>
+    <textarea id="duelIn" class="fld" style="min-height:88px;font-size:calc(13px * var(--fs))" placeholder="วางรหัสที่ขึ้นต้นด้วย KJ1- ตรงนี้"></textarea>
+    <div class="eyebrow">ระดับชั้น</div>
+    <div class="chips">${GRADE_KEYS.map(g => {
+      const n = questionsBy('mix', g).length;
+      return `<button class="chip ${g===grade?'on':''}" data-dgrade="${g}" ${n?'':'disabled'}>${GRADES[g].n}</button>`;
+    }).join('')}</div>
+    <div class="gap"></div>
+    <div class="eyebrow">วิชา</div>
+    <div class="chips">
+      <button class="chip ${DUEL.subj==='mix'?'on':''}" data-dsubj="mix">🎲 ผสม <span class="mono" style="font-size:11px;opacity:.7">${total}</span></button>
+      ${SUBJ_KEYS.map(k => {
+        const n = questionsBy(k, grade).length;
+        return `<button class="chip ${DUEL.subj===k?'on':''}" data-dsubj="${k}" ${n?'':'disabled'}>${SUBJECTS[k].g} ${SUBJECTS[k].short} <span class="mono" style="font-size:11px;opacity:.7">${n}</span></button>`;
+      }).join('')}
+    </div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="duelGo">เริ่มดวล</button>
+    <div class="gap"></div>
+    <button class="btn block" data-act="duel">ย้อนกลับ</button>`);
+}
+
+function hpBar(cur, max, cls){
+  const pct = clamp(cur / max * 100, 0, 100);
+  const col = pct > 50 ? '#7cae9b' : (pct > 20 ? '#d8b04a' : '#c26a6a');
+  return `<div class="bar" style="height:9px"><i style="width:${pct}%;background:${col}"></i></div>`;
+}
+
+function viewDuel(){
+  if (!DUEL.running) return viewPot();
+  const p = S.pet, foe = DUEL.foe;
+  const fsp = SPECIES[foe.sp], msp = SPECIES[p.sp];
+  const q = DUEL.cur, d = DIFF[q.diff];
+
+  const choices = q.ch.map((c, i) => {
+    let cls = '';
+    if (DUEL.locked){
+      if (i === q.ans) cls = 'right';
+      else if (i === DUEL.chosen) cls = 'wrong';
+    }
+    return `<button class="ch ${cls}" data-dans="${i}" ${DUEL.locked?'disabled':''}>
+      <span class="k">${'กขคง'[i]}</span><span>${esc(c)}</span></button>`;
+  }).join('');
+
+  let after = '';
+  if (DUEL.locked){
+    const t = DUEL.log[DUEL.log.length - 1] || {};
+    const lines = [];
+    if (t.correct && t.my) lines.push(`<b style="color:var(--ok)">${esc(p.name)} โจมตี ${t.my.dmg} หน่วย${t.my.crit?' · เข้าเต็มแรง':''}</b>`);
+    else lines.push(`<b style="color:var(--warn)">ตอบผิด ${esc(p.name)} โจมตีไม่เข้า</b>`);
+    if (t.foe) lines.push(`<span style="color:var(--bad)">${esc(foe.name)} สวนกลับ ${t.foe.dmg} หน่วย${t.foe.crit?' · เข้าเต็มแรง':''}</span>`);
+    else lines.push(`<span class="tiny">${esc(foe.name)} ตอบข้อนี้ไม่ได้ จึงโจมตีไม่เข้า</span>`);
+    after = `<div class="expl" style="border-left-color:${t.correct?'var(--glaze)':'var(--bad)'}">
+      ${lines.join('<br>')}
+      ${q.exp ? `<div class="tiny" style="margin-top:6px">${esc(q.exp)}</div>` : ''}
+    </div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="duelNext">${(DUEL.hp<=0||DUEL.foeHp<=0||DUEL.round>=DUEL_ROUNDS)?'ดูผลการดวล':'ข้อถัดไป'}</button>`;
+  }
+
+  return `
+  <div class="card">
+    <div class="stage"><canvas id="pot" width="420" height="340" aria-label="สนามดวล"></canvas></div>
+    <div class="row" style="gap:12px;margin-top:4px">
+      <div class="grow">
+        <div class="row spread"><b style="font-size:calc(14px * var(--fs))">${esc(p.name)}</b>
+          <span class="mono tiny">${DUEL.hp}/${DUEL.maxHp}</span></div>
+        ${hpBar(DUEL.hp, DUEL.maxHp)}
+        <div class="tiny">Lv.${p.lv} · ธาตุ${msp.el}</div>
+      </div>
+      <div class="grow">
+        <div class="row spread"><b style="font-size:calc(14px * var(--fs))">${esc(foe.name)}</b>
+          <span class="mono tiny">${DUEL.foeHp}/${DUEL.foeMax}</span></div>
+        ${hpBar(DUEL.foeHp, DUEL.foeMax)}
+        <div class="tiny">Lv.${foe.lv} · ธาตุ${fsp.el} · แม่น ${foe.acc}%</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="qmeta">
+      <span>ยกที่ ${DUEL.round + (DUEL.locked?0:1)}/${DUEL_ROUNDS} · ${UNITS[q.unit].n} · <span style="color:${d.c}">${d.n}</span></span>
+      <span>${S.settings.timed && !DUEL.locked ? `<span id="qclock">${Math.ceil(Math.max(0,DUEL.limitMs-(Date.now()-DUEL.startAt))/1000)} วิ</span>` : ''}</span>
+    </div>
+    <div class="qtext">${esc(q.q)}</div>
+    <div class="choices">${choices}</div>
+    ${after}
+  </div>
+  ${DUEL.locked ? '' : '<div class="card"><button class="btn sm danger block" data-act="duelQuit">ยอมแพ้</button></div>'}`;
+}
+
+function duelResultSheet(){
+  const r = DUEL.result, foe = DUEL.foe;
+  const title = r.draw ? 'เสมอกัน' : (r.win ? 'ชนะการดวล' : 'แพ้การดวล');
+  const line = (g, t, s2) => `<div class="item"><div class="ic">${g}</div><div class="grow"><b>${t}</b>${s2?`<div class="sub">${s2}</div>`:''}</div></div>`;
+  return `<div class="eyebrow">ผลการดวล</div>
+    <h2 style="color:${r.draw?'var(--gold)':(r.win?'var(--ok)':'var(--bad)')}">${title}</h2>
+    <div class="sub">${esc(S.pet.name)} ${DUEL.hp}/${DUEL.maxHp} · ${esc(foe.name)} ${DUEL.foeHp}/${DUEL.foeMax} · ตอบถูก ${r.hit} ข้อ</div>
+    <div class="gap"></div>
+    <div class="list">
+      ${line('🪙', `เหรียญ +${r.coin}`, r.full ? '' : 'เกินโควตารางวัลของวันนี้แล้ว ได้ 30%')}
+      ${r.crys ? line('💠', `ผลึกสมาธิ +${r.crys}`) : ''}
+      ${line('⭐', `ประสบการณ์ +${r.xp}`, r.lv ? `เลื่อนขึ้น ${r.lv} เลเวล` : '')}
+      ${S.egg ? line('🥚', `ไข่ได้รับ +${DUEL.eggPts} คะแนนฐาน`) : ''}
+    </div>
+    <div class="gap"></div>
+    <div class="tiny">${r.win ? 'ยิ่งตอบเร็วและตอบข้อยากได้ ยิ่งโจมตีแรง' : 'ลองตอบข้อที่ยากขึ้นและตอบให้เร็วขึ้น จะโจมตีได้แรงกว่านี้'}</div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="closeSheet">ปิด</button>`;
+}
 
 </script>
 </body>
