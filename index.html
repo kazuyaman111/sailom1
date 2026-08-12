@@ -231,10 +231,10 @@ select.fld{appearance:none}
 #room{
   position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);
   background:linear-gradient(180deg,#20323d 0%,#20323d 58%,#2b3a3a 58%,#243231 100%);
-  aspect-ratio:16/10;
+  aspect-ratio:1/0.82;
 }
 #room.lit{background:linear-gradient(180deg,#31485a 0%,#31485a 58%,#3d5350 58%,#334744 100%)}
-.slots{position:absolute;inset:8%;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:4px}
+.slots{position:absolute;inset:7%;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:4px}
 .slot{
   border:1px dashed rgba(190,222,210,.16);border-radius:8px;
   display:grid;place-items:center;font-size:calc(26px * var(--fs));line-height:1;
@@ -540,14 +540,29 @@ const ITEMS = {
   honey:   {n:'น้ำผึ้งป่า',    g:'🍯', t:'food', hunger:48, mood:16, aff:4, sell:34,  d:'อิ่มนานและอารมณ์ดีขึ้นมาก'},
   nectar:  {n:'น้ำค้างดอกไม้', g:'🌸', t:'food', hunger:60, mood:22, aff:7, sell:70,  d:'อาหารชั้นดี วิญญาณหายากกินแล้วสนิทเร็ว'},
 
+  driedfish:{n:'ปลาแห้งย่าง',  g:'🐟', t:'food', hunger:55, mood:2,  aff:1, sell:22,  d:'อิ่มท้องมากแต่รสจืด เหมาะเวลาหิวจัด'},
+  sweetsoup:{n:'บัวลอยน้ำขิง',  g:'🍮', t:'food', hunger:15, mood:30, aff:5, sell:44,  d:'อิ่มไม่มากแต่ทำให้อารมณ์ดีขึ้นมาก'},
+
   balm:    {n:'ยาหม่องสมุนไพร', g:'🧴', t:'heal', heal:35, sell:30,  d:'รักษาบาดแผลจากการสำรวจ'},
+  antidote:{n:'ยาถอนพิษ',      g:'🧪', t:'heal', heal:20, cure:true, sell:55, d:'ถอนอาการป่วยได้ทันทีแม้สุขภาพยังไม่ถึงเกณฑ์'},
+  tonic:   {n:'ยาต้มบำรุงกำลัง', g:'🍵', t:'heal', heal:55, guard:1, sell:75, d:'ฟื้นสุขภาพและกันบาดเจ็บจากการสำรวจครั้งถัดไปหนึ่งครั้ง'},
   elixir:  {n:'ยาต้มโบราณ',    g:'⚗️', t:'heal', heal:100, mood:10, sell:90, d:'ฟื้นสุขภาพเต็มทันที'},
+
+  mainfruit:{n:'ผลไม้บำรุงธาตุ', g:'🍑', t:'stat', target:'main', up:2, sell:0, d:'เพิ่มค่าสถานะหลักของวิญญาณอย่างถาวร 2 หน่วย'},
+  subfruit:{n:'ผลไม้บำรุงรอง',  g:'🍈', t:'stat', target:'sub',  up:2, sell:0, d:'เพิ่มค่าสถานะรองของวิญญาณอย่างถาวร 2 หน่วย'},
+
+  charm_b: {n:'เครื่องรางกายา', g:'🧿', t:'care', br:'body', up:10, sell:0, d:'ผลักเส้นทางวิวัฒนาการไปทางสายกายา 10 หน่วย'},
+  charm_m: {n:'เครื่องรางฌาน',  g:'📿', t:'care', br:'mind', up:10, sell:0, d:'ผลักเส้นทางวิวัฒนาการไปทางสายฌาน 10 หน่วย'},
+  charm_p: {n:'เครื่องรางระบำ', g:'🎏', t:'care', br:'play', up:10, sell:0, d:'ผลักเส้นทางวิวัฒนาการไปทางสายระบำ 10 หน่วย'},
+
+  dewdrop: {n:'น้ำทิพย์เร่งฟัก', g:'💧', t:'eggboost', up:150, sell:0, d:'เติมคะแนนฐานให้ไข่ทันที 150 โดยไม่เปลี่ยนธาตุที่สะสมไว้'},
+  compass: {n:'เข็มทิศเก่า',    g:'🧭', t:'explore', sell:0, d:'เรียกวิญญาณที่ออกสำรวจกลับทันทีโดยได้ของครบเหมือนรอจนหมดเวลา'},
 
   clay:    {n:'ดินเหนียว',     g:'🟤', t:'mat', sell:8,   d:'วัสดุสร้างของตกแต่ง'},
   bamboo:  {n:'ไม้ไผ่',        g:'🎋', t:'mat', sell:12,  d:'เหนียว ทนทาน ใช้ต่อของได้สารพัด'},
   shard:   {n:'เศษสังคโลก',    g:'🏺', t:'mat', sell:26,  d:'เศษเครื่องเคลือบจากเตาเก่า'},
   silk:    {n:'ไหมป่า',        g:'🧵', t:'mat', sell:40,  d:'เส้นใยเงางาม หายากพอสมควร'},
-  relic:   {n:'ลูกปัดโบราณ',   g:'📿', t:'mat', sell:120, d:'พบได้เฉพาะในซากเจดีย์'},
+  relic:   {n:'ลูกปัดโบราณ',   g:'🔗', t:'mat', sell:120, d:'พบได้เฉพาะในซากเจดีย์'},
 
   stone_b: {n:'หินกายา',       g:'🟩', t:'stone', br:'body', sell:0, d:'ใช้ปลุกร่างโบราณสายกายา'},
   stone_m: {n:'หินฌาน',        g:'🟦', t:'stone', br:'mind', sell:0, d:'ใช้ปลุกร่างโบราณสายฌาน'},
@@ -598,7 +613,21 @@ const FURN = {
   gong:   {n:'ฆ้องเล็ก',        g:'🔔', cost:700,  eff:{focusXp:.10,coin:.12}, d:'โฟกัส +10% และเหรียญที่ได้ +12%'},
   pond:   {n:'บ่อบัวจิ๋ว',      g:'🪷', cost:900,  eff:{hungerSlow:.15,moodSlow:.15}, d:'ความหิวและอารมณ์ลดช้าลงอย่างละ 15%'},
   chime:  {n:'กระดิ่งลม',       g:'🎐', cost:1200, eff:{exploreLuck:.18}, d:'เสียงนำทาง โอกาสได้ของหายาก +18%'},
+
+  hammock:{n:'เปลผ้าไหม',       g:'🛏️', cost:250,  eff:{rest:3}, d:'ฟื้นสุขภาพเองชั่วโมงละ 3 หน่วยแม้ปิดเกม'},
+  stove:  {n:'เตาถ่านดินเผา',   g:'🔥', cost:380,  eff:{foodBoost:.25}, d:'อุ่นอาหารก่อนให้ ความอิ่มที่ได้จากอาหารทุกชนิด +25%'},
+  bookcase:{n:'ตู้หนังสือไม้สัก', g:'📚', cost:520, eff:{focusXp:.15}, d:'ค่าประสบการณ์จากการตอบคำถาม +15%'},
+  rack:   {n:'ชั้นวางดาบไม้',   g:'🗡️', cost:660,  eff:{duelAtk:.12}, d:'ฝึกซ้อมทุกวัน พลังโจมตีในการดวล +12%'},
+  mirror: {n:'กระจกเงาโบราณ',   g:'🪞', cost:660,  eff:{duelDef:.12}, d:'อ่านทางคู่ต่อสู้ได้ เกราะในการดวล +12%'},
+  loom:   {n:'กี่ทอผ้า',        g:'🧶', cost:780,  eff:{exploreLuck:.12, coin:.10}, d:'แปรรูปของที่เก็บมา ของหายาก +12% และเหรียญ +10%'},
+  altar:  {n:'หิ้งบูชาไม้จันทน์', g:'🛕', cost:880, eff:{crystal:.35}, d:'มีโอกาส 35% ได้ผลึกสมาธิเพิ่มอีก 1 เม็ดเมื่อจบรอบ'},
+  sundial:{n:'นาฬิกาแดดหิน',    g:'⏳', cost:1050, eff:{exploreFast:.20}, d:'เวลาที่ใช้ในการสำรวจลดลง 20%'},
+  nest:   {n:'รังฟางอุ่น',      g:'🪹', cost:1150, eff:{eggBoost:.15}, d:'ไข่ได้รับคะแนนฐานเพิ่มขึ้น 15%'},
+  bodhi:  {n:'ต้นโพธิ์ประจำบ้าน', g:'🌲', cost:1600, eff:{moodSlow:.12, rest:2, aff:.10}, d:'ร่มเย็นทั้งบ้าน อารมณ์ลดช้าลง 12% ฟื้นสุขภาพชั่วโมงละ 2 และความสนิท +10%'},
 };
+
+/* จำนวนช่องวางของตกแต่งในบ้าน */
+const ROOM_SLOTS = 16;
 
 /* ===================== รอบตอบคำถาม ===================== */
 const ROUND_LEN = 10;            // จำนวนข้อต่อหนึ่งรอบ
@@ -612,6 +641,13 @@ const CRYSTAL_SHOP = [
   {k:'seed_r', cost:10},
   {k:'seed_g', cost:32},
   {k:'seed_m', cost:90},
+  {k:'dewdrop', cost:7},
+  {k:'mainfruit', cost:14},
+  {k:'subfruit', cost:11},
+  {k:'charm_b', cost:9},
+  {k:'charm_m', cost:9},
+  {k:'charm_p', cost:9},
+  {k:'compass', cost:5},
   {k:'nectar', cost:6},
   {k:'elixir', cost:4},
 ];
@@ -1836,7 +1872,8 @@ function freshSave(){
     bag: { leaf:3, berry:1 },
     garden: [],
     seen: {},
-    room: new Array(12).fill(null),
+    room: new Array(ROOM_SLOTS).fill(null),
+    guard: 0,
     book: {},              // formId -> วันที่ปลดล็อก
     explore: null,         // {zone, endAt}
     egg: null,           // {tier, pts, need, subj:{}}
@@ -1903,7 +1940,8 @@ function fmtDate(ts){
 
 /* ===================== โบนัสจากเฟอร์นิเจอร์ ===================== */
 function roomBonus(){
-  const b = {moodSlow:0, hungerSlow:0, focusXp:0, exploreLuck:0, aff:0, coin:0, light:0};
+  const b = {moodSlow:0, hungerSlow:0, focusXp:0, exploreLuck:0, aff:0, coin:0, light:0,
+             rest:0, foodBoost:0, duelAtk:0, duelDef:0, crystal:0, exploreFast:0, eggBoost:0};
   for (const k of S.room){
     if (!k || !FURN[k]) continue;
     for (const [ek, ev] of Object.entries(FURN[k].eff)) b[ek] = (b[ek]||0) + ev;
@@ -2033,6 +2071,7 @@ function tickOffline(){
   if (b.light && isNight()) p.mood = clamp(p.mood + hrs * 2, 0, 100);
   if (p.hunger <= 0) p.hp = clamp(p.hp - hrs * 5, 1, 100);
   else if (p.hunger > 50 && p.mood > 40) p.hp = clamp(p.hp + hrs * 3, 0, 100);
+  if (b.rest) p.hp = clamp(p.hp + hrs * b.rest, 0, 100);
   if (p.hp < 30) p.sick = true;
   if (p.hp >= 60) p.sick = false;
 
@@ -2049,19 +2088,44 @@ function useItem(key){
   let msg = '';
   if (it.t === 'food'){
     if (p.hunger >= 99) return {err:'อิ่มจนกินไม่ลงแล้ว'};
-    p.hunger = clamp(p.hunger + it.hunger, 0, 100);
+    const gain = Math.round(it.hunger * (1 + b.foodBoost));
+    p.hunger = clamp(p.hunger + gain, 0, 100);
     p.mood = clamp(p.mood + (it.mood||0), 0, 100);
     p.aff = clamp(p.aff + (it.aff||0) * (1 + b.aff), 0, 100);
     p.care.body += 1;
     gainXp(6);
-    msg = `ให้${it.n}แล้ว ความอิ่ม +${it.hunger}`;
+    msg = `ให้${it.n}แล้ว ความอิ่ม +${gain}${b.foodBoost?' (เตาถ่านช่วยเพิ่ม)':''}`;
   } else if (it.t === 'heal'){
-    if (p.hp >= 100) return {err:'สุขภาพเต็มอยู่แล้ว'};
+    if (p.hp >= 100 && !(it.cure && p.sick) && !it.guard) return {err:'สุขภาพเต็มอยู่แล้ว'};
     p.hp = clamp(p.hp + it.heal, 0, 100);
     p.mood = clamp(p.mood + (it.mood||0), 0, 100);
     p.care.body += 2;
+    if (it.cure) p.sick = false;
     if (p.hp >= 60) p.sick = false;
-    msg = `ใช้${it.n} สุขภาพ +${it.heal}`;
+    const extra = [];
+    if (it.cure) extra.push('หายป่วยแล้ว');
+    if (it.guard){ S.guard = (S.guard || 0) + it.guard; extra.push('กันบาดเจ็บได้อีก ' + S.guard + ' ครั้ง'); }
+    msg = `ใช้${it.n} สุขภาพ +${it.heal}${extra.length?' · '+extra.join(' · '):''}`;
+  } else if (it.t === 'stat'){
+    const sp = SPECIES[p.sp];
+    const key = it.target === 'sub' ? sp.sub : sp.main;
+    p.stats[key] += it.up;
+    p.care.body += 1;
+    msg = `${p.name} แข็งแรงขึ้น ${key} +${it.up}`;
+  } else if (it.t === 'care'){
+    p.care[it.br] = (p.care[it.br] || 0) + it.up;
+    p.mood = clamp(p.mood + 4, 0, 100);
+    msg = `เส้นทางสาย${BRANCHES[it.br]} +${it.up}`;
+  } else if (it.t === 'eggboost'){
+    if (!S.egg) return {err:'ยังไม่มีไข่ที่กำลังฟัก'};
+    if (S.egg.pts >= S.egg.need) return {err:'ไข่ใบนี้พร้อมฟักอยู่แล้ว'};
+    S.egg.pts += it.up;
+    msg = `ไข่ได้รับ +${it.up} คะแนน`;
+  } else if (it.t === 'explore'){
+    if (!S.explore) return {err:'ยังไม่ได้ส่งวิญญาณออกสำรวจ'};
+    if (Date.now() >= S.explore.endAt) return {err:'กลับมาถึงบ้านแล้ว กดรับของได้เลย'};
+    S.explore.endAt = Date.now();
+    msg = `${p.name} กลับถึงบ้านทันที`;
   } else if (it.t === 'egg'){
     return {egg:true};
   } else {
@@ -2202,6 +2266,7 @@ function startEgg(tier){
 /* ไข่รับคะแนนพร้อมหน่วยการเรียนรู้ ธาตุของหน่วยเป็นตัวกำหนดสายพันธุ์ */
 function eggAddPoints(pts, unitCounts){
   if (!S.egg) return false;
+  pts = Math.round(pts * (1 + roomBonus().eggBoost));
   S.egg.pts += pts;
   S.egg.el = S.egg.el || {}; S.egg.unit = S.egg.unit || {};
   const m = eggMap();
@@ -3014,7 +3079,23 @@ function viewPot(){
     <div class="row spread"><span class="sub">คะแนนสะสม</span><b class="mono">${S.stats.points.toLocaleString('th-TH')}</b></div>
     <div class="row spread"><span class="sub">ตอบถูกติดกันสูงสุด</span><b class="mono">${S.stats.bestStreak} ข้อ</b></div>
     <div class="row spread"><span class="sub">ตอบต่อเนื่อง</span><b class="mono">${S.stats.streak} วัน</b></div>
-    ${(b.focusXp||b.hungerSlow||b.moodSlow||b.exploreLuck)?`<hr class="sep"><div class="tiny">โบนัสจากบ้าน — โฟกัส +${Math.round(b.focusXp*100)}% · ของหายาก +${Math.round(b.exploreLuck*100)}% · หิวช้าลง ${Math.round(b.hungerSlow*100)}% · อารมณ์ลดช้าลง ${Math.round(b.moodSlow*100)}%</div>`:''}
+    ${(()=>{const L=[];
+      if(b.focusXp)L.push(`ประสบการณ์ +${Math.round(b.focusXp*100)}%`);
+      if(b.exploreLuck)L.push(`ของหายาก +${Math.round(b.exploreLuck*100)}%`);
+      if(b.hungerSlow)L.push(`หิวช้าลง ${Math.round(b.hungerSlow*100)}%`);
+      if(b.moodSlow)L.push(`อารมณ์ลดช้าลง ${Math.round(b.moodSlow*100)}%`);
+      if(b.coin)L.push(`เหรียญ +${Math.round(b.coin*100)}%`);
+      if(b.aff)L.push(`ความสนิท +${Math.round(b.aff*100)}%`);
+      if(b.rest)L.push(`ฟื้นสุขภาพ +${b.rest}/ชม.`);
+      if(b.foodBoost)L.push(`ความอิ่มจากอาหาร +${Math.round(b.foodBoost*100)}%`);
+      if(b.duelAtk)L.push(`โจมตีในดวล +${Math.round(b.duelAtk*100)}%`);
+      if(b.duelDef)L.push(`เกราะในดวล +${Math.round(b.duelDef*100)}%`);
+      if(b.crystal)L.push(`ลุ้นผลึกเพิ่ม ${Math.round(b.crystal*100)}%`);
+      if(b.exploreFast)L.push(`สำรวจเร็วขึ้น ${Math.round(b.exploreFast*100)}%`);
+      if(b.eggBoost)L.push(`ไข่โตเร็วขึ้น ${Math.round(b.eggBoost*100)}%`);
+      return L.length?`<hr class="sep"><div class="tiny">โบนัสจากบ้าน — ${L.join(' · ')}</div>`:'';
+    })()}
+    ${S.guard>0?`<div class="tiny" style="color:var(--glaze-lt)">มียาต้มคุ้มกันอยู่ กันบาดเจ็บได้อีก ${S.guard} ครั้ง</div>`:''}
     <hr class="sep">
     <div class="row wrap">
       <button class="btn sm" data-act="garden">สวน ${gardenCount()+1}/${GARDEN_MAX}</button>
@@ -3027,18 +3108,18 @@ function viewPot(){
 /* ===================== หน้า: กระเป๋า ===================== */
 function viewBag(){
   const keys = Object.keys(S.bag).filter(k => S.bag[k] > 0 && ITEMS[k]);
-  const order = {food:0, heal:1, stone:2, egg:3, mat:4};
+  const order = {food:0, heal:1, stat:2, care:3, eggboost:4, explore:5, stone:6, egg:7, mat:8};
   keys.sort((a,b) => (order[ITEMS[a].t] - order[ITEMS[b].t]) || ITEMS[a].n.localeCompare(ITEMS[b].n,'th'));
   const list = keys.length ? keys.map(k => {
     const it = ITEMS[k];
-    const canUse = it.t === 'food' || it.t === 'heal' || it.t === 'egg';
+    const canUse = ['food','heal','egg','stat','care','eggboost','explore'].includes(it.t);
     return `<div class="item">
       <div class="ic">${it.g}</div>
       <div class="grow"><b>${it.n}</b><div class="sub">${it.d}</div></div>
       <div style="text-align:right">
         <div class="qty">×${S.bag[k]}</div>
         <div class="row" style="gap:4px;margin-top:4px">
-          ${canUse?`<button class="btn sm" data-use="${k}">${it.t==='egg'?'เริ่มฟัก':'ใช้'}</button>`:''}
+          ${canUse?`<button class="btn sm" data-use="${k}">${it.t==='egg'?'เริ่มฟัก':(it.t==='explore'?'เรียกกลับ':'ใช้')}</button>`:''}
           ${it.sell?`<button class="btn sm" data-sell="${k}">ขาย ${it.sell}</button>`:''}
         </div>
       </div>
@@ -3064,7 +3145,7 @@ function viewBag(){
     <div class="sub">ใช้เหรียญที่ได้จากการโฟกัส</div>
     <div class="gap"></div>
     <div class="list">
-      ${['leaf','berry','ricecake','honey','balm','elixir'].map(k=>{
+      ${['leaf','berry','driedfish','ricecake','honey','sweetsoup','balm','antidote','tonic','elixir'].map(k=>{
         const it = ITEMS[k], price = Math.round(it.sell*1.8);
         return `<div class="item">
           <div class="ic">${it.g}</div>
@@ -3085,7 +3166,7 @@ function viewHome(){
   const owned = S.room.filter(Boolean).length;
 
   return `<div class="card">
-    <div class="eyebrow">บ้าน · วางได้ ${owned}/12 ช่อง</div>
+    <div class="eyebrow">บ้าน · วางได้ ${owned}/${ROOM_SLOTS} ช่อง</div>
     <h2>${S.pet ? `ห้องของ${esc(S.pet.name)}` : 'ห้องว่างรอเจ้าของ'}</h2>
     <div class="sub">${night ? (lit ? 'กลางคืน — โคมไฟส่องห้องให้สว่างอยู่' : 'กลางคืน — ห้องมืด ลองวางโคมกระดาษดู') : 'กลางวัน — แสงเข้าห้องพอดี'}</div>
     <div class="gap"></div>
@@ -3568,7 +3649,8 @@ function finishQuiz(){
   }
 
   // ผลึกสมาธิ
-  const cr = Math.floor(QUIZ.correct / 4) + (perfect ? 2 : 0);
+  let cr = Math.floor(QUIZ.correct / 4) + (perfect ? 2 : 0);
+  if (cr > 0 && Math.random() < b.crystal) cr += 1;
   if (cr > 0) S.crystals += cr;
 
   // ของติดมือ
@@ -3853,7 +3935,8 @@ function viewExplore(){
     const z = ZONES.find(x => x.id === S.explore.zone);
     const left = S.explore.endAt - Date.now();
     const done = left <= 0;
-    const prog = clamp(1 - left / (z.min * 60000), 0, 1);
+    const span = Math.max(1, z.min * 60000 * (1 - clamp(roomBonus().exploreFast, 0, .6)));
+    const prog = clamp(1 - left / span, 0, 1);
     return `<div class="card">
       <div class="eyebrow">กำลังสำรวจ</div>
       <h2>${z.g} ${z.n}</h2>
@@ -3888,7 +3971,8 @@ function viewExplore(){
 
 function startExplore(id){
   const z = ZONES.find(x => x.id === id);
-  S.explore = { zone:id, endAt: Date.now() + z.min * 60000 };
+  const fast = clamp(roomBonus().exploreFast, 0, .6);
+  S.explore = { zone:id, endAt: Date.now() + Math.round(z.min * 60000 * (1 - fast)) };
   save(); render();
   toast(`${S.pet.name}ออกเดินทางไป${z.n}แล้ว`);
 }
@@ -3913,10 +3997,14 @@ function collectExplore(half){
 
   let hurt = 0;
   const dodge = (p.stats.AGI + p.stats.VIT) / 200;
+  let guarded = false;
   if (!half && Math.random() < Math.max(.02, z.risk - dodge)){
-    hurt = Math.round(12 + Math.random() * 22);
-    p.hp = clamp(p.hp - hurt, 1, 100);
-    if (p.hp < 30) p.sick = true;
+    if (S.guard > 0){ S.guard--; guarded = true; }
+    else {
+      hurt = Math.round(12 + Math.random() * 22);
+      p.hp = clamp(p.hp - hurt, 1, 100);
+      if (p.hp < 30) p.sick = true;
+    }
   }
   save(); render();
   sheet(`<div class="eyebrow">กลับจาก${z.n}</div>
@@ -3926,6 +4014,7 @@ function collectExplore(half){
     <div class="list">
       <div class="item"><div class="ic">⭐</div><div class="grow"><b>ประสบการณ์ +${xp}</b>${lv?`<div class="sub">เลื่อนเป็น Lv.${p.lv}</div>`:''}</div></div>
       ${hurt?`<div class="item"><div class="ic">🩹</div><div class="grow"><b>บาดเจ็บ −${hurt} สุขภาพ</b><div class="sub">ใช้ยาหม่องหรือพาพักก่อนออกไปอีก</div></div></div>`:''}
+      ${guarded?`<div class="item"><div class="ic">🍵</div><div class="grow"><b>ยาต้มบำรุงกำลังช่วยไว้</b><div class="sub">รอดจากการบาดเจ็บครั้งนี้ · เหลืออีก ${S.guard} ครั้ง</div></div></div>`:''}
     </div>
     <div class="gap"></div>
     <button class="btn pri block" data-act="closeSheet">ปิด</button>`);
@@ -4411,7 +4500,10 @@ async function boot(){
     catch(e){ S = freshSave(); }
   } else S = freshSave();
 
-  if (!Array.isArray(S.room) || S.room.length !== 12) S.room = new Array(12).fill(null);
+  if (!Array.isArray(S.room)) S.room = [];
+  while (S.room.length < ROOM_SLOTS) S.room.push(null);
+  if (S.room.length > ROOM_SLOTS) S.room = S.room.slice(0, ROOM_SLOTS);
+  if (typeof S.guard !== 'number') S.guard = 0;
   if (!S.settings || typeof S.settings.timed === 'undefined') S.settings = {timed:true, shuffle:true, fs:1};
   if (typeof S.settings.fs !== 'number' || !(S.settings.fs > 0)) S.settings.fs = 1;
   applyFS();
@@ -4528,12 +4620,18 @@ function readDuelCode(raw){
 
 /* ---------- สูตรการต่อสู้ ---------- */
 function duelMaxHp(p){ return Math.round(60 + p.stats.VIT * 3 + p.lv * 1.5); }
-function duelAtk(p){ return 6 + p.stats.STR * 0.55 + p.stats.INT * 0.25; }
-function duelDef(p){ return p.stats.VIT * 0.22; }
+function duelAtk(p, mine){ 
+  const base = 6 + p.stats.STR * 0.55 + p.stats.INT * 0.25;
+  return mine ? base * (1 + roomBonus().duelAtk) : base;
+}
+function duelDef(p, mine){
+  const base = p.stats.VIT * 0.22;
+  return mine ? base * (1 + roomBonus().duelDef) : base;
+}
 
 /* คำนวณความเสียหาย: ต้องตอบถูกเท่านั้นจึงจะเข้า */
-function duelDamage(attacker, defender, diff, speed){
-  const base = Math.max(3, duelAtk(attacker) - duelDef(defender));
+function duelDamage(attacker, defender, diff, speed, mineAtk){
+  const base = Math.max(3, duelAtk(attacker, mineAtk) - duelDef(defender, !mineAtk));
   const crit = Math.random() < clamp(attacker.stats.LUK / 320, 0, 0.35);
   const dmg = base * DIFF_POWER[diff] * (1 + 0.5 * clamp(speed, 0, 1)) * (crit ? 1.8 : 1);
   return { dmg: Math.max(1, Math.round(dmg)), crit };
@@ -4612,7 +4710,7 @@ function duelAnswer(i){
   const turn = { correct, my:null, foe:null };
 
   if (correct){
-    const r = duelDamage(p, foe, q.diff, speed);
+    const r = duelDamage(p, foe, q.diff, speed, true);
     DUEL.foeHp = Math.max(0, DUEL.foeHp - r.dmg);
     turn.my = r;
     recordAnswer(q, true);
@@ -4627,7 +4725,7 @@ function duelAnswer(i){
   // ตาของเงาคู่ต่อสู้
   if (DUEL.foeHp > 0){
     if (foeAnswers(foe, q.diff)){
-      const r = duelDamage(foe, p, q.diff, foeSpeed(foe));
+      const r = duelDamage(foe, p, q.diff, foeSpeed(foe), false);
       DUEL.hp = Math.max(0, DUEL.hp - r.dmg);
       turn.foe = r;
     }
@@ -4711,7 +4809,7 @@ function duelMineSheet(){
     <div class="list">
       <div class="item"><div class="ic" style="background:${sp.dim};border-color:${sp.a(.4)}">${sp.g}</div>
         <div class="grow"><b>เลือดสูงสุด ${duelMaxHp(p)}</b>
-          <div class="tiny">พลังโจมตี ${Math.round(duelAtk(p))} · เกราะ ${Math.round(duelDef(p))} · แม่นยำ ${S.stats.answered?Math.round(S.stats.correct/S.stats.answered*100):60}%</div></div></div>
+          <div class="tiny">พลังโจมตี ${Math.round(duelAtk(p, true))} · เกราะ ${Math.round(duelDef(p, true))} · แม่นยำ ${S.stats.answered?Math.round(S.stats.correct/S.stats.answered*100):60}%</div></div></div>
     </div>
     <div class="gap"></div>
     <textarea id="duelOut" class="fld" readonly style="min-height:96px;font-family:'IBM Plex Mono',monospace;font-size:calc(12px * var(--fs));word-break:break-all">${code}</textarea>
