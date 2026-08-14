@@ -541,6 +541,9 @@ const ITEMS = {
   nectar:  {n:'น้ำค้างดอกไม้', g:'🌸', t:'food', hunger:60, mood:22, aff:7, sell:70,  d:'อาหารชั้นดี วิญญาณหายากกินแล้วสนิทเร็ว'},
 
   driedfish:{n:'ปลาแห้งย่าง',  g:'🐟', t:'food', hunger:55, mood:2,  aff:1, sell:22,  d:'อิ่มท้องมากแต่รสจืด เหมาะเวลาหิวจัด'},
+  meatball:{n:'ลูกชิ้นปิ้ง',   g:'🍢', t:'food', hunger:28, mood:12, aff:2, sell:16,  d:'ของกินเล่นหน้าโรงเรียน ราคาถูกแต่คุ้ม'},
+  popchick:{n:'ไก่ป๊อบ',       g:'🍗', t:'food', hunger:38, mood:22, aff:3, sell:38,  d:'ทอดกรอบร้อนๆ วิญญาณตัวไหนก็ชอบ'},
+  chocolate:{n:'ช็อกโกแลต',    g:'🍫', t:'food', hunger:12, mood:28, aff:4, boost:3, sell:52, d:'หวานและให้พลังงานเร็ว ตื่นตัวจนได้ประสบการณ์เพิ่ม 25% ในการตอบคำถาม 3 รอบถัดไป'},
   sweetsoup:{n:'บัวลอยน้ำขิง',  g:'🍮', t:'food', hunger:15, mood:30, aff:5, sell:44,  d:'อิ่มไม่มากแต่ทำให้อารมณ์ดีขึ้นมาก'},
 
   balm:    {n:'ยาหม่องสมุนไพร', g:'🧴', t:'heal', heal:35, sell:30,  d:'รักษาบาดแผลจากการสำรวจ'},
@@ -557,6 +560,8 @@ const ITEMS = {
 
   dewdrop: {n:'น้ำทิพย์เร่งฟัก', g:'💧', t:'eggboost', up:150, sell:0, d:'เติมคะแนนฐานให้ไข่ทันที 150 โดยไม่เปลี่ยนธาตุที่สะสมไว้'},
   compass: {n:'เข็มทิศเก่า',    g:'🧭', t:'explore', sell:0, d:'เรียกวิญญาณที่ออกสำรวจกลับทันทีโดยได้ของครบเหมือนรอจนหมดเวลา'},
+
+  mop:     {n:'ไม้ถูพื้น',     g:'🧹', t:'tool', sell:0, buy:320, d:'ใช้ซ้ำได้ไม่มีวันหมด ถูบ้านได้วันละครั้ง อารมณ์ +15 สุขภาพ +8 และหายป่วยทันที'},
 
   clay:    {n:'ดินเหนียว',     g:'🟤', t:'mat', sell:8,   d:'วัสดุสร้างของตกแต่ง'},
   bamboo:  {n:'ไม้ไผ่',        g:'🎋', t:'mat', sell:12,  d:'เหนียว ทนทาน ใช้ต่อของได้สารพัด'},
@@ -652,6 +657,33 @@ const CRYSTAL_SHOP = [
   {k:'elixir', cost:4},
 ];
 const GARDEN_MAX = 6;
+
+
+/* ===========================================================
+   อาวุธและเครื่องแต่งกาย — ซื้อด้วยเหรียญ ใส่ได้ทีละหนึ่งชิ้น
+   ราคาไล่ระดับแบบทวีคูณ ชิ้นท้ายๆ ต้องเก็บเงินหลายวัน
+   =========================================================== */
+const WEAPONS = {
+  w1: {n:'ไม้เท้าไผ่',        g:'🥢', tier:1, cost:150,   atkPct:.05, statKey:'STR', statUp:1, d:'อาวุธเริ่มต้น น้ำหนักเบา ใช้ฝึกมือ'},
+  w2: {n:'มีดสั้นหินเหล็กไฟ', g:'🔪', tier:1, cost:450,   atkPct:.14, statKey:'AGI', statUp:2, dodgePct:.03, d:'คมกริบและคล่องตัว เพิ่มโอกาสหลบ 3%'},
+  w3: {n:'ตะบองไม้แก่น',      g:'🏏', tier:2, cost:1100,  atkPct:.15, statKey:'STR', statUp:2, d:'หนักแน่น เหมาะกับสายพลัง'},
+  w4: {n:'หอกด้ามยาว',        g:'🔱', tier:2, cost:2400,  atkPct:.20, statKey:'INT', statUp:3, d:'แทงได้ไกล อาศัยจังหวะและการคำนวณ'},
+  w5: {n:'ดาบสั้นสำริด',      g:'🗡️', tier:3, cost:4800,  atkPct:.26, statKey:'STR', statUp:3, d:'หลอมจากสำริดโบราณ คมและทนทาน'},
+  w6: {n:'ขวานรบ',           g:'🪓', tier:3, cost:8500,  atkPct:.33, statKey:'STR', statUp:4, d:'ฟันแรง แต่ต้องใช้กำลังมาก'},
+  w7: {n:'ดาบยาวเหล็กกล้า',   g:'⚔️', tier:4, cost:15000, atkPct:.40, statKey:'STR', statUp:5, dodgePct:.05, d:'สมดุลทั้งแรงและไว เพิ่มโอกาสหลบ 5%'},
+  w8: {n:'คทาเวทมนตร์',       g:'🪄', tier:4, cost:26000, atkPct:.48, statKey:'INT', statUp:10, critPct:.05, d:'แปลงพลังจิตเป็นแรงโจมตี เพิ่มโอกาสเข้าเต็มแรง 5%'},
+  w9: {n:'ทวนมังกร',         g:'🐉', tier:5, cost:45000, atkPct:.58, statKey:'STR', statUp:6, critPct:.12, d:'สลักลายมังกรโบราณ เพิ่มโอกาสเข้าเต็มแรง 12%'},
+  w10:{n:'ดาบเทวะ',          g:'🌟', tier:5, cost:80000, atkPct:.72, statKey:'STR', statUp:10, critPct:.08, dodgePct:.05, d:'ตำนานว่าตีขึ้นจากเศษดาวตก แรงที่สุดในทุกด้าน'},
+};
+const ARMORS = {
+  a1: {n:'เสื้อผ้าฝ้ายเสริมแผ่น', g:'🧥', tier:1, cost:300,   defPct:.08, hp:10, guard:.02, statUp:1, d:'เกราะเริ่มต้น ใส่สบาย ป้องกันได้เล็กน้อย'},
+  a2: {n:'เกราะหนังสัตว์',       g:'🦺', tier:2, cost:2200,  defPct:.18, hp:24, guard:.05, statUp:3, d:'หนังฟอกอย่างดี เหนียวและยืดหยุ่น'},
+  a3: {n:'เกราะเกล็ดสำริด',      g:'🛡️', tier:3, cost:9000,  defPct:.32, hp:45, guard:.09, statUp:6, d:'เกล็ดสำริดเรียงซ้อนกันแน่นหนา'},
+  a4: {n:'เกราะเหล็กเต็มตัว',    g:'⛓️', tier:4, cost:28000, defPct:.48, hp:72, guard:.13, statUp:10, d:'หนักแต่ป้องกันได้แทบทุกทิศทาง'},
+  a5: {n:'เกราะเทพศักดิ์สิทธิ์',  g:'✨', tier:5, cost:70000, defPct:.70, hp:110, guard:.20, statUp:16, d:'ผ่านพิธีปลุกเสกจากสายวิญญาณโบราณ'},
+};
+const TIER_NAME = [null,'ต้น','กลาง','สูง','ยอด','ตำนาน'];
+const TIER_COLOR = [null,'#9fb6ac','#7fb6c9','#c9a24a','#c98ad4','#e8b4d8'];
 
 /* ===========================================================
    โครงสร้างหลักสูตร — อิงตารางสอนจริง
@@ -1874,6 +1906,10 @@ function freshSave(){
     seen: {},
     room: new Array(ROOM_SLOTS).fill(null),
     guard: 0,
+    boost: 0,
+    mopDay: '',
+    owned: { w:[], a:[] },      // อาวุธ/เกราะที่ซื้อแล้ว
+    equip: { w:null, a:null },  // ที่สวมใส่อยู่ตอนนี้
     book: {},              // formId -> วันที่ปลดล็อก
     explore: null,         // {zone, endAt}
     egg: null,           // {tier, pts, need, subj:{}}
@@ -2094,7 +2130,9 @@ function useItem(key){
     p.aff = clamp(p.aff + (it.aff||0) * (1 + b.aff), 0, 100);
     p.care.body += 1;
     gainXp(6);
-    msg = `ให้${it.n}แล้ว ความอิ่ม +${gain}${b.foodBoost?' (เตาถ่านช่วยเพิ่ม)':''}`;
+    let extraMsg = '';
+    if (it.boost){ S.boost = (S.boost || 0) + it.boost; extraMsg = ` · ตื่นตัวอีก ${S.boost} รอบ`; }
+    msg = `ให้${it.n}แล้ว ความอิ่ม +${gain}${b.foodBoost?' (เตาถ่านช่วยเพิ่ม)':''}${extraMsg}`;
   } else if (it.t === 'heal'){
     if (p.hp >= 100 && !(it.cure && p.sick) && !it.guard) return {err:'สุขภาพเต็มอยู่แล้ว'};
     p.hp = clamp(p.hp + it.heal, 0, 100);
@@ -2126,6 +2164,16 @@ function useItem(key){
     if (Date.now() >= S.explore.endAt) return {err:'กลับมาถึงบ้านแล้ว กดรับของได้เลย'};
     S.explore.endAt = Date.now();
     msg = `${p.name} กลับถึงบ้านทันที`;
+  } else if (it.t === 'tool'){
+    const t = todayKey();
+    if (S.mopDay === t) return {err:'วันนี้ถูบ้านไปแล้ว พรุ่งนี้ค่อยถูใหม่'};
+    S.mopDay = t;
+    p.mood = clamp(p.mood + 15, 0, 100);
+    p.hp = clamp(p.hp + 8, 0, 100);
+    p.sick = false;
+    p.care.body += 2;
+    gainXp(10);
+    return {msg:`ถูบ้านจนสะอาด ${p.name} อารมณ์ +15 สุขภาพ +8 และหายป่วย`, keep:true};
   } else if (it.t === 'egg'){
     return {egg:true};
   } else {
@@ -2338,6 +2386,46 @@ function hatchRoll(ignoreAffinity){
   for (const k in w){ r -= w[k]; if (r <= 0) return k; }
   return SP_KEYS[0];
 }
+
+
+/* ===================== อาวุธและเครื่องแต่งกาย ===================== */
+function equippedWeapon(){ return (S.equip && S.equip.w) ? WEAPONS[S.equip.w] : null; }
+function equippedArmor(){ return (S.equip && S.equip.a) ? ARMORS[S.equip.a] : null; }
+
+function buyGear(kind, key){
+  const table = kind === 'w' ? WEAPONS : ARMORS;
+  const it = table[key];
+  if (!it) return {err:'ไม่พบไอเทมนี้'};
+  S.owned = S.owned || { w:[], a:[] };
+  if (S.owned[kind].includes(key)) return {err:'มีชิ้นนี้อยู่แล้ว'};
+  if (S.coins < it.cost) return {err:'เหรียญไม่พอ'};
+  S.coins -= it.cost;
+  S.owned[kind].push(key);
+  return {ok:true};
+}
+function equipGear(kind, key){
+  S.owned = S.owned || { w:[], a:[] };
+  S.equip = S.equip || { w:null, a:null };
+  if (key && !S.owned[kind].includes(key)) return false;
+  S.equip[kind] = key || null;
+  return true;
+}
+
+/* โบนัสจากอาวุธ/เกราะที่ใส่อยู่ ผสมกับค่าสถานะพื้นฐานของวิญญาณ */
+function gearAtkBonus(){ const w = equippedWeapon(); return w ? w.atkPct : 0; }
+function gearDefBonus(){ const a = equippedArmor(); return a ? a.defPct : 0; }
+function gearHpBonus(){ const a = equippedArmor(); return a ? a.hp : 0; }
+function gearGuardBonus(){ const a = equippedArmor(); return a ? a.guard : 0; }
+function gearStatBonus(key){
+  let v = 0;
+  const w = equippedWeapon();
+  if (w && w.statKey === key) v += w.statUp;
+  const a = equippedArmor();
+  if (a && key === 'VIT') v += (a.statUp || 0);
+  return v;
+}
+function gearDodgeBonus(){ const w = equippedWeapon(); return w && w.dodgePct ? w.dodgePct : 0; }
+function gearCritBonus(){ const w = equippedWeapon(); return w && w.critPct ? w.critPct : 0; }
 
 /* ===================== แคนวาส: กระถาง + รอยราน + วิญญาณ ===================== */
 const CW = 420, CH = 340;
@@ -2974,10 +3062,15 @@ function stageBlock(){
       <div class="sub">ตอบคำถามเพื่อสะสมคะแนนให้ไข่ฟัก</div>
     </div>
   </div>`;
+  const ew = equippedWeapon(), ea = equippedArmor();
   return `<div class="card">
     <div class="stage">
       <canvas id="pot" width="420" height="340" aria-label="กระถางและวิญญาณ"></canvas>
     </div>
+    ${(ew||ea) ? `<div class="row" style="gap:6px;justify-content:center;margin-top:2px">
+      ${ew?`<span class="pill" style="color:${TIER_COLOR[ew.tier]};border-color:${TIER_COLOR[ew.tier]}55">${ew.g} ${ew.n}</span>`:''}
+      ${ea?`<span class="pill" style="color:${TIER_COLOR[ea.tier]};border-color:${TIER_COLOR[ea.tier]}55">${ea.g} ${ea.n}</span>`:''}
+    </div>` : ''}
     <div class="row spread" style="margin-top:6px">
       <div>
         <h2>${esc(p.name)}</h2>
@@ -3096,6 +3189,7 @@ function viewPot(){
       return L.length?`<hr class="sep"><div class="tiny">โบนัสจากบ้าน — ${L.join(' · ')}</div>`:'';
     })()}
     ${S.guard>0?`<div class="tiny" style="color:var(--glaze-lt)">มียาต้มคุ้มกันอยู่ กันบาดเจ็บได้อีก ${S.guard} ครั้ง</div>`:''}
+    ${S.boost>0?`<div class="tiny" style="color:var(--gold)">กำลังตื่นตัวจากช็อกโกแลต ประสบการณ์ +25% อีก ${S.boost} รอบ</div>`:''}
     <hr class="sep">
     <div class="row wrap">
       <button class="btn sm" data-act="garden">สวน ${gardenCount()+1}/${GARDEN_MAX}</button>
@@ -3108,18 +3202,18 @@ function viewPot(){
 /* ===================== หน้า: กระเป๋า ===================== */
 function viewBag(){
   const keys = Object.keys(S.bag).filter(k => S.bag[k] > 0 && ITEMS[k]);
-  const order = {food:0, heal:1, stat:2, care:3, eggboost:4, explore:5, stone:6, egg:7, mat:8};
+  const order = {food:0, heal:1, tool:2, stat:3, care:4, eggboost:5, explore:6, stone:7, egg:8, mat:9};
   keys.sort((a,b) => (order[ITEMS[a].t] - order[ITEMS[b].t]) || ITEMS[a].n.localeCompare(ITEMS[b].n,'th'));
   const list = keys.length ? keys.map(k => {
     const it = ITEMS[k];
-    const canUse = ['food','heal','egg','stat','care','eggboost','explore'].includes(it.t);
+    const canUse = ['food','heal','egg','stat','care','eggboost','explore','tool'].includes(it.t);
     return `<div class="item">
       <div class="ic">${it.g}</div>
       <div class="grow"><b>${it.n}</b><div class="sub">${it.d}</div></div>
       <div style="text-align:right">
         <div class="qty">×${S.bag[k]}</div>
         <div class="row" style="gap:4px;margin-top:4px">
-          ${canUse?`<button class="btn sm" data-use="${k}">${it.t==='egg'?'เริ่มฟัก':(it.t==='explore'?'เรียกกลับ':'ใช้')}</button>`:''}
+          ${canUse?`<button class="btn sm" data-use="${k}">${it.t==='egg'?'เริ่มฟัก':(it.t==='explore'?'เรียกกลับ':(it.t==='tool'?'ถูบ้าน':'ใช้'))}</button>`:''}
           ${it.sell?`<button class="btn sm" data-sell="${k}">ขาย ${it.sell}</button>`:''}
         </div>
       </div>
@@ -3131,6 +3225,13 @@ function viewBag(){
     <h2>ของที่เก็บมาได้</h2>
     <div class="gap"></div>
     <div class="list">${list}</div>
+  </div>
+  <div class="card">
+    <div class="eyebrow">อาวุธและเครื่องแต่งกาย</div>
+    <div class="row spread">
+      <div class="grow"><b>คลังอาวุธ</b><div class="sub">ซื้อด้วยเหรียญ สวมได้ทีละชิ้น ยิ่งแพงยิ่งแรง</div></div>
+      <button class="btn" data-act="gear">เปิด</button>
+    </div>
   </div>
   <div class="card">
     <div class="eyebrow">ร้านผลึกสมาธิ</div>
@@ -3145,8 +3246,8 @@ function viewBag(){
     <div class="sub">ใช้เหรียญที่ได้จากการโฟกัส</div>
     <div class="gap"></div>
     <div class="list">
-      ${['leaf','berry','driedfish','ricecake','honey','sweetsoup','balm','antidote','tonic','elixir'].map(k=>{
-        const it = ITEMS[k], price = Math.round(it.sell*1.8);
+      ${['leaf','berry','meatball','driedfish','ricecake','popchick','honey','sweetsoup','chocolate','mop','balm','antidote','tonic','elixir'].map(k=>{
+        const it = ITEMS[k], price = it.buy || Math.round(it.sell*1.8);
         return `<div class="item">
           <div class="ic">${it.g}</div>
           <div class="grow"><b>${it.n}</b><div class="sub">${it.d}</div></div>
@@ -3623,7 +3724,9 @@ function finishQuiz(){
   const acc = answered ? QUIZ.correct / answered : 0;
   const perfect = answered > 0 && QUIZ.correct === answered && answered === QUIZ.len;
 
-  const xp = Math.round(pts * 0.6 * (1 + b.focusXp));
+  const boosted = (S.boost || 0) > 0;
+  const xp = Math.round(pts * 0.6 * (1 + b.focusXp) * (boosted ? 1.25 : 1));
+  if (boosted) S.boost--;
   const coin = Math.round(pts * 0.35 * (1 + b.coin));
   const aff = Math.round(pts / 40 * (1 + b.aff));
   let lv = 0;
@@ -3668,17 +3771,17 @@ function finishQuiz(){
   if (S.egg && QUIZ.eggPts > 0) hatchReady = eggAddPoints(QUIZ.eggPts, QUIZ.units);
 
   save(); render();
-  sheet(quizResultSheet(pts, acc, perfect, xp, coin, aff, cr, got, lv, hatchReady));
+  sheet(quizResultSheet(pts, acc, perfect, xp, coin, aff, cr, got, lv, hatchReady, boosted));
 }
 
-function quizResultSheet(pts, acc, perfect, xp, coin, aff, cr, got, lv, hatchReady){
+function quizResultSheet(pts, acc, perfect, xp, coin, aff, cr, got, lv, hatchReady, boosted){
   const line = (g, t, s2) => `<div class="item"><div class="ic">${g}</div><div class="grow"><b>${t}</b>${s2?`<div class="sub">${s2}</div>`:''}</div></div>`;
   return `<div class="eyebrow">จบรอบ</div>
   <h2>${perfect ? 'ถูกหมดทั้งรอบ' : `ตอบถูก ${QUIZ.correct} จาก ${QUIZ.marks.length} ข้อ`}</h2>
   <div class="sub">ความแม่นยำ ${Math.round(acc*100)}% · คะแนนรวม ${pts}${pts > S.stats.best - pts ? '' : ''}</div>
   <div class="gap"></div>
   <div class="list">
-    ${S.pet ? line('⭐', `ประสบการณ์ +${xp}`, lv ? `เลื่อนขึ้น ${lv} เลเวล เป็น Lv.${S.pet.lv}` : '') : ''}
+    ${S.pet ? line('⭐', `ประสบการณ์ +${xp}`, [lv ? `เลื่อนขึ้น ${lv} เลเวล เป็น Lv.${S.pet.lv}` : '', boosted ? `ช็อกโกแลตช่วยเพิ่ม 25% · เหลืออีก ${S.boost} รอบ` : ''].filter(Boolean).join(' · ')) : ''}
     ${line('🪙', `เหรียญ +${coin}`)}
     ${cr ? line('💠', `ผลึกสมาธิ +${cr}`, perfect ? 'โบนัสตอบถูกหมดทั้งรอบ' : '') : ''}
     ${S.pet ? line('💞', `ความสนิท +${aff}`) : ''}
@@ -3996,7 +4099,7 @@ function collectExplore(half){
   p.care.body += 1;
 
   let hurt = 0;
-  const dodge = (p.stats.AGI + p.stats.VIT) / 200;
+  const dodge = (p.stats.AGI + p.stats.VIT) / 200 + gearGuardBonus();
   let guarded = false;
   if (!half && Math.random() < Math.max(.02, z.risk - dodge)){
     if (S.guard > 0){ S.guard--; guarded = true; }
@@ -4112,6 +4215,46 @@ function eggMapSheet(){
     <button class="btn block" data-act="closeSheet">ปิด</button>`);
 }
 
+function gearRow(kind, key, it){
+  const owned = (S.owned[kind]||[]).includes(key);
+  const equipped = S.equip[kind] === key;
+  const stat = it.statKey ? `${it.statKey} +${it.statUp} · ` : '';
+  const guard = it.guard ? ` · หลบบาดเจ็บ +${Math.round(it.guard*100)}%` : '';
+  const hp = it.hp ? ` · เลือด +${it.hp}` : '';
+  const pctLabel = kind === 'w' ? `โจมตี +${Math.round(it.atkPct*100)}%` : `เกราะ +${Math.round(it.defPct*100)}%`;
+  return `<div class="item" style="${equipped?'border-color:'+TIER_COLOR[it.tier]+'88':''}">
+    <div class="ic" style="background:${TIER_COLOR[it.tier]}22;border-color:${TIER_COLOR[it.tier]}55">${it.g}</div>
+    <div class="grow">
+      <b>${it.n}</b> <span class="pill" style="color:${TIER_COLOR[it.tier]};border-color:${TIER_COLOR[it.tier]}55">ระดับ${TIER_NAME[it.tier]}</span>
+      <div class="tiny">${it.d}</div>
+      <div class="tiny">${pctLabel} · ${stat}${hp}${guard}</div>
+    </div>
+    <div style="text-align:right">
+      ${equipped ? `<span class="pill" style="color:var(--gold)">สวมอยู่</span>`
+        : owned ? `<button class="btn sm pri" data-equip="${kind}:${key}">สวมใส่</button>`
+        : `<button class="btn sm ${S.coins>=it.cost?'gold':''}" data-buyg="${kind}:${key}" ${S.coins>=it.cost?'':'disabled'}>${it.cost.toLocaleString('th-TH')}</button>`}
+    </div>
+  </div>`;
+}
+
+function gearSheet(){
+  S.owned = S.owned || {w:[],a:[]}; S.equip = S.equip || {w:null,a:null};
+  const wRows = Object.entries(WEAPONS).map(([k,it]) => gearRow('w', k, it)).join('');
+  const aRows = Object.entries(ARMORS).map(([k,it]) => gearRow('a', k, it)).join('');
+  sheet(`<div class="eyebrow">คลังอาวุธ · มี ${Math.floor(S.coins).toLocaleString('th-TH')} เหรียญ</div>
+    <h2>อาวุธและเครื่องแต่งกาย</h2>
+    <div class="sub">สวมได้อย่างละหนึ่งชิ้น สลับได้ฟรีเมื่อซื้อแล้ว มีผลเฉพาะตอนดวลปริศนา ส่วนเกราะยังช่วยลดโอกาสบาดเจ็บตอนสำรวจด้วย</div>
+    <div class="gap"></div>
+    ${S.equip.w||S.equip.a ? `<button class="btn sm block" data-act="unequipAll">ถอดทั้งหมด</button><div class="gap" style="height:8px"></div>` : ''}
+    <div class="eyebrow">⚔️ อาวุธ</div>
+    <div class="list">${wRows}</div>
+    <div class="gap"></div>
+    <div class="eyebrow">🛡️ เครื่องแต่งกาย</div>
+    <div class="list">${aRows}</div>
+    <div class="gap"></div>
+    <button class="btn block" data-act="closeSheet">ปิด</button>`);
+}
+
 function crystalSheet(){
   sheet(`<div class="eyebrow">ร้านผลึกสมาธิ · มีอยู่ ${Math.floor(S.crystals)} ผลึก</div>
     <h2>ของที่แลกด้วยความรู้เท่านั้น</h2>
@@ -4216,9 +4359,24 @@ function bindView(){
 document.getElementById('fsbtn').addEventListener('click', fsSheet);
 
 document.getElementById('sheet').addEventListener('click', e => {
-  const b = e.target.closest('[data-dgrade],[data-dsubj],[data-fs],[data-act],[data-rps],[data-feed],[data-swap],[data-free],[data-freeyes],[data-cbuy],[data-qlist],[data-qdel],[data-pick]');
+  const b = e.target.closest('[data-buyg],[data-equip],[data-dgrade],[data-dsubj],[data-fs],[data-act],[data-rps],[data-feed],[data-swap],[data-free],[data-freeyes],[data-cbuy],[data-qlist],[data-qdel],[data-pick]');
   if (!b) return;
   if (b.dataset.fs) return setFS(+b.dataset.fs);
+  if (b.dataset.buyg){
+    const [kind, key] = b.dataset.buyg.split(':');
+    const r = buyGear(kind, key);
+    if (r.err) return toast(r.err, 'bad');
+    save(); paintTop();
+    toast(`ซื้อ${(kind==='w'?WEAPONS:ARMORS)[key].n}แล้ว`, 'gold');
+    return gearSheet();
+  }
+  if (b.dataset.equip){
+    const [kind, key] = b.dataset.equip.split(':');
+    equipGear(kind, key);
+    save(); render();
+    toast(`สวมใส่${(kind==='w'?WEAPONS:ARMORS)[key].n}แล้ว`);
+    return gearSheet();
+  }
   if (b.dataset.dgrade){ QUIZ.grade = b.dataset.dgrade; S.grade = b.dataset.dgrade; save(); return duelPasteSheet(); }
   if (b.dataset.dsubj){ DUEL.subj = b.dataset.dsubj; return duelPasteSheet(); }
   if (b.dataset.rps) return doRps(b.dataset.rps);
@@ -4336,6 +4494,8 @@ function act(a){
   if (a === 'eggmap') return eggMapSheet();
   if (a === 'garden') return gardenSheet();
   if (a === 'crystal') return crystalSheet();
+  if (a === 'gear') return gearSheet();
+  if (a === 'unequipAll'){ S.equip = {w:null,a:null}; save(); return gearSheet(); }
   if (a === 'settings') return settingsSheet();
   if (a === 'togTimed'){ S.settings.timed = !S.settings.timed; save(); return settingsSheet(); }
   if (a === 'togShuf'){ S.settings.shuffle = !S.settings.shuffle; save(); return settingsSheet(); }
@@ -4504,6 +4664,8 @@ async function boot(){
   while (S.room.length < ROOM_SLOTS) S.room.push(null);
   if (S.room.length > ROOM_SLOTS) S.room = S.room.slice(0, ROOM_SLOTS);
   if (typeof S.guard !== 'number') S.guard = 0;
+  if (typeof S.boost !== 'number') S.boost = 0;
+  if (typeof S.mopDay !== 'string') S.mopDay = '';
   if (!S.settings || typeof S.settings.timed === 'undefined') S.settings = {timed:true, shuffle:true, fs:1};
   if (typeof S.settings.fs !== 'number' || !(S.settings.fs > 0)) S.settings.fs = 1;
   applyFS();
@@ -4516,6 +4678,8 @@ async function boot(){
   S.seen = S.seen || {};
   S.prog = S.prog || {};
   S.duel = S.duel || { win:0, lose:0, draw:0, day:'', today:0 };
+  S.owned = S.owned || { w:[], a:[] };
+  S.equip = S.equip || { w:null, a:null };
   if (!S.grade || !GRADES[S.grade]) S.grade = (gradesReady()[0] || 'p5');
   QUIZ.grade = S.grade;
 
@@ -4619,22 +4783,33 @@ function readDuelCode(raw){
 }
 
 /* ---------- สูตรการต่อสู้ ---------- */
-function duelMaxHp(p){ return Math.round(60 + p.stats.VIT * 3 + p.lv * 1.5); }
-function duelAtk(p, mine){ 
-  const base = 6 + p.stats.STR * 0.55 + p.stats.INT * 0.25;
-  return mine ? base * (1 + roomBonus().duelAtk) : base;
+/* ค่าสถานะที่ใช้จริงในการดวล รวมโบนัสจากอาวุธของฝ่ายเรา */
+function dStat(p, key, mine){ return p.stats[key] + (mine ? gearStatBonus(key) : 0); }
+
+function duelMaxHp(p, mine){
+  const base = 60 + dStat(p,'VIT',mine) * 3 + p.lv * 1.5;
+  return Math.round(base + (mine ? gearHpBonus() : 0));
+}
+function duelAtk(p, mine){
+  const base = 6 + dStat(p,'STR',mine) * 0.55 + dStat(p,'INT',mine) * 0.25;
+  return mine ? base * (1 + roomBonus().duelAtk + gearAtkBonus()) : base;
 }
 function duelDef(p, mine){
-  const base = p.stats.VIT * 0.22;
-  return mine ? base * (1 + roomBonus().duelDef) : base;
+  const base = dStat(p,'VIT',mine) * 0.22;
+  return mine ? base * (1 + roomBonus().duelDef + gearDefBonus()) : base;
 }
 
 /* คำนวณความเสียหาย: ต้องตอบถูกเท่านั้นจึงจะเข้า */
+function duelDodge(p, mine){ return clamp(dStat(p,'AGI',mine) / 400 + (mine ? gearDodgeBonus() : 0), 0, 0.30); }
+
 function duelDamage(attacker, defender, diff, speed, mineAtk){
+  // ฝ่ายรับมีโอกาสหลบตาม AGI
+  if (Math.random() < duelDodge(defender, !mineAtk)) return { dmg:0, crit:false, dodged:true };
   const base = Math.max(3, duelAtk(attacker, mineAtk) - duelDef(defender, !mineAtk));
-  const crit = Math.random() < clamp(attacker.stats.LUK / 320, 0, 0.35);
+  const critRate = clamp(dStat(attacker,'LUK',mineAtk) / 320 + (mineAtk ? gearCritBonus() : 0), 0, 0.40);
+  const crit = Math.random() < critRate;
   const dmg = base * DIFF_POWER[diff] * (1 + 0.5 * clamp(speed, 0, 1)) * (crit ? 1.8 : 1);
-  return { dmg: Math.max(1, Math.round(dmg)), crit };
+  return { dmg: Math.max(1, Math.round(dmg)), crit, dodged:false };
 }
 
 /* เงาของคู่ต่อสู้ตอบถูกหรือไม่ อิงจากความแม่นยำจริงของเจ้าของรหัส */
@@ -4658,7 +4833,7 @@ function duelStart(foe, subj, grade){
   const p = S.pet;
   DUEL.running = true; DUEL.foe = foe;
   DUEL.subj = subj; DUEL.grade = grade;
-  DUEL.maxHp = duelMaxHp(p); DUEL.foeMax = duelMaxHp(foe);
+  DUEL.maxHp = duelMaxHp(p, true); DUEL.foeMax = duelMaxHp(foe, false);
   DUEL.hp = DUEL.maxHp; DUEL.foeHp = DUEL.foeMax;
   DUEL.round = 0; DUEL.used = []; DUEL.log = []; DUEL.result = null;
   DUEL.units = {}; DUEL.eggPts = 0;
@@ -4808,8 +4983,8 @@ function duelMineSheet(){
     <div class="gap"></div>
     <div class="list">
       <div class="item"><div class="ic" style="background:${sp.dim};border-color:${sp.a(.4)}">${sp.g}</div>
-        <div class="grow"><b>เลือดสูงสุด ${duelMaxHp(p)}</b>
-          <div class="tiny">พลังโจมตี ${Math.round(duelAtk(p, true))} · เกราะ ${Math.round(duelDef(p, true))} · แม่นยำ ${S.stats.answered?Math.round(S.stats.correct/S.stats.answered*100):60}%</div></div></div>
+        <div class="grow"><b>เลือดสูงสุด ${duelMaxHp(p, true)}</b>
+          <div class="tiny">พลังโจมตี ${Math.round(duelAtk(p, true))} · เกราะ ${Math.round(duelDef(p, true))} · หลบ ${Math.round(duelDodge(p,true)*100)}% · แม่นยำ ${S.stats.answered?Math.round(S.stats.correct/S.stats.answered*100):60}%</div></div></div>
     </div>
     <div class="gap"></div>
     <textarea id="duelOut" class="fld" readonly style="min-height:96px;font-family:'IBM Plex Mono',monospace;font-size:calc(12px * var(--fs));word-break:break-all">${code}</textarea>
@@ -4873,9 +5048,15 @@ function viewDuel(){
   if (DUEL.locked){
     const t = DUEL.log[DUEL.log.length - 1] || {};
     const lines = [];
-    if (t.correct && t.my) lines.push(`<b style="color:var(--ok)">${esc(p.name)} โจมตี ${t.my.dmg} หน่วย${t.my.crit?' · เข้าเต็มแรง':''}</b>`);
+    if (t.correct && t.my){
+      if (t.my.dodged) lines.push(`<b style="color:var(--warn)">${esc(foe.name)} หลบทันพอดี</b>`);
+      else lines.push(`<b style="color:var(--ok)">${esc(p.name)} โจมตี ${t.my.dmg} หน่วย${t.my.crit?' · เข้าเต็มแรง':''}</b>`);
+    }
     else lines.push(`<b style="color:var(--warn)">ตอบผิด ${esc(p.name)} โจมตีไม่เข้า</b>`);
-    if (t.foe) lines.push(`<span style="color:var(--bad)">${esc(foe.name)} สวนกลับ ${t.foe.dmg} หน่วย${t.foe.crit?' · เข้าเต็มแรง':''}</span>`);
+    if (t.foe){
+      if (t.foe.dodged) lines.push(`<span style="color:var(--ok)">${esc(p.name)} หลบการสวนกลับได้</span>`);
+      else lines.push(`<span style="color:var(--bad)">${esc(foe.name)} สวนกลับ ${t.foe.dmg} หน่วย${t.foe.crit?' · เข้าเต็มแรง':''}</span>`);
+    }
     else lines.push(`<span class="tiny">${esc(foe.name)} ตอบข้อนี้ไม่ได้ จึงโจมตีไม่เข้า</span>`);
     after = `<div class="expl" style="border-left-color:${t.correct?'var(--glaze)':'var(--bad)'}">
       ${lines.join('<br>')}
