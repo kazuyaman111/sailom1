@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>แดชบอร์ดห้องเรียน — #ห้องเรียนครูชัช</title>
+<meta name="theme-color" content="#101b22">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23142430'/%3E%3Crect x='7' y='16' width='4' height='9' fill='%237cae9b'/%3E%3Crect x='14' y='11' width='4' height='14' fill='%23d8b04a'/%3E%3Crect x='21' y='19' width='4' height='6' fill='%23c26a6a'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Trirong:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d161c; --deep:#152430; --panel:#1b303c;
+  --line:rgba(190,222,210,.14);
+  --glaze:#7cae9b; --glaze-dk:#42705f; --glaze-lt:#a8d3c2;
+  --gold:#d8b04a; --mist:#e6efe9; --dim:#8ba69c;
+  --ok:#7cae9b; --warn:#d8b04a; --bad:#c26a6a; --r:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;background:var(--ink);color:var(--mist);
+  font-family:'IBM Plex Sans Thai',sans-serif;font-size:16px;line-height:1.6;
+  padding-bottom:40px;
+}
+.wrap{max-width:560px;margin:0 auto;padding:14px}
+header{
+  position:sticky;top:0;z-index:20;background:rgba(13,22,28,.95);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+  padding:12px 14px;display:flex;align-items:center;gap:10px;
+}
+header b{font-family:'Trirong',serif;font-size:18px;font-weight:700;line-height:1.2}
+header .sub{font-size:11px;color:var(--dim);font-family:'IBM Plex Mono',monospace}
+.grow{flex:1;min-width:0}
+.card{background:var(--deep);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+h2{font-family:'Trirong',serif;font-size:19px;font-weight:600;margin:0 0 4px}
+.sub{font-size:13px;color:var(--dim)}
+.tiny{font-size:12.5px;color:var(--dim)}
+.row{display:flex;align-items:center;gap:10px}
+.spread{justify-content:space-between}
+.gap{height:12px}
+input,select{
+  width:100%;background:var(--panel);border:1px solid var(--line);border-radius:11px;
+  padding:12px;color:var(--mist);font-family:inherit;font-size:16px;margin-bottom:10px;
+}
+button{
+  font-family:inherit;font-size:15px;border-radius:11px;padding:11px 16px;
+  border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--mist);cursor:pointer;
+}
+button.pri{background:var(--glaze-dk);border-color:var(--glaze);color:#eafaf3}
+button.block{display:block;width:100%}
+button.sm{padding:7px 11px;font-size:13.5px}
+button:disabled{opacity:.4}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{border-radius:999px;padding:7px 13px;font-size:14px}
+.chip.on{background:var(--glaze-dk);border-color:var(--glaze);color:#eafaf3}
+.bigstat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.bigstat div{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:10px 4px}
+.bigstat b{display:block;font-family:'IBM Plex Mono',monospace;font-size:21px;font-weight:500}
+.bigstat span{font-size:10.5px;color:var(--dim)}
+.bar{height:8px;border-radius:5px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:6px}
+.bar>i{display:block;height:100%;border-radius:5px}
+.item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:none}
+.item b{display:block;font-size:14.5px;font-weight:500}
+.pill{
+  display:inline-block;border:1px solid var(--line);border-radius:999px;
+  padding:2px 9px;font-size:11.5px;margin-right:5px;
+}
+.alert{border-left:3px solid var(--bad);background:rgba(194,106,106,.09);border-radius:0 10px 10px 0;padding:11px 13px;margin-bottom:9px}
+.alert.warn{border-left-color:var(--warn);background:rgba(216,176,74,.09)}
+.alert b{display:block;font-size:14.5px;margin-bottom:2px}
+.mono{font-family:'IBM Plex Mono',monospace}
+.right{text-align:right}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;color:var(--dim);font-weight:500;font-size:11.5px;padding:6px 4px;border-bottom:1px solid var(--line)}
+td{padding:9px 4px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:none}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--glaze);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.hide{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="grow">
+    <b>แดชบอร์ดห้องเรียน</b>
+    <div class="sub">#ห้องเรียนครูชัช</div>
+  </div>
+  <button class="sm" id="refresh">รีเฟรช</button>
+</header>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ===========================================================
+   แดชบอร์ดครู — ดึงข้อมูลจาก Apps Script มาวิเคราะห์จุดบอดของห้อง
+   =========================================================== */
+
+/* ครูวาง URL ตรงนี้ได้เลย จะได้ไม่ต้องกรอกทุกครั้ง */
+const API_URL = '';
+
+const LS = { url:'kruchat.dash.url', key:'kruchat.dash.key' };
+const A = document.getElementById('app');
+let DATA = null, FILTER = { grade:'all', subj:'all' };
+
+/* ---------- โครงสร้างหลักสูตร ต้องตรงกับในเกม ---------- */
+const SUBJECTS = {
+  hist:{n:'ประวัติศาสตร์', short:'ประวัติศาสตร์', g:'🏯'},
+  anti:{n:'การป้องกันการทุจริต', short:'ต้านทุจริต', g:'⚖️'},
+  comp:{n:'คอมพิวเตอร์', short:'คอมพิวเตอร์', g:'💻'}
+};
+const GRADES = {p1:'ป.1',p2:'ป.2',p3:'ป.3',p4:'ป.4',p5:'ป.5',p6:'ป.6',m1:'ม.1',m2:'ม.2',m3:'ม.3'};
+const UNITS = {
+  h_time:'เวลาและยุคสมัย', h_method:'วิธีการทางประวัติศาสตร์', h_kingdom:'พัฒนาการของอาณาจักร',
+  h_person:'บุคคลสำคัญ', h_culture:'ภูมิปัญญาและวัฒนธรรม', h_world:'เพื่อนบ้านและอารยธรรมโลก',
+  h_nation:'ชาติไทยและท้องถิ่น',
+  a_sep:'คิดแยกแยะผลประโยชน์', a_shame:'ความละอายและไม่ทนต่อการทุจริต',
+  a_strong:'STRONG จิตพอเพียงต้านทุจริต', a_citizen:'พลเมืองกับความรับผิดชอบ',
+  c_basic:'รู้จักคอมพิวเตอร์', c_use:'การใช้งานและโปรแกรม',
+  c_algo:'การแก้ปัญหาและอัลกอริทึม', c_safe:'ใช้เทคโนโลยีอย่างปลอดภัย'
+};
+
+/* ---------- เกณฑ์วิเคราะห์จุดบอด ---------- */
+const PASS = 50;        // นักเรียนที่ทำได้ต่ำกว่านี้ถือว่ายังไม่ผ่านหน่วยนั้น
+const ALERT_RATIO = 70; // ถ้ามีนักเรียนไม่ผ่านตั้งแต่กี่เปอร์เซ็นต์ขึ้นไป จึงแจ้งเตือน
+const MIN_TRY = 5;      // นักเรียนต้องตอบในหน่วยนั้นอย่างน้อยกี่ข้อจึงนับ
+const MIN_STUDENT = 3;  // ต้องมีนักเรียนถึงจำนวนนี้จึงสรุปได้
+
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pct = (a, b) => b > 0 ? Math.round(a / b * 100) : 0;
+function accColor(p){ return p >= 80 ? 'var(--ok)' : p >= 60 ? '#a8c98a' : p >= 40 ? 'var(--warn)' : 'var(--bad)'; }
+function timeAgo(iso){
+  if (!iso) return 'ไม่ทราบ';
+  const d = new Date(iso); if (isNaN(d)) return 'ไม่ทราบ';
+  const m = Math.floor((Date.now() - d.getTime()) / 60000);
+  if (m < 1) return 'เมื่อสักครู่';
+  if (m < 60) return m + ' นาทีที่แล้ว';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + ' ชั่วโมงที่แล้ว';
+  const dd = Math.floor(h / 24);
+  return dd < 30 ? dd + ' วันที่แล้ว' : d.toLocaleDateString('th-TH');
+}
+
+/* ---------- ดึงข้อมูล ---------- */
+function cfg(){
+  return {
+    url: API_URL || localStorage.getItem(LS.url) || '',
+    key: localStorage.getItem(LS.key) || ''
+  };
+}
+async function fetchAll(){
+  const c = cfg();
+  if (!c.url || !c.key) return { err:'ยังไม่ได้ตั้งค่า' };
+  try {
+    const res = await fetch(c.url + '?all=1&key=' + encodeURIComponent(c.key));
+    const out = await res.json();
+    if (out.status !== 'success') return { err: out.message || 'เซิร์ฟเวอร์ปฏิเสธคำขอ' };
+    return { ok:true, rows: out.data || [], serverTime: out.serverTime };
+  } catch (e){
+    return { err:'เชื่อมต่อไม่ได้ ตรวจสอบอินเทอร์เน็ตหรือที่อยู่เซิร์ฟเวอร์' };
+  }
+}
+
+/* ---------- วิเคราะห์ ---------- */
+function analyse(rows){
+  const units = {};      // key -> {subj, grade, unit, r, w, students:[], fail, tried}
+  const students = [];
+
+  rows.forEach(row => {
+    const st = row.stats || {};
+    const answered = +st.answered || 0, correct = +st.correct || 0;
+    const s = {
+      id: row.studentId, spirit: row.spiritName, level: +row.level || 0,
+      grade: row.grade || '', answered, correct,
+      acc: pct(correct, answered), last: row.lastUpdated,
+      weak: []
+    };
+    const pg = row.progress || {};
+    for (const k in pg){
+      const v = pg[k];
+      if (!Array.isArray(v)) continue;
+      const [r, w] = [+v[0] || 0, +v[1] || 0];
+      const tot = r + w;
+      if (tot <= 0) continue;
+      const [subj, grade, unit] = k.split('|');
+      if (!SUBJECTS[subj] || !UNITS[unit]) continue;
+
+      if (!units[k]) units[k] = { key:k, subj, grade, unit, r:0, w:0, tried:0, fail:0, list:[] };
+      const U = units[k];
+      U.r += r; U.w += w;
+      if (tot >= MIN_TRY){
+        U.tried++;
+        const a = pct(r, tot);
+        U.list.push({ id:s.id, acc:a, tot });
+        if (a < PASS){ U.fail++; s.weak.push({ unit, acc:a, tot }); }
+      }
+    }
+    students.push(s);
+  });
+
+  const unitList = Object.values(units).map(u => {
+    const tot = u.r + u.w;
+    u.acc = pct(u.r, tot);
+    u.total = tot;
+    u.failRate = u.tried ? Math.round(u.fail / u.tried * 100) : 0;
+    u.enough = u.tried >= MIN_STUDENT;
+    u.alert = u.enough && u.failRate >= ALERT_RATIO;
+    u.watch = u.enough && !u.alert && (u.failRate >= 40 || u.acc < 60);
+    /* ผลต่ำแต่ยังสรุปไม่ได้เพราะข้อมูลน้อย ให้แยกไว้อีกกลุ่ม */
+    u.thin = !u.enough && u.acc < PASS && u.total >= 6;
+    return u;
+  });
+
+  return { students, units: unitList };
+}
+
+/* ---------- หน้าจอ ---------- */
+function viewSetup(msg){
+  const c = cfg();
+  A.innerHTML = `
+  <div class="card">
+    <div class="eyebrow">ตั้งค่าครั้งแรก</div>
+    <h2>เชื่อมต่อกับชีตของห้องเรียน</h2>
+    <div class="sub">ใช้ URL เดียวกับที่นักเรียนใช้เซฟข้ามเครื่อง และรหัสผ่านครูที่ตั้งไว้ในไฟล์ Apps Script</div>
+    ${msg ? `<div class="gap"></div><div class="alert"><b>เชื่อมต่อไม่สำเร็จ</b><div class="tiny">${esc(msg)}</div></div>` : ''}
+    <div class="gap"></div>
+    ${API_URL ? '' : `<div class="eyebrow">ที่อยู่เซิร์ฟเวอร์</div>
+      <input id="fUrl" placeholder="https://script.google.com/macros/s/.../exec" value="${esc(c.url)}">`}
+    <div class="eyebrow">รหัสผ่านครู</div>
+    <input id="fKey" type="password" placeholder="ค่าของ TEACHER_KEY ในไฟล์ Apps Script" value="${esc(c.key)}">
+    <button class="pri block" id="btnSave">เชื่อมต่อ</button>
+    <div class="gap"></div>
+    <div class="tiny">ข้อมูลจะถูกจำไว้ในเครื่องนี้เท่านั้น ไม่ควรเปิดหน้านี้ในเครื่องที่นักเรียนใช้ร่วมกัน</div>
+  </div>`;
+  document.getElementById('btnSave').onclick = () => {
+    const u = document.getElementById('fUrl');
+    const k = document.getElementById('fKey').value.trim();
+    if (u){
+      const v = u.value.trim();
+      if (!/^https:\/\/script\.google\.com\//.test(v))
+        return alert('ที่อยู่เซิร์ฟเวอร์ต้องขึ้นต้นด้วย https://script.google.com/');
+      localStorage.setItem(LS.url, v);
+    }
+    if (!k) return alert('กรุณากรอกรหัสผ่านครู');
+    localStorage.setItem(LS.key, k);
+    load();
+  };
+}
+
+function viewLoading(){
+  A.innerHTML = `<div class="card"><div class="row"><span class="spin"></span>
+    <span class="grow">กำลังดึงข้อมูลจากชีต…</span></div></div>`;
+}
+
+function render(){
+  const { students, units } = DATA;
+  if (!students.length){
+    A.innerHTML = `<div class="card"><div class="eyebrow">ยังไม่มีข้อมูล</div>
+      <h2>ยังไม่มีนักเรียนส่งเซฟขึ้นมา</h2>
+      <div class="sub">ให้นักเรียนกรอกรหัสในเกมแล้วกดส่งขึ้นคลาวด์อย่างน้อยหนึ่งครั้ง แล้วกลับมากดรีเฟรช</div>
+      <div class="gap"></div><button class="block" id="btnReset">แก้ไขการตั้งค่า</button></div>`;
+    document.getElementById('btnReset').onclick = () => viewSetup('');
+    return;
+  }
+
+  /* กรองตามชั้นและวิชา */
+  const grades = [...new Set(students.map(s => s.grade).filter(Boolean))]
+    .sort((a,b) => Object.keys(GRADES).indexOf(a) - Object.keys(GRADES).indexOf(b));
+  const fs = students.filter(s => FILTER.grade === 'all' || s.grade === FILTER.grade);
+  const fu = units.filter(u =>
+    (FILTER.grade === 'all' || u.grade === FILTER.grade) &&
+    (FILTER.subj === 'all' || u.subj === FILTER.subj));
+
+  const totAns = fs.reduce((a,s) => a + s.answered, 0);
+  const totCor = fs.reduce((a,s) => a + s.correct, 0);
+  const classAcc = pct(totCor, totAns);
+  const active = fs.filter(s => {
+    const d = new Date(s.last);
+    return !isNaN(d) && (Date.now() - d.getTime()) < 7*24*3600*1000;
+  }).length;
+
+  const alerts = fu.filter(u => u.alert).sort((a,b) => b.failRate - a.failRate);
+  const watch  = fu.filter(u => u.watch).sort((a,b) => a.acc - b.acc);
+  const thin   = fu.filter(u => !u.alert && !u.watch && u.thin).sort((a,b) => a.acc - b.acc);
+  const rest   = fu.filter(u => !u.alert && !u.watch && !u.thin).sort((a,b) => a.acc - b.acc);
+
+  const unitRow = u => `<div class="item">
+    <div class="grow">
+      <b>${esc(UNITS[u.unit])}</b>
+      <div class="tiny">${SUBJECTS[u.subj].short} ${GRADES[u.grade] || u.grade} · ตอบรวม ${u.total} ข้อ · นักเรียนที่ตอบครบเกณฑ์ ${u.tried} คน${u.enough ? '' : ' · ยังสรุปไม่ได้'}</div>
+      <div class="bar"><i style="width:${u.acc}%;background:${accColor(u.acc)}"></i></div>
+    </div>
+    <div class="right" style="width:88px;flex:none">
+      <div class="mono" style="font-size:15px;color:${accColor(u.acc)}">${u.acc}%</div>
+      <div class="tiny">ไม่ผ่าน ${u.failRate}%</div>
+    </div>
+  </div>`;
+
+  A.innerHTML = `
+  <div class="card">
+    <div class="eyebrow">ตัวกรอง</div>
+    <div class="chips">
+      <button class="chip ${FILTER.grade==='all'?'on':''}" data-g="all">ทุกชั้น</button>
+      ${grades.map(g => `<button class="chip ${FILTER.grade===g?'on':''}" data-g="${g}">${GRADES[g]||g}</button>`).join('')}
+    </div>
+    <div class="gap" style="height:8px"></div>
+    <div class="chips">
+      <button class="chip ${FILTER.subj==='all'?'on':''}" data-s="all">ทุกวิชา</button>
+      ${Object.keys(SUBJECTS).map(k => `<button class="chip ${FILTER.subj===k?'on':''}" data-s="${k}">${SUBJECTS[k].g} ${SUBJECTS[k].short}</button>`).join('')}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="eyebrow">ภาพรวม${FILTER.grade!=='all'?' · '+(GRADES[FILTER.grade]||''):''}</div>
+    <div class="bigstat">
+      <div><b>${fs.length}</b><span>นักเรียน</span></div>
+      <div><b style="color:${accColor(classAcc)}">${classAcc}%</b><span>ความแม่นยำ</span></div>
+      <div><b>${totAns.toLocaleString('th-TH')}</b><span>ตอบทั้งหมด</span></div>
+    </div>
+    <div class="tiny" style="margin-top:9px">ใช้งานใน 7 วันที่ผ่านมา ${active} คน จาก ${fs.length} คน</div>
+  </div>
+
+  ${alerts.length ? `<div class="card">
+    <div class="eyebrow" style="color:var(--bad)">ควรนำมาทบทวนในคาบถัดไป</div>
+    <h2>พบจุดบอด ${alerts.length} หน่วย</h2>
+    <div class="sub">หน่วยที่นักเรียนตั้งแต่ ${ALERT_RATIO}% ขึ้นไปยังทำได้ต่ำกว่า ${PASS}%</div>
+    <div class="gap"></div>
+    ${alerts.map(u => `<div class="alert">
+      <b>${esc(UNITS[u.unit])}</b>
+      <div class="tiny">${SUBJECTS[u.subj].short} ${GRADES[u.grade]||u.grade} · นักเรียน ${u.fail} จาก ${u.tried} คนยังไม่ผ่าน (${u.failRate}%) · ความแม่นยำเฉลี่ยของห้อง ${u.acc}%</div>
+      <div style="margin-top:8px"><button class="sm pri" data-mq="${u.subj}|${u.grade}|${u.unit}">สั่งภารกิจให้ห้องนี้</button></div>
+    </div>`).join('')}
+  </div>` : `<div class="card">
+    <div class="eyebrow" style="color:var(--ok)">ไม่พบจุดบอด</div>
+    <h2>ยังไม่มีหน่วยที่ต้องเร่งทบทวน</h2>
+    <div class="sub">ไม่มีหน่วยใดที่นักเรียนตั้งแต่ ${ALERT_RATIO}% ขึ้นไปทำได้ต่ำกว่า ${PASS}%${thin.length ? ' แต่มี ' + thin.length + ' หน่วยที่ผลต่ำและยังสรุปไม่ได้ ดูด้านล่าง' : ''}</div>
+  </div>`}
+
+  ${thin.length ? `<div class="card">
+    <div class="eyebrow">ผลต่ำแต่ยังสรุปไม่ได้</div>
+    <div class="sub">หน่วยที่ความแม่นยำต่ำกว่า ${PASS}% แต่ยังมีนักเรียนตอบไม่ถึง ${MIN_STUDENT} คนที่ตอบครบ ${MIN_TRY} ข้อ ควรให้เด็กทำเพิ่มก่อนสรุป</div>
+    <div class="gap"></div>
+    ${thin.map(u => `<div class="alert warn">
+      <b>${esc(UNITS[u.unit])}</b>
+      <div class="tiny">${SUBJECTS[u.subj].short} ${GRADES[u.grade]||u.grade} · ความแม่นยำ ${u.acc}% จาก ${u.total} ข้อ · ยังไม่พอสรุป</div>
+    </div>`).join('')}
+  </div>` : ''}
+
+  ${watch.length ? `<div class="card">
+    <div class="eyebrow" style="color:var(--warn)">เฝ้าดู</div>
+    <div class="sub">ยังไม่ถึงเกณฑ์แจ้งเตือน แต่ผลเริ่มต่ำ ควรติดตาม</div>
+    <div class="gap"></div>
+    ${watch.map(u => `<div class="alert warn">
+      <b>${esc(UNITS[u.unit])}</b>
+      <div class="tiny">${SUBJECTS[u.subj].short} ${GRADES[u.grade]||u.grade} · ไม่ผ่าน ${u.failRate}% · ความแม่นยำ ${u.acc}%</div>
+    </div>`).join('')}
+  </div>` : ''}
+
+  ${fu.length ? `<div class="card">
+    <div class="eyebrow">ผลรายหน่วยทั้งหมด</div>
+    <div class="sub">เรียงจากหน่วยที่ทำได้น้อยที่สุด</div>
+    <div class="gap" style="height:6px"></div>
+    ${[...alerts, ...watch, ...thin, ...rest].map(unitRow).join('')}
+  </div>` : ''}
+
+  <div class="card">
+    <div class="eyebrow">รายชื่อนักเรียน</div>
+    <div class="sub">แตะแถวเพื่อดูหน่วยที่ยังไม่ผ่านของคนนั้น</div>
+    <div class="gap" style="height:6px"></div>
+    <table>
+      <tr><th>รหัส</th><th>วิญญาณ</th><th class="right">ตอบ</th><th class="right">แม่นยำ</th></tr>
+      ${fs.slice().sort((a,b) => a.acc - b.acc).map((s,i) => `
+        <tr data-i="${i}" style="cursor:pointer">
+          <td class="mono">${esc(s.id)}</td>
+          <td>${esc(s.spirit || '-')}<div class="tiny">${GRADES[s.grade]||''} · ${timeAgo(s.last)}</div></td>
+          <td class="right mono">${s.answered}</td>
+          <td class="right mono" style="color:${accColor(s.acc)}">${s.acc}%</td>
+        </tr>
+        <tr class="hide" id="d${i}"><td colspan="4">
+          ${s.weak.length
+            ? '<div class="tiny">หน่วยที่ยังไม่ผ่าน — ' + s.weak.sort((a,b)=>a.acc-b.acc).map(w => esc(UNITS[w.unit]) + ' ' + w.acc + '%').join(' · ') + '</div>'
+            : '<div class="tiny">ผ่านทุกหน่วยที่ทำไปแล้ว</div>'}
+        </td></tr>`).join('')}
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="eyebrow">ภารกิจที่สั่งไว้</div>
+    <div class="sub">นักเรียนจะเห็นภารกิจนี้ในหน้าตอบคำถาม เมื่อกดปุ่มดึงจากครู</div>
+    <div class="gap"></div>
+    <button class="block" id="btnMqList">ดูภารกิจที่ยังใช้อยู่</button>
+    <div class="gap" style="height:8px"></div>
+    <button class="block" id="btnMqClear">ล้างภารกิจทั้งหมด</button>
+    <div id="mqBox"></div>
+  </div>
+
+  <div class="card">
+    <div class="row spread">
+      <div class="tiny">ข้อมูล ณ ${new Date().toLocaleString('th-TH')}</div>
+      <button class="sm" id="btnReset">ตั้งค่า</button>
+    </div>
+  </div>`;
+
+  A.querySelectorAll('[data-g]').forEach(b => b.onclick = () => { FILTER.grade = b.dataset.g; render(); });
+  A.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { FILTER.subj = b.dataset.s; render(); });
+  A.querySelectorAll('tr[data-i]').forEach(tr => tr.onclick = () => {
+    const d = document.getElementById('d' + tr.dataset.i);
+    if (d) d.classList.toggle('hide');
+  });
+  document.getElementById('btnReset').onclick = () => viewSetup('');
+  A.querySelectorAll('[data-mq]').forEach(b => b.onclick = () => sendMission(b.dataset.mq, b));
+  const bl = document.getElementById('btnMqList');
+  if (bl) bl.onclick = listMissions;
+  const bc = document.getElementById('btnMqClear');
+  if (bc) bc.onclick = clearMissions;
+}
+
+/* ---------- สั่งภารกิจ ---------- */
+async function postMq(payload){
+  const c = cfg();
+  const res = await fetch(c.url, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(Object.assign({ action:'mission', key:c.key }, payload))
+  });
+  return res.json();
+}
+
+async function sendMission(tag, btn){
+  const [subj, grade, unit] = tag.split('|');
+  const days = 7;
+  const note = prompt('ข้อความฝากถึงนักเรียน (เว้นว่างได้)', 'ทบทวนหน่วยนี้ก่อนคาบหน้านะครับ');
+  if (note === null) return;
+  btn.disabled = true; btn.textContent = 'กำลังส่ง…';
+  try {
+    const out = await postMq({ subj, grade, unit, need:8, win:12, days, note });
+    if (out.status !== 'success'){ btn.disabled = false; btn.textContent = 'สั่งภารกิจให้ห้องนี้'; return alert(out.message || 'ส่งไม่สำเร็จ'); }
+    btn.textContent = 'สั่งแล้ว หมดอายุใน ' + days + ' วัน';
+  } catch (e){
+    btn.disabled = false; btn.textContent = 'สั่งภารกิจให้ห้องนี้';
+    alert('เชื่อมต่อไม่ได้');
+  }
+}
+
+async function listMissions(){
+  const box = document.getElementById('mqBox');
+  box.innerHTML = '<div class="gap"></div><div class="row"><span class="spin"></span><span class="grow">กำลังดึง…</span></div>';
+  try {
+    const c = cfg();
+    const res = await fetch(c.url + '?missions=1');
+    const out = await res.json();
+    if (out.status !== 'success') return box.innerHTML = '<div class="gap"></div><div class="tiny">' + esc(out.message||'ดึงไม่สำเร็จ') + '</div>';
+    const rows = out.data || [];
+    box.innerHTML = '<div class="gap"></div>' + (rows.length
+      ? rows.map(m => `<div class="item"><div class="grow">
+          <b>${esc(UNITS[m.unit] || m.unit)}</b>
+          <div class="tiny">${(SUBJECTS[m.subj]||{short:m.subj}).short} ${GRADES[m.grade]||'ทุกชั้น'} · ตอบถูก ${m.need} จาก ${m.win} ข้อ · หมดอายุ ${m.until ? new Date(m.until).toLocaleDateString('th-TH') : 'ไม่กำหนด'}</div>
+          ${m.note ? '<div class="tiny" style="color:var(--gold)">' + esc(m.note) + '</div>' : ''}
+        </div></div>`).join('')
+      : '<div class="tiny">ยังไม่มีภารกิจที่ใช้งานอยู่</div>');
+  } catch (e){ box.innerHTML = '<div class="gap"></div><div class="tiny">เชื่อมต่อไม่ได้</div>'; }
+}
+
+async function clearMissions(){
+  if (!confirm('ล้างภารกิจทั้งหมดที่สั่งไว้ใช่หรือไม่')) return;
+  try {
+    const out = await postMq({ clear:true });
+    alert(out.status === 'success' ? 'ล้างภารกิจแล้ว' : (out.message || 'ล้างไม่สำเร็จ'));
+    listMissions();
+  } catch (e){ alert('เชื่อมต่อไม่ได้'); }
+}
+
+async function load(){
+  const c = cfg();
+  if (!c.url || !c.key) return viewSetup('');
+  viewLoading();
+  const r = await fetchAll();
+  if (r.err) return viewSetup(r.err);
+  DATA = analyse(r.rows);
+  render();
+}
+
+document.getElementById('refresh').onclick = load;
+load();
+</script>
+</body>
+</html>

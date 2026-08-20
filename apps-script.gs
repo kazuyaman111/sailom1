@@ -15,7 +15,14 @@
    =========================================================== */
 
 const SHEET_NAME = 'SaveData';
-const HEADERS = ['studentId', 'spiritName', 'level', 'coins', 'stats', 'lastUpdated', 'saveRaw'];
+const MQ_SHEET   = 'Missions';
+const MQ_HEADERS = ['grade', 'subj', 'unit', 'need', 'window', 'note', 'until', 'createdAt'];
+const HEADERS = ['studentId', 'spiritName', 'level', 'coins', 'stats',
+                 'lastUpdated', 'saveRaw', 'grade', 'progress'];
+
+/* รหัสผ่านสำหรับเปิดแดชบอร์ดครู เปลี่ยนเป็นอะไรก็ได้ที่เดายาก
+   ถ้าไม่ตั้ง ใครที่รู้ URL ก็ดูข้อมูลทั้งห้องได้ */
+const TEACHER_KEY = 'kruchat2569';
 
 /* จำกัดขนาดก้อนเซฟ กันช่องเดียวยาวเกินที่ Google Sheets รับได้ (50,000 ตัวอักษร) */
 const MAX_RAW = 45000;
@@ -26,6 +33,17 @@ function getSheet_() {
   if (!sh) {
     sh = ss.insertSheet(SHEET_NAME);
     sh.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]).setFontWeight('bold');
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+function getMqSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(MQ_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(MQ_SHEET);
+    sh.getRange(1, 1, 1, MQ_HEADERS.length).setValues([MQ_HEADERS]).setFontWeight('bold');
     sh.setFrozenRows(1);
   }
   return sh;
@@ -52,24 +70,57 @@ function findRow_(sh, studentId) {
 /* ---------- ดึงเซฟ ---------- */
 function doGet(e) {
   try {
-    const studentId = e && e.parameter ? String(e.parameter.studentId || '').trim() : '';
-    if (!studentId) return json_({ status: 'error', message: 'ไม่ได้ระบุรหัสนักเรียน' });
-
+    const p = (e && e.parameter) ? e.parameter : {};
     const sh = getSheet_();
 
-    /* โหมดสรุปทั้งห้องสำหรับครู: เรียก ?all=1 */
-    if (e.parameter.all === '1') {
+    /* ---------- โหมดแดชบอร์ดครู: ?all=1&key=รหัสผ่าน ---------- */
+    if (p.all === '1') {
+      if (String(p.key || '') !== TEACHER_KEY)
+        return json_({ status: 'error', message: 'รหัสผ่านครูไม่ถูกต้อง' });
+
       const last = sh.getLastRow();
-      const rows = last < 2 ? [] : sh.getRange(2, 1, last - 1, 6).getValues();
+      const rows = last < 2 ? [] : sh.getRange(2, 1, last - 1, HEADERS.length).getValues();
       return json_({
         status: 'success',
         count: rows.length,
-        data: rows.map(r => ({
-          studentId: r[0], spiritName: r[1], level: r[2],
-          coins: r[3], stats: r[4], lastUpdated: r[5]
-        }))
+        serverTime: new Date().toISOString(),
+        data: rows.map(function (r) {
+          var st = {}, pg = {};
+          try { st = JSON.parse(r[4]); } catch (err) {}
+          try { pg = JSON.parse(r[8]); } catch (err) {}
+          return {
+            studentId: r[0], spiritName: r[1], level: r[2], coins: r[3],
+            stats: st, lastUpdated: r[5], grade: r[7], progress: pg
+          };
+        })
       });
     }
+
+    /* ---------- ภารกิจที่ครูสั่ง: ?missions=1&grade=p5 ---------- */
+    if (p.missions === '1') {
+      const ms = getMqSheet_();
+      const last = ms.getLastRow();
+      const rows = last < 2 ? [] : ms.getRange(2, 1, last - 1, MQ_HEADERS.length).getValues();
+      const want = String(p.grade || '').trim();
+      const now = new Date().getTime();
+      const out = [];
+      rows.forEach(function (r) {
+        const g = String(r[0] || '').trim();
+        if (g && want && g !== want) return;
+        const until = r[6] ? new Date(r[6]).getTime() : 0;
+        if (until && now > until) return;
+        if (!r[2]) return;
+        out.push({
+          grade: g, subj: String(r[1] || 'hist').trim(), unit: String(r[2]).trim(),
+          need: Number(r[3]) || 8, win: Number(r[4]) || 12,
+          note: String(r[5] || ''), until: until
+        });
+      });
+      return json_({ status: 'success', count: out.length, data: out.slice(0, 3) });
+    }
+
+    const studentId = String(p.studentId || '').trim();
+    if (!studentId) return json_({ status: 'error', message: 'ไม่ได้ระบุรหัสนักเรียน' });
 
     const row = findRow_(sh, studentId);
     if (!row) return json_({ status: 'error', message: 'ไม่พบข้อมูลของรหัสนี้' });
@@ -90,6 +141,27 @@ function doGet(e) {
   }
 }
 
+/* ---------- ครูสั่งภารกิจจากแดชบอร์ด ---------- */
+function addMission_(body) {
+  if (String(body.key || '') !== TEACHER_KEY)
+    return json_({ status: 'error', message: 'รหัสผ่านครูไม่ถูกต้อง' });
+  const ms = getMqSheet_();
+  if (body.clear) {
+    const last = ms.getLastRow();
+    if (last > 1) ms.deleteRows(2, last - 1);
+    return json_({ status: 'success', cleared: true });
+  }
+  if (!body.unit) return json_({ status: 'error', message: 'ไม่ได้ระบุหน่วยการเรียนรู้' });
+  const until = new Date();
+  until.setDate(until.getDate() + (Number(body.days) || 7));
+  ms.appendRow([
+    String(body.grade || ''), String(body.subj || 'hist'), String(body.unit),
+    Number(body.need) || 8, Number(body.win) || 12,
+    String(body.note || '').slice(0, 120), until, new Date()
+  ]);
+  return json_({ status: 'success', until: until.toISOString() });
+}
+
 /* ---------- บันทึกเซฟ ---------- */
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -100,6 +172,10 @@ function doPost(e) {
       return json_({ status: 'error', message: 'ไม่มีข้อมูลส่งมา' });
 
     const body = JSON.parse(e.postData.contents);
+
+    /* ครูสั่งภารกิจ ใช้ POST เดียวกันแต่ระบุ action */
+    if (body.action === 'mission') return addMission_(body);
+
     const studentId = String(body.studentId || '').trim();
     if (!studentId) return json_({ status: 'error', message: 'ไม่ได้ระบุรหัสนักเรียน' });
     if (!/^[A-Za-z0-9ก-๙_-]{3,20}$/.test(studentId))
@@ -117,7 +193,9 @@ function doPost(e) {
       Number(body.coins || 0),
       JSON.stringify(body.stats || {}),
       new Date(),
-      rawStr
+      rawStr,
+      String(body.grade || ''),
+      JSON.stringify(body.progress || {})
     ];
 
     const row = findRow_(sh, studentId);

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>ใบแนะนำสำหรับนักเรียน — ห้องเรียนไร้ขีดจำกัด</title>
+<link href="https://fonts.googleapis.com/css2?family=Trirong:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'IBM Plex Sans Thai',sans-serif;font-size:12pt;line-height:1.55;
+  color:#16242c;background:#e8ecea;padding:16px;
+}
+.page{
+  width:210mm;min-height:297mm;margin:0 auto;background:#fff;
+  padding:14mm 15mm;box-shadow:0 2px 14px rgba(0,0,0,.14);
+}
+h1{font-family:'Trirong',serif;font-size:24pt;font-weight:700;line-height:1.15;color:#1b303c}
+.tag{font-size:10pt;color:#5d7a70;letter-spacing:.06em;margin-bottom:2px}
+.rule{height:3px;background:linear-gradient(90deg,#42705f,#d8b04a 60%,transparent);margin:9px 0 14px;border-radius:2px}
+h2{
+  font-family:'Trirong',serif;font-size:14pt;font-weight:600;color:#42705f;
+  margin:15px 0 7px;padding-bottom:3px;border-bottom:1.5px solid #dce6e0;
+}
+p{margin-bottom:6px}
+.lead{font-size:11.5pt;color:#3d5c52}
+.box{border:1.5px solid #c8d8d0;border-radius:9px;padding:11px 13px;margin:9px 0;background:#f6faf8}
+.box.gold{border-color:#e0c77e;background:#fdfaf0}
+.box.warn{border-color:#e3b3b3;background:#fdf4f4}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.big{
+  font-family:'IBM Plex Mono',monospace;font-size:16pt;font-weight:500;
+  letter-spacing:.02em;color:#1b303c;
+}
+.fill{
+  display:inline-block;min-width:180px;border-bottom:1.6px dashed #9db4ac;
+  height:1.5em;vertical-align:-3px;
+}
+ol,ul{margin:5px 0 5px 20px}
+li{margin-bottom:4px}
+.steps{counter-reset:s;list-style:none;margin-left:0}
+.steps li{
+  counter-increment:s;position:relative;padding-left:30px;margin-bottom:8px;
+}
+.steps li::before{
+  content:counter(s);position:absolute;left:0;top:1px;
+  width:21px;height:21px;border-radius:50%;background:#42705f;color:#fff;
+  font-size:10.5pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+}
+.steps b{display:block;color:#1b303c}
+.steps span{font-size:11pt;color:#4f6b61}
+table{width:100%;border-collapse:collapse;font-size:11pt;margin:6px 0}
+th{background:#eef4f1;text-align:left;padding:6px 8px;border:1px solid #dce6e0;font-weight:600;color:#3d5c52}
+td{padding:6px 8px;border:1px solid #dce6e0}
+.foot{margin-top:14px;padding-top:8px;border-top:1.5px solid #dce6e0;font-size:10pt;color:#6a857b}
+.no-print{max-width:210mm;margin:0 auto 12px;text-align:right}
+button{
+  font-family:inherit;font-size:11pt;padding:8px 16px;border-radius:8px;
+  border:1px solid #42705f;background:#42705f;color:#fff;cursor:pointer;
+}
+@media print{
+  body{background:#fff;padding:0}
+  .page{width:auto;min-height:auto;box-shadow:none;padding:11mm 12mm}
+  .no-print{display:none}
+  @page{size:A4;margin:0}
+}
+</style>
+</head>
+<body>
+
+<div class="no-print"><button onclick="window.print()">พิมพ์ใบนี้</button></div>
+
+<div class="page">
+  <div class="tag">#ห้องเรียนครูชัช · โรงเรียนปฐมวิทยาคาร</div>
+  <h1>ห้องเรียนไร้ขีดจำกัด</h1>
+  <div class="rule"></div>
+  <p class="lead">เกมที่ให้เราตอบคำถามในวิชาที่เรียน แล้วเอาคะแนนไปฟักไข่ เลี้ยงวิญญาณ และดวลกับเพื่อน ยิ่งตอบถูกมาก วิญญาณของเรายิ่งแข็งแรง</p>
+
+  <h2>เข้าเล่นที่ไหน</h2>
+  <div class="box">
+    <div style="font-size:10.5pt;color:#5d7a70;margin-bottom:3px">พิมพ์ที่อยู่นี้ในเบราว์เซอร์</div>
+    <div class="big"><span class="fill" style="min-width:100%"></span></div>
+    <p style="font-size:10.5pt;margin-top:7px;margin-bottom:0">เปิดได้ทั้งมือถือ แท็บเล็ต และคอมพิวเตอร์ ไม่ต้องติดตั้งอะไร แนะนำให้กดบันทึกหน้านี้ไว้ในหน้าจอหลักจะเข้าง่ายกว่า</p>
+  </div>
+
+  <div class="grid2">
+    <div class="box gold">
+      <div style="font-size:10.5pt;color:#8a7433;margin-bottom:3px">รหัสนักเรียนของฉัน</div>
+      <div class="big"><span class="fill"></span></div>
+    </div>
+    <div class="box gold">
+      <div style="font-size:10.5pt;color:#8a7433;margin-bottom:3px">ชื่อวิญญาณของฉัน</div>
+      <div class="big"><span class="fill"></span></div>
+    </div>
+  </div>
+
+  <h2>สัปดาห์แรกทำอะไรบ้าง</h2>
+  <p style="font-size:11pt;color:#4f6b61;margin-bottom:7px">เกมจะพาไปทีละขั้นเอง ทำตามการ์ดสีทองด้านบนจอได้เลย</p>
+  <ol class="steps">
+    <li><b>ตอบคำถามหนึ่งรอบ</b><span>เลือกวิชาที่ครูสอน ตอบผิดไม่เป็นไร ข้อที่ผิดจะวนกลับมาให้ทำใหม่จนกว่าจะเข้าใจ</span></li>
+    <li><b>ฟักไข่ให้เป็นวิญญาณ</b><span>ตอบคำถามสะสมคะแนนจนไข่พร้อม แล้วกลับมาที่หน้ากระถางเพื่อฟัก</span></li>
+    <li><b>ตั้งชื่อวิญญาณ</b><span>ตั้งชื่อที่เราชอบ เปลี่ยนทีหลังได้</span></li>
+    <li><b>ให้อาหาร</b><span>ซื้ออาหารด้วยเหรียญที่ได้จากการตอบคำถาม วิญญาณที่อิ่มและอารมณ์ดีจะโตเร็วกว่า</span></li>
+    <li><b>ลองดวลกับเพื่อน</b><span>แลกรหัสท้าดวลกัน ในการดวลต้องตอบถูกวิญญาณถึงจะโจมตีได้</span></li>
+  </ol>
+
+  <h2>เรื่องที่ต้องรู้</h2>
+  <table>
+    <tr><th style="width:38%">เรื่อง</th><th>รายละเอียด</th></tr>
+    <tr><td>หน่วยที่ตอบสำคัญมาก</td><td>หน่วยการเรียนรู้ที่เราตอบจะกำหนดธาตุของวิญญาณที่จะได้ อยากได้ธาตุไหนต้องตอบหน่วยนั้นให้มาก</td></tr>
+    <tr><td>ข้อยากคุ้มกว่า</td><td>ตอบข้อยากได้คะแนนมากกว่า และทำให้เกจคาถาเต็มเร็วกว่ามาก</td></tr>
+    <tr><td>ถ้าหายไปนาน</td><td>ไม่เข้าเกม 7 วัน วิญญาณจะหลับและอ่อนแรงลง แต่<b>ไม่มีอะไรหายถาวร</b> ตอบถูก 15 ข้อก็ปลุกให้กลับมาเหมือนเดิมได้</td></tr>
+    <tr><td>เปลี่ยนเครื่องได้</td><td>กดส่งขึ้นคลาวด์ก่อนปิดเกมทุกครั้ง แล้วเครื่องอื่นกดกู้เซฟด้วยรหัสเดิมจะได้วิญญาณตัวเดิมกลับมา</td></tr>
+    <tr><td>ตัวหนังสือเล็กไป</td><td>กดปุ่ม <b>Aa</b> มุมขวาบน ปรับได้ 5 ขนาด</td></tr>
+  </table>
+
+  <h2>ข้อตกลงร่วมกัน</h2>
+  <div class="box warn">
+    <ul style="margin-bottom:0">
+      <li><b>ห้ามใส่ชื่อจริง เลขบัตรประชาชน หรือเบอร์โทร</b> ในช่องรหัสนักเรียนและชื่อวิญญาณ ให้ใช้เฉพาะรหัสที่ครูแจกให้</li>
+      <li>เล่นในเวลาที่ครูอนุญาตหรือนอกเวลาเรียนเท่านั้น</li>
+      <li>ตอบคำถามด้วยความรู้ของตัวเอง การเปิดหาคำตอบทำให้เราไม่ได้เรียนรู้จริง</li>
+      <li>แลกรหัสท้าดวลกับเพื่อนในห้องได้ แต่ไม่ส่งให้คนที่เราไม่รู้จัก</li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    มีปัญหาเข้าเกมไม่ได้ เซฟหาย หรือรหัสใช้ไม่ได้ ให้แจ้งครูชัชในคาบเรียนถัดไป
+    <span style="float:right">ครูผู้สอน นายชัชพิสิฐพงศ์ ธาดาสุขเกษม</span>
+  </div>
+</div>
+
+</body>
+</html>

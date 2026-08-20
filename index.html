@@ -151,6 +151,24 @@ button{font-family:inherit;font-size:calc(15px * var(--fs));color:inherit;cursor
 /* ---------- ตอบคำถาม ---------- */
 .qmeta{display:flex;justify-content:space-between;align-items:center;font-size:calc(13px * var(--fs));color:var(--dim);margin-bottom:8px}
 .qtext{font-size:calc(20.5px * var(--fs));line-height:1.65;font-family:'Trirong',serif;font-weight:600;margin:2px 0 14px}
+.card.tutor{border-color:rgba(216,176,74,.4);background:linear-gradient(180deg,rgba(216,176,74,.07),transparent)}
+.tdots{display:flex;gap:6px;margin-top:10px}
+.tdot{flex:1;height:4px;border-radius:3px;background:rgba(255,255,255,.1)}
+.tdot.done{background:var(--glaze)}
+.tdot.now{background:var(--gold);animation:tpulse 1.4s ease-in-out infinite}
+@keyframes tpulse{0%,100%{opacity:1}50%{opacity:.45}}
+#tabs button.locked{opacity:.22;pointer-events:none}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mcol{display:flex;flex-direction:column;gap:8px}
+.mcell{
+  background:var(--panel);border:1px solid var(--line);border-radius:11px;
+  padding:calc(11px * var(--fs)) calc(10px * var(--fs));color:var(--mist);
+  font-family:inherit;font-size:calc(13.5px * var(--fs));line-height:1.45;
+  text-align:left;cursor:pointer;flex:1;display:flex;align-items:center;
+  transition:background .12s,border-color .12s,opacity .2s;
+}
+.mcell.sel{background:var(--glaze-dk);border-color:var(--glaze);color:#eafaf3}
+.mcell.done{opacity:.28;border-style:dashed}
 .choices{display:flex;flex-direction:column;gap:8px}
 .ch{
   display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;
@@ -202,6 +220,9 @@ select.fld{appearance:none}
 .prow .lab b{display:block;font-size:calc(14.5px * var(--fs));font-weight:500}
 .prow .lab .tiny{font-size:calc(12px * var(--fs))}
 .prow .num{font-family:'IBM Plex Mono',monospace;font-size:calc(13.5px * var(--fs));text-align:right;width:84px;flex:none}
+.bar.gauge{background:rgba(127,168,201,.14)}
+.bar.gauge.full>i{box-shadow:0 0 8px rgba(216,176,74,.7);animation:gpulse 1.1s ease-in-out infinite}
+@keyframes gpulse{0%,100%{opacity:1}50%{opacity:.55}}
 .pbar{height:7px;border-radius:4px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:5px}
 .pbar>i{display:block;height:100%;border-radius:4px}
 .trend{font-size:calc(12px * var(--fs));font-family:'IBM Plex Mono',monospace;width:60px;flex:none;text-align:right}
@@ -665,15 +686,15 @@ const GARDEN_MAX = 6;
    =========================================================== */
 const WEAPONS = {
   w1: {n:'ไม้เท้าไผ่',        g:'🥢', tier:1, cost:150,   atkPct:.05, statKey:'STR', statUp:1, d:'อาวุธเริ่มต้น น้ำหนักเบา ใช้ฝึกมือ'},
-  w2: {n:'มีดสั้นหินเหล็กไฟ', g:'🔪', tier:1, cost:450,   atkPct:.14, statKey:'AGI', statUp:2, dodgePct:.03, d:'คมกริบและคล่องตัว เพิ่มโอกาสหลบ 3%'},
+  w2: {n:'มีดสั้นหินเหล็กไฟ', g:'🔪', tier:1, cost:450,   atkPct:.14, statKey:'AGI', statUp:2, extraPct:.05, d:'คมกริบและคล่องตัว เพิ่มโอกาสฟันซ้ำ 5%'},
   w3: {n:'ตะบองไม้แก่น',      g:'🏏', tier:2, cost:1100,  atkPct:.15, statKey:'STR', statUp:2, d:'หนักแน่น เหมาะกับสายพลัง'},
   w4: {n:'หอกด้ามยาว',        g:'🔱', tier:2, cost:2400,  atkPct:.20, statKey:'INT', statUp:3, d:'แทงได้ไกล อาศัยจังหวะและการคำนวณ'},
   w5: {n:'ดาบสั้นสำริด',      g:'🗡️', tier:3, cost:4800,  atkPct:.26, statKey:'STR', statUp:3, d:'หลอมจากสำริดโบราณ คมและทนทาน'},
   w6: {n:'ขวานรบ',           g:'🪓', tier:3, cost:8500,  atkPct:.33, statKey:'STR', statUp:4, d:'ฟันแรง แต่ต้องใช้กำลังมาก'},
-  w7: {n:'ดาบยาวเหล็กกล้า',   g:'⚔️', tier:4, cost:15000, atkPct:.40, statKey:'STR', statUp:5, dodgePct:.05, d:'สมดุลทั้งแรงและไว เพิ่มโอกาสหลบ 5%'},
+  w7: {n:'ดาบยาวเหล็กกล้า',   g:'⚔️', tier:4, cost:15000, atkPct:.40, statKey:'STR', statUp:5, extraPct:.08, d:'สมดุลทั้งแรงและไว เพิ่มโอกาสฟันซ้ำ 8%'},
   w8: {n:'คทาเวทมนตร์',       g:'🪄', tier:4, cost:26000, atkPct:.48, statKey:'INT', statUp:10, critPct:.05, d:'แปลงพลังจิตเป็นแรงโจมตี เพิ่มโอกาสเข้าเต็มแรง 5%'},
   w9: {n:'ทวนมังกร',         g:'🐉', tier:5, cost:45000, atkPct:.58, statKey:'STR', statUp:6, critPct:.12, d:'สลักลายมังกรโบราณ เพิ่มโอกาสเข้าเต็มแรง 12%'},
-  w10:{n:'ดาบเทวะ',          g:'🌟', tier:5, cost:80000, atkPct:.72, statKey:'STR', statUp:10, critPct:.08, dodgePct:.05, d:'ตำนานว่าตีขึ้นจากเศษดาวตก แรงที่สุดในทุกด้าน'},
+  w10:{n:'ดาบเทวะ',          g:'🌟', tier:5, cost:80000, atkPct:.72, statKey:'STR', statUp:10, critPct:.08, extraPct:.07, d:'ตำนานว่าตีขึ้นจากเศษดาวตก แรงที่สุดในทุกด้าน'},
 };
 const ARMORS = {
   a1: {n:'เสื้อผ้าฝ้ายเสริมแผ่น', g:'🧥', tier:1, cost:300,   defPct:.08, hp:10, guard:.02, statUp:1, d:'เกราะเริ่มต้น ใส่สบาย ป้องกันได้เล็กน้อย'},
@@ -684,6 +705,104 @@ const ARMORS = {
 };
 const TIER_NAME = [null,'ต้น','กลาง','สูง','ยอด','ตำนาน'];
 const TIER_COLOR = [null,'#9fb6ac','#7fb6c9','#c9a24a','#c98ad4','#e8b4d8'];
+
+
+/* ===========================================================
+   วงจรธาตุข่มกัน — 6 ธาตุหมุนเป็นวง ส่วนแสงกับเงาข่มกันเอง
+   ไม้ → ลม → ดิน → สายฟ้า → น้ำ → ไฟ → ไม้
+   =========================================================== */
+const EL_BEATS = {
+  wood: ['wind'],   // ป่าไม้บังกำลังลม
+  wind: ['earth'],  // ลมกัดเซาะหน้าดิน
+  earth:['bolt'],   // ดินนำประจุลงสู่พื้น
+  bolt: ['water'],  // ไฟฟ้าไหลผ่านน้ำได้ดี
+  water:['fire'],   // น้ำดับไฟ
+  fire: ['wood'],   // ไฟเผาไม้
+  light:['shade'],  // แสงสลายเงา
+  shade:['light'],  // เงากลืนแสง
+};
+const EL_WHY = {
+  'wood>wind':'ป่าไม้บังกำลังลม',
+  'wind>earth':'ลมกัดเซาะหน้าดิน',
+  'earth>bolt':'ดินนำประจุไฟฟ้าลงสู่พื้น',
+  'bolt>water':'ไฟฟ้าไหลผ่านน้ำได้ดี',
+  'water>fire':'น้ำดับไฟ',
+  'fire>wood':'ไฟเผาไม้',
+  'light>shade':'แสงสลายเงา',
+  'shade>light':'เงากลืนแสง',
+};
+const EL_ORDER = ['wood','wind','earth','bolt','water','fire'];  // วงหลัก
+const EL_PAIR  = ['light','shade'];                              // คู่ปรับ
+
+const ADV_UP   = 1.18;   // ข่มได้
+const ADV_DOWN = 0.90;   // ถูกข่ม
+
+/* คืนตัวคูณความเสียหายจากธาตุ */
+function elMul(atkEl, defEl){
+  if (!atkEl || !defEl) return 1;
+  if ((EL_BEATS[atkEl] || []).includes(defEl)) return ADV_UP;
+  if ((EL_BEATS[defEl] || []).includes(atkEl)) return ADV_DOWN;
+  return 1;
+}
+function elLabel(atkEl, defEl){
+  const m = elMul(atkEl, defEl);
+  if (m > 1) return {t:'ข่มได้', c:'var(--ok)', why: EL_WHY[atkEl + '>' + defEl] || ''};
+  if (m < 1) return {t:'ถูกข่ม', c:'var(--bad)', why: EL_WHY[defEl + '>' + atkEl] || ''};
+  return null;
+}
+
+/* ===========================================================
+   คาถา — ธาตุละ 3 บท รวม 24 บท
+   pw  = ตัวคูณพลังคาถา (คิดจาก INT)
+   eff = ผลข้างเคียง  burn ไหม้ต่อเนื่อง · heal ดูดเลือด · shield ลดความเสียหายที่จะได้รับ
+         drain ลดเกจคู่ต่อสู้ · pierce เจาะเกราะ · double ตีซ้ำทันที
+   =========================================================== */
+const SPELLS = {
+  wood: [
+    {n:'รากใต้พิภพ',   g:'🌱', pw:1.00, eff:'heal',   v:0.30, d:'ดูดพลังชีวิตคืน 30% ของความเสียหาย'},
+    {n:'หนามพันธนาการ', g:'🌿', pw:1.15, eff:'drain',  v:35,   d:'ลดเกจคาถาของคู่ต่อสู้ 35 หน่วย'},
+    {n:'ป่าคุ้มครอง',   g:'🍃', pw:0.90, eff:'shield', v:0.35, d:'ลดความเสียหายที่จะได้รับ 35% ในยกถัดไป'},
+  ],
+  wind: [
+    {n:'ใบมีดวายุ',    g:'🌪️', pw:1.05, eff:'double', v:0.45, d:'มีโอกาส 45% ฟันซ้ำอีกครั้ง'},
+    {n:'ลมกรดเฉือน',   g:'💨', pw:1.20, eff:'pierce', v:0.50, d:'เจาะเกราะคู่ต่อสู้ครึ่งหนึ่ง'},
+    {n:'พายุคุ้มกาย',   g:'🌬️', pw:0.90, eff:'shield', v:0.35, d:'ลดความเสียหายที่จะได้รับ 35% ในยกถัดไป'},
+  ],
+  earth: [
+    {n:'ปฐพีแยก',     g:'🪨', pw:1.20, eff:'pierce', v:0.50, d:'เจาะเกราะคู่ต่อสู้ครึ่งหนึ่ง'},
+    {n:'กำแพงศิลา',    g:'⛰️', pw:0.85, eff:'shield', v:0.45, d:'ลดความเสียหายที่จะได้รับ 45% ในยกถัดไป'},
+    {n:'ผงธุลีกัดกร่อน', g:'🏔️', pw:1.00, eff:'burn',  v:0.18, d:'ไหม้ต่อเนื่อง 18% ของความเสียหาย อีก 3 ยก'},
+  ],
+  bolt: [
+    {n:'สายอสนีบาต',   g:'⚡', pw:1.25, eff:null,    v:0,    d:'ความเสียหายสูงที่สุด ไม่มีผลข้างเคียง'},
+    {n:'ประจุลูกโซ่',   g:'🔌', pw:1.05, eff:'double', v:0.45, d:'มีโอกาส 45% ฟาดซ้ำอีกครั้ง'},
+    {n:'ไฟฟ้าสถิต',    g:'✳️', pw:0.95, eff:'drain',  v:40,   d:'ลดเกจคาถาของคู่ต่อสู้ 40 หน่วย'},
+  ],
+  water: [
+    {n:'คลื่นชำระ',    g:'🌊', pw:1.00, eff:'heal',   v:0.35, d:'ดูดพลังชีวิตคืน 35% ของความเสียหาย'},
+    {n:'สายน้ำเชี่ยว',  g:'💧', pw:1.20, eff:'pierce', v:0.45, d:'เจาะเกราะคู่ต่อสู้เกือบครึ่ง'},
+    {n:'ม่านหมอก',     g:'🌫️', pw:0.90, eff:'shield', v:0.40, d:'ลดความเสียหายที่จะได้รับ 40% ในยกถัดไป'},
+  ],
+  fire: [
+    {n:'เพลิงเผาผลาญ', g:'🔥', pw:1.00, eff:'burn',   v:0.25, d:'ไหม้ต่อเนื่อง 25% ของความเสียหาย อีก 3 ยก'},
+    {n:'ลูกไฟระเบิด',   g:'💥', pw:1.25, eff:null,    v:0,    d:'ความเสียหายสูงที่สุด ไม่มีผลข้างเคียง'},
+    {n:'เปลวคุ้มครอง',  g:'🕯️', pw:0.95, eff:'heal',   v:0.25, d:'ดูดพลังชีวิตคืน 25% ของความเสียหาย'},
+  ],
+  light: [
+    {n:'ลำแสงชำระบาป', g:'✨', pw:1.15, eff:'pierce', v:0.40, d:'เจาะเกราะคู่ต่อสู้ 40%'},
+    {n:'พรแห่งรุ่งอรุณ', g:'🌟', pw:0.90, eff:'heal',   v:0.40, d:'ดูดพลังชีวิตคืน 40% ของความเสียหาย'},
+    {n:'รัศมีปกป้อง',   g:'🔆', pw:0.95, eff:'shield', v:0.40, d:'ลดความเสียหายที่จะได้รับ 40% ในยกถัดไป'},
+  ],
+  shade: [
+    {n:'เงาสังหาร',    g:'🌑', pw:1.25, eff:null,    v:0,    d:'ความเสียหายสูงที่สุด ไม่มีผลข้างเคียง'},
+    {n:'กลืนวิญญาณ',   g:'👁️', pw:1.00, eff:'heal',   v:0.35, d:'ดูดพลังชีวิตคืน 35% ของความเสียหาย'},
+    {n:'ม่านมืดมิด',    g:'🕸️', pw:1.05, eff:'drain',  v:40,   d:'ลดเกจคาถาของคู่ต่อสู้ 40 หน่วย'},
+  ],
+};
+
+/* เกจคาถา */
+const GAUGE_MAX = 100;
+const GAUGE_BY_DIFF = [0, 21, 34, 52, 74];   // ได้เกจตามความยากของข้อที่ตอบถูก
 
 /* ===========================================================
    โครงสร้างหลักสูตร — อิงตารางสอนจริง
@@ -1908,6 +2027,11 @@ function freshSave(){
     guard: 0,
     boost: 0,
     savedAt: 0,
+    sleep: { on:false, since:0, woke:0 },
+    mq: { day:'', list:[], done:[] },
+    teacherMq: [],
+    mqGauge: false,
+    tutor: { step:0, off:false, started:false, at:0 },
     cloud: { url:'', sid:'', auto:false, lastUp:0, lastDown:0 },
     mopDay: '',
     owned: { w:[], a:[] },      // อาวุธ/เกราะที่ซื้อแล้ว
@@ -2191,6 +2315,50 @@ function addItem(key, n=1){
 function bagCount(){ return Object.values(S.bag).reduce((a,b)=>a+b, 0); }
 function petPower(p){ p = p || S.pet; return ['STR','VIT','AGI','INT','LUK'].reduce((a,k)=>a+p.stats[k], 0); }
 
+/* ===========================================================
+   หลับใหล — ไม่ได้เข้าเกม 7 วัน วิญญาณจะหลับ ค่าสถานะลดชั่วคราว
+   ปลุกได้ด้วยการตอบคำถามให้ถูกครบตามที่กำหนด ไม่มีการสูญเสียถาวร
+   =========================================================== */
+const SLEEP_DAYS = 7;        // กี่วันที่ไม่เข้าจึงหลับ
+const SLEEP_CUT  = 0.40;     // ค่าสถานะลดลงกี่ส่วน
+const WAKE_NEED  = 15;       // ตอบถูกกี่ข้อจึงตื่น
+
+function inSchoolBreak(){
+  const b = (S.cloud && S.cloud.breakUntil) || 0;
+  return b > Date.now();
+}
+/* ตรวจว่าควรหลับหรือยัง เรียกตอนเปิดเกม */
+function checkSleep(){
+  if (!S.pet) return;
+  S.sleep = S.sleep || { on:false, since:0, woke:0 };
+  if (inSchoolBreak()) return;              // ช่วงปิดเทอมนาฬิกาหยุดเดิน
+  const days = (Date.now() - (S.lastTick || Date.now())) / 86400000;
+  if (!S.sleep.on && days >= SLEEP_DAYS){
+    S.sleep.on = true;
+    S.sleep.since = Date.now();
+    S.sleep.woke = 0;
+    S.sleep.away = Math.floor(days);
+  }
+}
+function isAsleep(){ return !!(S.sleep && S.sleep.on); }
+
+/* ค่าสถานะที่ใช้จริง ลดลงเมื่อหลับ */
+function liveStat(p, k){
+  const v = p.stats[k];
+  return (p === S.pet && isAsleep()) ? Math.max(1, Math.round(v * (1 - SLEEP_CUT))) : v;
+}
+/* นับความคืบหน้าการปลุก คืน true เมื่อตื่นพอดี */
+function wakeProgress(n){
+  if (!isAsleep()) return false;
+  S.sleep.woke = (S.sleep.woke || 0) + n;
+  if (S.sleep.woke >= WAKE_NEED){
+    S.sleep.on = false;
+    S.sleep.woke = 0;
+    return true;
+  }
+  return false;
+}
+
 
 /* ===================== คลังคำถาม ===================== */
 function allQuestions(){
@@ -2198,10 +2366,12 @@ function allQuestions(){
   const built = QBANK_BUILTIN.filter(q => !off[q.id]);
   return built.concat(S.qcustom || []);
 }
-function questionsBy(subj, grade){
+function questionsBy(subj, grade, unit){
   let all = allQuestions();
   if (grade) all = all.filter(q => q.grade === grade);
-  return subj === 'mix' ? all : all.filter(q => q.subj === subj);
+  if (subj !== 'mix') all = all.filter(q => q.subj === subj);
+  if (unit) all = all.filter(q => q.unit === unit);
+  return all;
 }
 /* วิชาที่มีคำถามพร้อมใช้ในระดับชั้นนั้น */
 function subjectsReady(grade){
@@ -2217,8 +2387,10 @@ function qstate(id){
 }
 
 /* เลือกคำถามถัดไป: ข้อที่ถึงกำหนดทวนก่อน กล่องต่ำมาก่อน */
-function pickQuestion(subj, grade, exclude){
-  const pool = questionsBy(subj, grade).filter(q => !exclude.includes(q.id));
+function pickQuestion(subj, grade, exclude, unit){
+  let pool = questionsBy(subj, grade, unit).filter(q => !exclude.includes(q.id));
+  /* ถ้าเจาะจงหน่วยแล้วข้อหมด ให้ถอยไปใช้ทั้งวิชาแทน จะได้ไม่ค้าง */
+  if (!pool.length && unit) pool = questionsBy(subj, grade).filter(q => !exclude.includes(q.id));
   if (!pool.length) return null;
   const now = S.qcount || 0;
   const scored = pool.map(q => {
@@ -2426,7 +2598,7 @@ function gearStatBonus(key){
   if (a && key === 'VIT') v += (a.statUp || 0);
   return v;
 }
-function gearDodgeBonus(){ const w = equippedWeapon(); return w && w.dodgePct ? w.dodgePct : 0; }
+function gearExtraBonus(){ const w = equippedWeapon(); return w && w.extraPct ? w.extraPct : 0; }
 function gearCritBonus(){ const w = equippedWeapon(); return w && w.critPct ? w.critPct : 0; }
 
 /* ===================== แคนวาส: กระถาง + รอยราน + วิญญาณ ===================== */
@@ -2744,6 +2916,7 @@ function drawSpirit(t, p, sp, opt){
   ctx.save();
   ctx.translate(cx, cy);
   if (opt && opt.flip) ctx.scale(-1, 1);
+  if (p === S.pet && typeof isAsleep === 'function' && isAsleep()) ctx.globalAlpha = 0.45;
 
   // แสงเรืองตามความหายาก
   if (sp.rarity >= 3){ ctx.shadowColor = sp.a(.85); ctx.shadowBlur = sp.rarity === 4 ? 26 : 15; }
@@ -3003,6 +3176,7 @@ document.querySelectorAll('#tabs button').forEach(b => {
   b.addEventListener('click', () => {
     if (QUIZ.running && !QUIZ.locked) return;
     if (DUEL.running && !DUEL.locked) return;
+    if (MATCH.running) return;
     TAB = b.dataset.tab;
     document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
     render();
@@ -3013,14 +3187,16 @@ function render(){
   tickOffline();
   paintTop();
   const v = view();
-  if (TAB === 'pot')      v.innerHTML = viewPot();
-  else if (TAB === 'quiz')    v.innerHTML = viewQuiz();
-  else if (TAB === 'explore') v.innerHTML = viewExplore();
-  else if (TAB === 'bag')     v.innerHTML = viewBag();
-  else if (TAB === 'home')    v.innerHTML = viewHome();
-  else if (TAB === 'book')    v.innerHTML = viewBook();
-  else if (TAB === 'sum')     v.innerHTML = viewSummary();
+  const tc = tutorCard();
+  if (TAB === 'pot')      v.innerHTML = tc + viewPot();
+  else if (TAB === 'quiz')    v.innerHTML = tc + viewQuiz();
+  else if (TAB === 'explore') v.innerHTML = tc + viewExplore();
+  else if (TAB === 'bag')     v.innerHTML = tc + viewBag();
+  else if (TAB === 'home')    v.innerHTML = tc + viewHome();
+  else if (TAB === 'book')    v.innerHTML = tc + viewBook();
+  else if (TAB === 'sum')     v.innerHTML = tc + viewSummary();
   else if (TAB === 'duel')    v.innerHTML = viewDuel();
+  else if (TAB === 'match')   v.innerHTML = viewMatch();
   bindView();
   const cv = document.getElementById('pot');
   if (cv) initCanvas(cv);
@@ -3065,7 +3241,17 @@ function stageBlock(){
     </div>
   </div>`;
   const ew = equippedWeapon(), ea = equippedArmor();
-  return `<div class="card">
+  const sleepCard = isAsleep() ? `<div class="card" style="border-color:rgba(127,168,201,.4)">
+    <div class="eyebrow" style="color:#7fa8c9">วิญญาณหลับใหล</div>
+    <h2>${esc(p.name)} หลับไปเพราะไม่ได้เจอกันนาน</h2>
+    <div class="sub">ไม่ได้เข้าเกม ${S.sleep.away || SLEEP_DAYS} วัน ค่าสถานะลดลงชั่วคราว ${Math.round(SLEEP_CUT*100)}% แต่ไม่มีอะไรหายไปถาวร</div>
+    <div class="gap"></div>
+    <div class="meter"><div class="lab"><span>ตอบถูกเพื่อปลุก</span><span class="mono">${S.sleep.woke||0}/${WAKE_NEED} ข้อ</span></div>
+      <div class="bar"><i style="width:${Math.min(100,(S.sleep.woke||0)/WAKE_NEED*100)}%;background:#7fa8c9"></i></div></div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="goQuiz">ไปตอบคำถามเพื่อปลุก${esc(p.name)}</button>
+  </div>` : '';
+  return sleepCard + `<div class="card">
     <div class="stage">
       <canvas id="pot" width="420" height="340" aria-label="กระถางและวิญญาณ"></canvas>
     </div>
@@ -3348,6 +3534,10 @@ function viewBook(){
   }).join('');
 
   return `<div class="card">
+    <div class="row spread" style="margin-bottom:10px">
+      <div class="grow"><b>ตารางธาตุข่มกัน</b><div class="sub">ดูว่าธาตุไหนได้เปรียบธาตุไหนในการดวล</div></div>
+      <button class="btn sm" data-act="elchart">เปิด</button>
+    </div>
     <div class="eyebrow">สมุดสะสม</div>
     <h2>${gotSp}/${SP_KEYS.length} สายพันธุ์ · ${gotForms}/${ALL_FORMS.length} ร่าง</h2>
     <div class="sub">ทุกใบมีรหัสสะสม 13 หลักที่คำนวณจากบัญชี ${S.uid} เครื่องอื่นได้รหัสคนละชุด</div>
@@ -3523,7 +3713,8 @@ function viewQuiz(){
   const counts = {};
   for (const k of SUBJ_KEYS) counts[k] = questionsBy(k, grade).length;
   const total = questionsBy('mix', grade).length;
-  const avail = QUIZ.subj === 'mix' ? total : counts[QUIZ.subj];
+  const avail = QUIZ.unit ? questionsBy(QUIZ.subj, grade, QUIZ.unit).length
+              : (QUIZ.subj === 'mix' ? total : counts[QUIZ.subj]);
 
   const gradeChips = GRADE_KEYS.map(g => {
     const n = questionsBy('mix', g).length;
@@ -3550,6 +3741,7 @@ function viewQuiz(){
 
   return `
   ${stageBlock()}
+  ${mqCard()}
   <div class="card">
     <div class="eyebrow">ระดับชั้น</div>
     <div class="chips">${gradeChips}</div>
@@ -3563,10 +3755,22 @@ function viewQuiz(){
     <div class="chips">${subjChips}</div>
     ${unitLine}
     <div class="gap"></div>
+    ${QUIZ.unit ? `<div class="expl" style="border-left-color:var(--gold);margin-bottom:10px">
+      <b style="color:var(--gold)">กำลังฝึกเฉพาะ${esc(UNITS[QUIZ.unit].n)}</b>
+      <div class="tiny">คำถามในรอบนี้จะมาจากหน่วยนี้เท่านั้น</div>
+      <div class="gap" style="height:8px"></div>
+      <button class="btn sm" data-act="unlockUnit">ตอบทุกหน่วยตามปกติ</button>
+    </div>` : ''}
     <button class="btn pri block" data-act="startQuiz" ${avail?'':'disabled'}>
       ${avail ? `เริ่มรอบ ${Math.min(ROUND_LEN, avail)} ข้อ` : 'ยังไม่มีคำถามในชุดนี้'}</button>
     <div class="tiny" style="margin-top:8px">
       ตอบถูกได้คะแนนเต็มเสมอ ตอบเร็วได้โบนัสเพิ่มสูงสุด 50% และตอบถูกติดกันจะได้ตัวคูณสูงสุด ×2
+    </div>
+    <hr class="sep">
+    <div class="row spread">
+      <div class="grow"><b>โหมดจับคู่</b>
+        <div class="sub">อุ่นเครื่องก่อนสอบ จับเวลา ไม่หักคะแนนเมื่อผิด</div></div>
+      <button class="btn gold" data-act="match">เปิด</button>
     </div>
   </div>
   <div class="card">
@@ -3638,13 +3842,13 @@ function startQuiz(){
   const avail = questionsBy(QUIZ.subj, QUIZ.grade).length;
   if (!avail) return toast('วิชานี้ยังไม่มีคำถามในคลัง', 'bad');
   QUIZ.running = true; QUIZ.idx = 0; QUIZ.used = []; QUIZ.streak = 0;
-  QUIZ.pts = 0; QUIZ.eggPts = 0; QUIZ.correct = 0; QUIZ.marks = []; QUIZ.units = {};
+  QUIZ.pts = 0; QUIZ.eggPts = 0; QUIZ.correct = 0; QUIZ.marks = []; QUIZ.units = {}; QUIZ.wokeUp = false; QUIZ.mqDone = null;
   QUIZ.len = Math.min(ROUND_LEN, avail);
   nextQuestion();
 }
 
 function nextQuestion(){
-  const q = pickQuestion(QUIZ.subj, QUIZ.grade, QUIZ.used);
+  const q = pickQuestion(QUIZ.subj, QUIZ.grade, QUIZ.used, QUIZ.unit);
   if (!q){ return finishQuiz(); }
   QUIZ.used.push(q.id);
   // สลับตัวเลือกไม่ให้จำตำแหน่ง
@@ -3697,6 +3901,9 @@ function answerQuestion(i){
     QUIZ.units[q.unit] = (QUIZ.units[q.unit] || 0) + QUIZ.gained.base;
     QUIZ.correct++;
     QUIZ.streak++;
+    if (wakeProgress(1)) QUIZ.wokeUp = true;
+    const mqd = mqRecord(q, true);
+    if (mqd) QUIZ.mqDone = { m: mqd, rw: mqReward(mqd) };
     S.stats.bestStreak = Math.max(S.stats.bestStreak, QUIZ.streak);
     if (S.pet){
       const p = S.pet;
@@ -3782,6 +3989,9 @@ function finishQuiz(){
   if (S.egg && QUIZ.eggPts > 0) hatchReady = eggAddPoints(QUIZ.eggPts, QUIZ.units);
 
   save(); render();
+  if (tutorStep() && tutorStep().id === 'quiz'){
+    S.tutor.step++; S.tutor.at = Date.now(); save(); applyTabLock();
+  }
   sheet(quizResultSheet(pts, acc, perfect, xp, coin, aff, cr, got, lv, hatchReady, boosted));
   cloudAutoSync();
 }
@@ -3793,6 +4003,8 @@ function quizResultSheet(pts, acc, perfect, xp, coin, aff, cr, got, lv, hatchRea
   <div class="sub">ความแม่นยำ ${Math.round(acc*100)}% · คะแนนรวม ${pts}${pts > S.stats.best - pts ? '' : ''}</div>
   <div class="gap"></div>
   <div class="list">
+    ${QUIZ.mqDone ? line('🎯', `ภารกิจ${esc(UNITS[QUIZ.mqDone.m.unit].n)}สำเร็จ`, `ผลึก +${QUIZ.mqDone.rw.crys} · เหรียญ +${QUIZ.mqDone.rw.coin} · เกจคาถาเต็มในดวลครั้งหน้า`) : ''}
+    ${QUIZ.wokeUp ? line('🌅', `${esc(S.pet.name)} ตื่นแล้ว`, 'ค่าสถานะกลับมาเต็มเหมือนเดิมทุกอย่าง') : ''}
     ${S.pet ? line('⭐', `ประสบการณ์ +${xp}`, [lv ? `เลื่อนขึ้น ${lv} เลเวล เป็น Lv.${S.pet.lv}` : '', boosted ? `ช็อกโกแลตช่วยเพิ่ม 25% · เหลืออีก ${S.boost} รอบ` : ''].filter(Boolean).join(' · ')) : ''}
     ${line('🪙', `เหรียญ +${coin}`)}
     ${cr ? line('💠', `ผลึกสมาธิ +${cr}`, perfect ? 'โบนัสตอบถูกหมดทั้งรอบ' : '') : ''}
@@ -4103,7 +4315,7 @@ function collectExplore(half){
   const z = ZONES.find(x => x.id === S.explore.zone);
   const p = S.pet, b = roomBonus();
   S.explore = null;
-  const luck = 1 + b.exploreLuck + p.stats.LUK / 120;
+  const luck = 1 + b.exploreLuck + liveStat(p,'LUK') / 120;
   const got = [];
   for (const [key, chance] of z.loot){
     if (Math.random() < chance * luck * (half ? .5 : 1)){
@@ -4118,7 +4330,7 @@ function collectExplore(half){
   p.care.body += 1;
 
   let hurt = 0;
-  const dodge = (p.stats.AGI + p.stats.VIT) / 200 + gearGuardBonus();
+  const dodge = (liveStat(p,'AGI') + liveStat(p,'VIT')) / 200 + gearGuardBonus();
   let guarded = false;
   if (!half && Math.random() < Math.max(.02, z.risk - dodge)){
     if (S.guard > 0){ S.guard--; guarded = true; }
@@ -4304,6 +4516,9 @@ function settingsSheet(){
         <div class="grow"><b>สลับตำแหน่งตัวเลือก</b><div class="sub">กันการจำว่าเฉลยอยู่ข้อไหน</div></div>
         <button class="btn sm ${S.settings.shuffle?'on':''}" data-act="togShuf">${S.settings.shuffle?'เปิด':'ปิด'}</button></div>
     </div>
+      <div class="item"><div class="ic">🧭</div>
+        <div class="grow"><b>สอนเล่น</b><div class="sub">${S.tutor && !S.tutor.off && S.tutor.step < TUTOR_STEPS.length ? 'กำลังอยู่ขั้นที่ ' + (S.tutor.step+1) + ' จาก ' + TUTOR_STEPS.length : 'จบแล้ว เปิดทุกอย่างให้ใช้ได้'}</div></div>
+        <button class="btn sm" data-act="tutorAgain">เริ่มใหม่</button></div>
       <div class="item"><div class="ic">☁️</div>
         <div class="grow"><b>เซฟข้ามเครื่อง</b><div class="sub">${S.cloud && S.cloud.sid ? 'รหัส ' + esc(S.cloud.sid) : 'เก็บความคืบหน้าไว้บนคลาวด์ของครู'}</div></div>
         <button class="btn sm" data-act="cloud">${S.cloud && S.cloud.sid ? 'จัดการ' : 'ตั้งค่า'}</button></div>
@@ -4335,6 +4550,10 @@ function bindView(){
   });
   view().querySelectorAll('[data-ans]').forEach(b => b.onclick = () => answerQuestion(+b.dataset.ans));
   view().querySelectorAll('[data-dans]').forEach(b => b.onclick = () => duelAnswer(+b.dataset.dans));
+  view().querySelectorAll('[data-mtap]').forEach(b => b.onclick = () => {
+    const [side, id] = b.dataset.mtap.split(':');
+    matchTap(side, +id);
+  });
   view().querySelectorAll('[data-go]').forEach(b => b.onclick = () => startExplore(b.dataset.go));
   view().querySelectorAll('[data-bookel]').forEach(b => b.onclick = () => { BOOKEL = b.dataset.bookel; render(); });
   view().querySelectorAll('[data-card]').forEach(b => b.onclick = () => sheet(cardSheet(b.dataset.card)));
@@ -4344,6 +4563,7 @@ function bindView(){
     if (r.err) return toast(r.err, 'bad');
     if (r.egg) return openEgg(b.dataset.use);
     toast(r.msg); save(); render();
+    if (ITEMS[b.dataset.use] && ITEMS[b.dataset.use].t === 'food') setTimeout(() => tutorDone('feed'), 80);
   });
   view().querySelectorAll('[data-sell]').forEach(b => b.onclick = () => {
     const k = b.dataset.sell, it = ITEMS[k];
@@ -4375,13 +4595,20 @@ function bindView(){
       toast(`เก็บ${f.n} คืนมา ${Math.round(f.cost*.5)} เหรียญ`); save(); render();
     } else toast('ซื้อของจากร้านด้านล่างเพื่อวางลงช่องนี้');
   });
+  /* ปุ่มไปทำภารกิจในหน้าหลัก ล็อกวิชากับหน่วยให้ตรงกับภารกิจนั้น */
+  view().querySelectorAll('[data-mqgo]').forEach(b => b.onclick = () => {
+    const [subj, grade, unit] = b.dataset.mqgo.split(':');
+    S.grade = grade; QUIZ.grade = grade; QUIZ.subj = subj; QUIZ.unit = unit;
+    save(); render();
+    toast(`ล็อกไว้ที่${UNITS[unit].n}แล้ว กดเริ่มรอบได้เลย`, 'gold');
+  });
   view().querySelectorAll('[data-act]').forEach(b => b.onclick = () => act(b.dataset.act));
 }
 
 document.getElementById('fsbtn').addEventListener('click', fsSheet);
 
 document.getElementById('sheet').addEventListener('click', e => {
-  const b = e.target.closest('[data-qlint2],[data-buyg],[data-equip],[data-dgrade],[data-dsubj],[data-fs],[data-act],[data-rps],[data-feed],[data-swap],[data-free],[data-freeyes],[data-cbuy],[data-qlist],[data-qdel],[data-pick]');
+  const b = e.target.closest('[data-mqgo],[data-mgo],[data-mgrade],[data-msubj],[data-dpick],[data-qlint2],[data-buyg],[data-equip],[data-dgrade],[data-dsubj],[data-fs],[data-act],[data-rps],[data-feed],[data-swap],[data-free],[data-freeyes],[data-cbuy],[data-qlist],[data-qdel],[data-pick]');
   if (!b) return;
   if (b.dataset.fs) return setFS(+b.dataset.fs);
   if (b.dataset.buyg){
@@ -4405,6 +4632,21 @@ document.getElementById('sheet').addEventListener('click', e => {
   if (b.dataset.pick !== undefined && b.dataset.pick !== ''){ QADD_ANS = +b.dataset.pick; return markPick(); }
   if (b.dataset.qlist) return qlistSheet(b.dataset.qlist);
   if (b.dataset.qlint2) return qlintSheet(b.dataset.qlint2);
+  if (b.dataset.dpick) return duelStartWith(+b.dataset.dpick);
+  if (b.dataset.mgrade){ QUIZ.grade = b.dataset.mgrade; S.grade = b.dataset.mgrade; save(); return matchIntroSheet(); }
+  if (b.dataset.msubj){ MATCH.subj = b.dataset.msubj; return matchIntroSheet(); }
+  if (b.dataset.mqgo){
+    const [subj, grade, unit] = b.dataset.mqgo.split(':');
+    S.grade = grade; QUIZ.grade = grade; QUIZ.subj = subj; QUIZ.unit = unit;
+    save(); render();
+    return toast(`ล็อกไว้ที่${UNITS[unit].n}แล้ว กดเริ่มรอบได้เลย`, 'gold');
+  }
+  if (b.dataset.mgo){
+    closeSheet();
+    TAB = 'match';
+    document.querySelectorAll('#tabs button').forEach(x => x.classList.remove('on'));
+    return matchStart(b.dataset.mgo, MATCH.subj, QUIZ.grade || S.grade);
+  }
   if (b.dataset.qdel){
     const id = b.dataset.qdel;
     if (id.startsWith('c')){ S.qcustom = (S.qcustom||[]).filter(q => q.id !== id); toast('ลบคำถามแล้ว'); }
@@ -4424,7 +4666,9 @@ document.getElementById('sheet').addEventListener('click', e => {
     const r = useItem(b.dataset.feed);
     if (r && r.err) return toast(r.err, 'bad');
     if (r) toast(r.msg);
-    closeSheet(); save(); render(); return;
+    closeSheet(); save(); render();
+    if (r && !r.err) setTimeout(() => tutorDone('feed'), 80);
+    return;
   }
   if (b.dataset.swap !== undefined && b.dataset.swap !== ''){
     swapWith(+b.dataset.swap); save(); closeSheet(); render();
@@ -4452,6 +4696,12 @@ function act(a){
   const p = S.pet;
   if (a === 'closeSheet'){
     closeSheet();
+    if (TAB === 'match' && !MATCH.running){
+      TAB = 'quiz';
+      document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.tab === 'quiz'));
+      render();
+      return;
+    }
     if (TAB === 'duel' && !DUEL.running){
       TAB = 'pot';
       document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.tab === 'pot'));
@@ -4465,6 +4715,18 @@ function act(a){
     return render();
   }
   if (a === 'goQuizStart'){ closeSheet(); act('goQuiz'); return; }
+  if (a === 'tutorBegin'){ S.tutor.started = true; save(); closeSheet(); applyTabLock(); act('goQuiz'); return; }
+  if (a === 'tutorSkip') return tutorSkipSheet();
+  if (a === 'tutorSkipYes'){
+    S.tutor.off = true; save(); closeSheet(); applyTabLock(); render();
+    return toast('เปิดทุกอย่างให้แล้ว');
+  }
+  if (a === 'tutorAgain'){
+    S.tutor = { step:0, off:false, started:true, at:Date.now() };
+    save(); closeSheet(); applyTabLock(); render();
+    return toast('เริ่มสอนเล่นใหม่ตั้งแต่ต้น');
+  }
+  if (a === 'unlockUnit'){ QUIZ.unit = null; render(); return toast('กลับมาตอบทุกหน่วยแล้ว'); }
   if (a === 'startQuiz') return startQuiz();
   if (a === 'nextQ') return advanceQuiz();
   if (a === 'quitQuiz'){
@@ -4476,7 +4738,7 @@ function act(a){
       <button class="btn pri block" data-act="closeSheet">ตอบต่อ</button>`);
   }
   if (a === 'quitYes'){ closeSheet(); return finishQuiz(); }
-  if (a === 'hatch'){ closeSheet(); return doHatch(); }
+  if (a === 'hatch'){ closeSheet(); tutorDone('hatch', true); return doHatch(); }
   if (a === 'qbank') return qbankSheet();
   if (a === 'qadd') return qaddSheet();
   if (a === 'qsave') return qsave();
@@ -4523,13 +4785,27 @@ function act(a){
     if (!r.ok) return toast(r.err, 'bad');
     const g = QUIZ.grade || S.grade;
     if (!questionsBy(DUEL.subj, g).length) return toast('วิชานี้ยังไม่มีคำถามในระดับชั้นที่เลือก', 'bad');
-    closeSheet();
-    TAB = 'duel';
-    document.querySelectorAll('#tabs button').forEach(x => x.classList.remove('on'));
-    duelStart(r.foe, DUEL.subj, g);
-    return toast(`เริ่มดวลกับ ${r.foe.name}`, 'gold');
+    return duelPickSheet(r.foe);
   }
   if (a === 'duelNext') return duelAdvance();
+  if (a === 'elchart') return elChartSheet();
+  if (a === 'match'){ closeSheet(); return matchIntroSheet(); }
+  if (a === 'mqSync'){
+    toast('กำลังดึงภารกิจจากครู…');
+    return fetchTeacherMissions().then(r => {
+      if (r.err) return toast(r.err, 'bad');
+      render();
+      toast(r.n ? `ได้ภารกิจจากครู ${r.n} รายการ` : 'ตอนนี้ครูยังไม่ได้สั่งภารกิจ', r.n ? 'gold' : '');
+    });
+  }
+  if (a === 'matchNext'){ closeSheet(); return matchLoadSet(); }
+  if (a === 'matchQuit'){
+    clearInterval(MATCH.tickId); MATCH.running = false;
+    TAB = 'quiz';
+    document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.tab === 'quiz'));
+    render();
+    return toast('ออกจากโหมดจับคู่แล้ว');
+  }
   if (a === 'duelQuit'){
     return sheet(`<h2>ยอมแพ้</h2><div class="sub">การดวลจะจบทันทีและนับเป็นแพ้</div>
       <div class="gap"></div><button class="btn danger block" data-act="duelQuitYes">ยอมแพ้</button>
@@ -4585,6 +4861,7 @@ function act(a){
       <button class="btn pri block" data-act="saveName">บันทึกชื่อ</button>`);
   }
   if (a === 'saveName'){
+    setTimeout(() => tutorDone('name'), 60);
     const el = document.getElementById('nameIn');
     const v = (el && el.value || '').trim();
     if (v && S.pet) S.pet.name = v.slice(0,14);
@@ -4720,6 +4997,14 @@ function migrateSave(){
   S.duel = S.duel || { win:0, lose:0, draw:0, day:'', today:0 };
   S.cloud = S.cloud || { url:'', sid:'', auto:false, lastUp:0, lastDown:0 };
   if (typeof S.savedAt !== 'number') S.savedAt = 0;
+  S.sleep = S.sleep || { on:false, since:0, woke:0 };
+  S.match = S.match || { plays:0, best:0 };
+  S.mq = S.mq || { day:'', list:[], done:[] };
+  S.teacherMq = S.teacherMq || [];
+  if (typeof S.mqGauge !== 'boolean') S.mqGauge = false;
+  S.tutor = S.tutor || { step:0, off:false, started:false, at:0 };
+  /* เด็กที่เคยเล่นมาก่อนระบบนี้จะมี pet อยู่แล้ว ไม่ต้องสอนซ้ำ */
+  if (!S.tutor.started && S.pet) S.tutor.off = true;
   S.owned = S.owned || { w:[], a:[] };
   S.equip = S.equip || { w:null, a:null };
   if (!S.grade || !GRADES[S.grade]) S.grade = (gradesReady()[0] || 'p5');
@@ -4734,6 +5019,8 @@ async function boot(){
   } else S = freshSave();
 
   migrateSave();
+  checkSleep();
+  applyTabLock();
 
   buildCrackle(hashStr(S.uid));
   tickOffline();
@@ -4741,7 +5028,11 @@ async function boot(){
   const firstTime = !S.pet && !S.egg;
   if (firstTime) startEgg(1);
   render();
-  if (firstTime) intro();
+  /* เด็กใหม่เจอหน้าต้อนรับของระบบสอนเล่น เด็กเก่าเจอหน้าแนะนำเดิม */
+  if (firstTime){
+    if (S.tutor && !S.tutor.started && !S.tutor.off) welcomeSheet();
+    else intro();
+  }
 
   setInterval(() => {
     if (QUIZ.running) return;
@@ -4752,7 +5043,7 @@ async function boot(){
 }
 
 /* จุดเข้าถึงสถานะสำหรับตรวจสอบ */
-window.__game = () => ({ S, QUIZ, DUEL, TAB, VERSION });
+window.__game = () => ({ S, QUIZ, DUEL, MATCH, TAB, VERSION });
 
 boot();
 
@@ -4848,7 +5139,7 @@ function qlintSheet(tag){
    =========================================================== */
 
 const DUEL_VER = 1;
-const DUEL_ROUNDS = 10;          // จำนวนข้อสูงสุดต่อการดวลหนึ่งครั้ง
+const DUEL_ROUNDS = 12;          // จำนวนข้อสูงสุดต่อการดวลหนึ่งครั้ง
 const DUEL_WIN_CAP = 5;          // จำนวนครั้งต่อวันที่ยังได้รางวัลเต็ม
 const DIFF_POWER = [0, 1.0, 1.25, 1.6, 2.1];   // ตัวคูณความแรงตามความยากของข้อ
 
@@ -4881,7 +5172,7 @@ function makeDuelCode(){
   const acc = S.stats.answered ? Math.round(S.stats.correct / S.stats.answered * 100) : 60;
   const payload = JSON.stringify([
     DUEL_VER, p.sp, p.stage, p.branch || '', p.lv,
-    p.stats.STR, p.stats.VIT, p.stats.AGI, p.stats.INT, p.stats.LUK,
+    p.stats.STR, p.stats.VIT, p.stats.AGI, p.stats.INT, p.stats.LUK,   // รหัสส่งค่าเต็มเสมอ ไม่ส่งค่าตอนหลับ
     clamp(acc, 30, 98), String(p.name).slice(0, 12), S.uid
   ]);
   const body = b64e(payload);
@@ -4921,32 +5212,89 @@ function readDuelCode(raw){
 
 /* ---------- สูตรการต่อสู้ ---------- */
 /* ค่าสถานะที่ใช้จริงในการดวล รวมโบนัสจากอาวุธของฝ่ายเรา */
-function dStat(p, key, mine){ return p.stats[key] + (mine ? gearStatBonus(key) : 0); }
+function dStat(p, key, mine){ return liveStat(p, key) + (mine ? gearStatBonus(key) : 0); }
 
+/* ธาตุของวิญญาณ */
+function petEl(p){ const sp = SPECIES[p.sp]; return sp ? sp.elk : null; }
+
+/* ---------- เลือด ---------- */
 function duelMaxHp(p, mine){
-  const base = 60 + dStat(p,'VIT',mine) * 3 + p.lv * 1.5;
+  const base = 130 + dStat(p,'VIT',mine) * 2.0 + p.lv * 2.6;
   return Math.round(base + (mine ? gearHpBonus() : 0));
 }
+
+/* ---------- โจมตีปกติ: STR เป็นหลัก ---------- */
 function duelAtk(p, mine){
-  const base = 6 + dStat(p,'STR',mine) * 0.55 + dStat(p,'INT',mine) * 0.25;
+  /* ทุกค่าสถานะมีส่วนในการโจมตีปกติ เพื่อไม่ให้สายโชคกับสายไวไร้ฐานพลัง */
+  const base = 6 + dStat(p,'STR',mine) * 0.55
+                 + dStat(p,'AGI',mine) * 0.22
+                 + dStat(p,'LUK',mine) * 0.18
+                 + dStat(p,'INT',mine) * 0.10;
   return mine ? base * (1 + roomBonus().duelAtk + gearAtkBonus()) : base;
 }
-function duelDef(p, mine){
-  const base = dStat(p,'VIT',mine) * 0.22;
-  return mine ? base * (1 + roomBonus().duelDef + gearDefBonus()) : base;
+
+/* ---------- คาถา: INT เป็นหลัก ---------- */
+function duelMagic(p, mine){
+  return 24 + dStat(p,'INT',mine) * 2.2 + dStat(p,'LUK',mine) * 0.4;
 }
 
-/* คำนวณความเสียหาย: ต้องตอบถูกเท่านั้นจึงจะเข้า */
-function duelDodge(p, mine){ return clamp(dStat(p,'AGI',mine) / 400 + (mine ? gearDodgeBonus() : 0), 0, 0.30); }
+/* ---------- เกราะ: ลดเป็นเปอร์เซ็นต์ ไม่ลบตรงๆ ----------
+   ไม่ผูกกับ VIT เพราะ VIT ให้เลือดอยู่แล้ว ถ้าให้ทั้งสองอย่างสายถังจะแข็งเกินไป */
+function duelDefRaw(p, mine){
+  const v = p.lv * 1.0 + 10;
+  return mine ? v * (1 + roomBonus().duelDef + gearDefBonus()) : v;
+}
+function defCut(defRaw, pierce){
+  const eff = defRaw * (1 - (pierce || 0));
+  return 100 / (100 + eff);          // 0-1 ยิ่งน้อยยิ่งลดความเสียหายได้มาก
+}
 
-function duelDamage(attacker, defender, diff, speed, mineAtk){
-  // ฝ่ายรับมีโอกาสหลบตาม AGI
-  if (Math.random() < duelDodge(defender, !mineAtk)) return { dmg:0, crit:false, dodged:true };
-  const base = Math.max(3, duelAtk(attacker, mineAtk) - duelDef(defender, !mineAtk));
-  const critRate = clamp(dStat(attacker,'LUK',mineAtk) / 320 + (mineAtk ? gearCritBonus() : 0), 0, 0.40);
-  const crit = Math.random() < critRate;
-  const dmg = base * DIFF_POWER[diff] * (1 + 0.5 * clamp(speed, 0, 1)) * (crit ? 1.8 : 1);
-  return { dmg: Math.max(1, Math.round(dmg)), crit, dodged:false };
+/* ---------- AGI: โอกาสตีซ้ำ (แทนการหลบ) ---------- */
+function duelExtra(p, mine){ 
+  return clamp(dStat(p,'AGI',mine) / 130 + (mine ? gearExtraBonus() : 0), 0, 0.40);
+}
+/* ---------- LUK: โอกาสเข้าเต็มแรง ---------- */
+function duelCrit(p, mine){
+  return clamp(dStat(p,'LUK',mine) / 150 + (mine ? gearCritBonus() : 0), 0, 0.45);
+}
+/* ---------- AGI ทำให้เกจคาถาเต็มเร็วขึ้น ---------- */
+function gaugeRate(p, mine){ return 1 + clamp(dStat(p,'AGI',mine) / 260, 0, 0.45); }
+
+/* ---------- คำนวณความเสียหาย ---------- */
+function duelDamage(o){
+  const { atk, def, mineAtk, diff, speed, spell, shield } = o;
+  const aEl = petEl(atk), dEl = petEl(def);
+  const em = elMul(aEl, dEl);
+
+  let base, kind;
+  if (spell){
+    base = duelMagic(atk, mineAtk) * spell.pw;
+    kind = 'spell';
+  } else {
+    base = duelAtk(atk, mineAtk) * DIFF_POWER[diff] * (1 + 0.5 * clamp(speed, 0, 1));
+    kind = 'hit';
+  }
+
+  const pierce = (spell && spell.eff === 'pierce') ? spell.v : 0;
+  base *= defCut(duelDefRaw(def, !mineAtk), pierce);
+  base *= em;
+
+  /* VIT ช่วยลดความเสียหายจากคาถาโดยเฉพาะ */
+  if (spell) base *= 1 - clamp(dStat(def,'VIT',!mineAtk) / 900, 0, 0.22);
+
+  /* ยกที่ 6 เป็นต้นไป ความเสียหายทวีขึ้นเรื่อยๆ เพื่อให้การดวลจบในสนามเสมอ */
+  if (DUEL.round >= 7) base *= 1 + 0.18 * (DUEL.round - 6);
+
+  const crit = !spell && Math.random() < duelCrit(atk, mineAtk);
+  if (crit) base *= 1.8;
+  if (shield) base *= 1 - shield;
+
+  return {
+    dmg: Math.max(1, Math.round(base)),
+    crit, kind, em,
+    spell: spell || null,
+    shielded: !!shield
+  };
 }
 
 /* เงาของคู่ต่อสู้ตอบถูกหรือไม่ อิงจากความแม่นยำจริงของเจ้าของรหัส */
@@ -4962,6 +5310,10 @@ function foeSpeed(foe){
 const DUEL = {
   running:false, foe:null, subj:'mix', grade:null,
   hp:0, foeHp:0, maxHp:0, foeMax:0,
+  gauge:0, foeGauge:0,          // เกจคาถา 0-100
+  burn:null, foeBurn:null,      // {dmg, left}
+  shield:0, foeShield:0,        // ลดความเสียหายในยกถัดไป
+  spellCast:null,               // คาถาที่เพิ่งร่ายในยกนี้ (ไว้แสดงผล)
   round:0, used:[], cur:null, locked:false, chosen:-1, units:{}, eggPts:0,
   limitMs:0, startAt:0, tickId:null, log:[], result:null
 };
@@ -4970,10 +5322,18 @@ function duelStart(foe, subj, grade){
   const p = S.pet;
   DUEL.running = true; DUEL.foe = foe;
   DUEL.subj = subj; DUEL.grade = grade;
-  DUEL.maxHp = duelMaxHp(p, true); DUEL.foeMax = duelMaxHp(foe, false);
+  DUEL.maxHp = duelMaxHp(p, true);
+  /* เจ้าของรหัสเลือกวิญญาณไม่ได้ จึงได้เลือดชดเชย 8% ชดเชยการที่อีกฝ่ายได้ตีก่อน */
+  DUEL.foeMax = Math.round(duelMaxHp(foe, false) * 1.08);
   DUEL.hp = DUEL.maxHp; DUEL.foeHp = DUEL.foeMax;
   DUEL.round = 0; DUEL.used = []; DUEL.log = []; DUEL.result = null;
   DUEL.units = {}; DUEL.eggPts = 0;
+  /* รางวัลจากภารกิจ เริ่มดวลด้วยเกจเต็ม ใช้ได้ครั้งเดียว */
+  DUEL.gauge = S.mqGauge ? GAUGE_MAX : 0;
+  if (S.mqGauge){ S.mqGauge = false; save(); }
+  DUEL.foeGauge = 0;
+  DUEL.burn = null; DUEL.foeBurn = null;
+  DUEL.shield = 0; DUEL.foeShield = 0;
   View.duel = { foe, foeSp: SPECIES[foe.sp] };
   duelNext();
 }
@@ -5010,6 +5370,60 @@ function duelTick(){
   if (left <= 0) duelAnswer(-1);
 }
 
+/* สุ่มคาถาของธาตุนั้น โชคสูงมีโอกาสได้บทที่แรงกว่า */
+function pickSpell(p, mine){
+  const el = petEl(p);
+  const list = SPELLS[el] || SPELLS.wood;
+  const luck = clamp(dStat(p, 'LUK', mine) / 220, 0, 0.45);
+  const w = list.map(sp => Math.pow(sp.pw, 1 + luck * 4));
+  const tot = w.reduce((a, b) => a + b, 0);
+  let r = Math.random() * tot;
+  for (let i = 0; i < list.length; i++){ r -= w[i]; if (r <= 0) return list[i]; }
+  return list[0];
+}
+
+/* ใส่ผลข้างเคียงของคาถา คืนข้อความสรุป */
+function applySpellEffect(sp, dmg, mine){
+  const out = [];
+  if (!sp || !sp.eff) return out;
+  if (sp.eff === 'heal'){
+    const h = Math.max(1, Math.round(dmg * sp.v));
+    if (mine){ DUEL.hp = Math.min(DUEL.maxHp, DUEL.hp + h); }
+    else { DUEL.foeHp = Math.min(DUEL.foeMax, DUEL.foeHp + h); }
+    out.push(`ดูดพลังคืน ${h}`);
+  } else if (sp.eff === 'burn'){
+    const b = { dmg: Math.max(1, Math.round(dmg * sp.v)), left: 3 };
+    if (mine) DUEL.foeBurn = b; else DUEL.burn = b;
+    out.push(`ติดไฟไหม้ ${b.dmg} ต่อยก อีก 3 ยก`);
+  } else if (sp.eff === 'shield'){
+    if (mine) DUEL.shield = sp.v; else DUEL.foeShield = sp.v;
+    out.push(`ตั้งเกราะกัน ${Math.round(sp.v * 100)}% ในยกถัดไป`);
+  } else if (sp.eff === 'drain'){
+    if (mine) DUEL.foeGauge = Math.max(0, DUEL.foeGauge - sp.v);
+    else DUEL.gauge = Math.max(0, DUEL.gauge - sp.v);
+    out.push(`ลดเกจคาถาอีกฝ่าย ${sp.v}`);
+  } else if (sp.eff === 'pierce'){
+    out.push(`เจาะเกราะ ${Math.round(sp.v * 100)}%`);
+  }
+  return out;
+}
+
+/* ความเสียหายจากไฟไหม้ตอนต้นยก */
+function tickBurn(){
+  const msg = [];
+  if (DUEL.foeBurn){
+    DUEL.foeHp = Math.max(0, DUEL.foeHp - DUEL.foeBurn.dmg);
+    msg.push({ side:'foe', dmg: DUEL.foeBurn.dmg });
+    if (--DUEL.foeBurn.left <= 0) DUEL.foeBurn = null;
+  }
+  if (DUEL.burn){
+    DUEL.hp = Math.max(0, DUEL.hp - DUEL.burn.dmg);
+    msg.push({ side:'me', dmg: DUEL.burn.dmg });
+    if (--DUEL.burn.left <= 0) DUEL.burn = null;
+  }
+  return msg;
+}
+
 function duelAnswer(i){
   if (DUEL.locked) return;
   clearInterval(DUEL.tickId);
@@ -5019,14 +5433,39 @@ function duelAnswer(i){
   const speed = DUEL.limitMs ? left / DUEL.limitMs : 0.5;
 
   DUEL.chosen = i; DUEL.locked = true; DUEL.round++;
-  const turn = { correct, my:null, foe:null };
+  const turn = { correct, my:[], foe:[], burn:[], note:[] };
+
+  /* เกราะที่ตั้งไว้ยกก่อนใช้ได้ในยกนี้ แล้วสลาย */
+  const myShield = DUEL.shield, foeShield = DUEL.foeShield;
+  DUEL.shield = 0; DUEL.foeShield = 0;
 
   if (correct){
-    const r = duelDamage(p, foe, q.diff, speed, true);
-    DUEL.foeHp = Math.max(0, DUEL.foeHp - r.dmg);
-    turn.my = r;
+    /* เติมเกจตามความยากและ AGI */
+    DUEL.gauge = Math.min(GAUGE_MAX, DUEL.gauge + GAUGE_BY_DIFF[q.diff] * gaugeRate(p, true));
+
+    if (DUEL.gauge >= GAUGE_MAX){
+      /* ร่ายคาถา */
+      const sp = pickSpell(p, true);
+      DUEL.gauge = 0;
+      const r = duelDamage({ atk:p, def:foe, mineAtk:true, spell:sp, shield:foeShield });
+      DUEL.foeHp = Math.max(0, DUEL.foeHp - r.dmg);
+      r.effects = applySpellEffect(sp, r.dmg, true);
+      turn.my.push(r);
+    } else {
+      const r = duelDamage({ atk:p, def:foe, mineAtk:true, diff:q.diff, speed, shield:foeShield });
+      DUEL.foeHp = Math.max(0, DUEL.foeHp - r.dmg);
+      turn.my.push(r);
+      /* AGI: โอกาสฟันซ้ำ */
+      if (DUEL.foeHp > 0 && Math.random() < duelExtra(p, true)){
+        const r2 = duelDamage({ atk:p, def:foe, mineAtk:true, diff:q.diff, speed:speed*0.6, shield:0 });
+        r2.repeat = true;
+        DUEL.foeHp = Math.max(0, DUEL.foeHp - r2.dmg);
+        turn.my.push(r2);
+      }
+    }
     recordAnswer(q, true);
     S.stats.answered++; S.stats.correct++;
+    wakeProgress(1);
     DUEL.eggPts += DIFF[q.diff].pt;
     DUEL.units[q.unit] = (DUEL.units[q.unit] || 0) + DIFF[q.diff].pt;
   } else {
@@ -5034,14 +5473,34 @@ function duelAnswer(i){
     S.stats.answered++;
   }
 
-  // ตาของเงาคู่ต่อสู้
+  /* ตาของเงาคู่ต่อสู้ */
   if (DUEL.foeHp > 0){
     if (foeAnswers(foe, q.diff)){
-      const r = duelDamage(foe, p, q.diff, foeSpeed(foe), false);
-      DUEL.hp = Math.max(0, DUEL.hp - r.dmg);
-      turn.foe = r;
+      DUEL.foeGauge = Math.min(GAUGE_MAX, DUEL.foeGauge + GAUGE_BY_DIFF[q.diff] * gaugeRate(foe, false));
+      if (DUEL.foeGauge >= GAUGE_MAX){
+        const sp = pickSpell(foe, false);
+        DUEL.foeGauge = 0;
+        const r = duelDamage({ atk:foe, def:p, mineAtk:false, spell:sp, shield:myShield });
+        DUEL.hp = Math.max(0, DUEL.hp - r.dmg);
+        r.effects = applySpellEffect(sp, r.dmg, false);
+        turn.foe.push(r);
+      } else {
+        const r = duelDamage({ atk:foe, def:p, mineAtk:false, diff:q.diff, speed:foeSpeed(foe), shield:myShield });
+        DUEL.hp = Math.max(0, DUEL.hp - r.dmg);
+        turn.foe.push(r);
+        if (DUEL.hp > 0 && Math.random() < duelExtra(foe, false)){
+          const r2 = duelDamage({ atk:foe, def:p, mineAtk:false, diff:q.diff, speed:foeSpeed(foe)*0.6, shield:0 });
+          r2.repeat = true;
+          DUEL.hp = Math.max(0, DUEL.hp - r2.dmg);
+          turn.foe.push(r2);
+        }
+      }
     }
   }
+
+  /* ไฟไหม้ทำงานท้ายยก */
+  if (DUEL.hp > 0 && DUEL.foeHp > 0) turn.burn = tickBurn();
+
   DUEL.log.push(turn);
   View.drift = false;
   save(); render();
@@ -5083,7 +5542,11 @@ function duelFinish(){
   S.pet.mood = clamp(S.pet.mood + (win ? 8 : 3), 0, 100);
   if (S.egg && DUEL.eggPts > 0) eggAddPoints(DUEL.eggPts, DUEL.units);
   DUEL.result = { win, draw, coin, crys, xp, lv, hit, full };
-  save(); render();
+  save();
+  if (typeof tutorDone === 'function' && tutorStep() && tutorStep().id === 'duel'){
+    S.tutor.step++; S.tutor.at = Date.now(); save(); applyTabLock();
+  }
+  render();
   sheet(duelResultSheet());
   cloudAutoSync();
 }
@@ -5122,7 +5585,8 @@ function duelMineSheet(){
     <div class="list">
       <div class="item"><div class="ic" style="background:${sp.dim};border-color:${sp.a(.4)}">${sp.g}</div>
         <div class="grow"><b>เลือดสูงสุด ${duelMaxHp(p, true)}</b>
-          <div class="tiny">พลังโจมตี ${Math.round(duelAtk(p, true))} · เกราะ ${Math.round(duelDef(p, true))} · หลบ ${Math.round(duelDodge(p,true)*100)}% · แม่นยำ ${S.stats.answered?Math.round(S.stats.correct/S.stats.answered*100):60}%</div></div></div>
+          <div class="tiny">โจมตี ${Math.round(duelAtk(p,true))} · คาถา ${Math.round(duelMagic(p,true))} · เกราะ ${Math.round(duelDefRaw(p,true))} · ตีซ้ำ ${Math.round(duelExtra(p,true)*100)}% · เต็มแรง ${Math.round(duelCrit(p,true)*100)}%</div>
+          <div class="tiny">ธาตุ${ELEMENTS[petEl(p)].n} ${ELEMENTS[petEl(p)].g} · ข่ม${ELEMENTS[EL_BEATS[petEl(p)][0]].n} · แพ้ทาง${ELEMENTS[Object.keys(EL_BEATS).find(k=>EL_BEATS[k].includes(petEl(p)))].n}</div></div></div>
     </div>
     <div class="gap"></div>
     <textarea id="duelOut" class="fld" readonly style="min-height:96px;font-family:'IBM Plex Mono',monospace;font-size:calc(12px * var(--fs));word-break:break-all">${code}</textarea>
@@ -5155,7 +5619,7 @@ function duelPasteSheet(){
       }).join('')}
     </div>
     <div class="gap"></div>
-    <button class="btn pri block" data-act="duelGo">เริ่มดวล</button>
+    <button class="btn pri block" data-act="duelGo">ตรวจรหัสและเลือกวิญญาณ</button>
     <div class="gap"></div>
     <button class="btn block" data-act="duel">ย้อนกลับ</button>`);
 }
@@ -5166,11 +5630,26 @@ function hpBar(cur, max, cls){
   return `<div class="bar" style="height:9px"><i style="width:${pct}%;background:${col}"></i></div>`;
 }
 
+function gaugeBar(cur, max){
+  const pct = clamp(cur / max * 100, 0, 100);
+  const full = pct >= 100;
+  return `<div class="bar gauge ${full?'full':''}" style="height:6px;margin-top:3px">
+    <i style="width:${pct}%;background:${full?'var(--gold)':'#7fa8c9'}"></i></div>`;
+}
+
+function elBadge(a, b){
+  const l = elLabel(a, b);
+  if (!l) return '';
+  return `<span class="pill" style="color:${l.c};border-color:${l.c}55">${l.t}</span>`;
+}
+
 function viewDuel(){
   if (!DUEL.running) return viewPot();
   const p = S.pet, foe = DUEL.foe;
   const fsp = SPECIES[foe.sp], msp = SPECIES[p.sp];
+  const myEl = petEl(p), foeEl = petEl(foe);
   const q = DUEL.cur, d = DIFF[q.diff];
+  const ready = DUEL.gauge >= GAUGE_MAX;
 
   const choices = q.ch.map((c, i) => {
     let cls = '';
@@ -5182,45 +5661,63 @@ function viewDuel(){
       <span class="k">${'กขคง'[i]}</span><span>${esc(c)}</span></button>`;
   }).join('');
 
+  const hitLine = (r, who) => {
+    if (r.spell){
+      return `<div><b style="color:var(--gold)">${r.spell.g} ${esc(r.spell.n)}</b>
+        <span class="mono"> ${r.dmg}</span>
+        ${r.em>1?'<span class="tiny" style="color:var(--ok)"> ธาตุข่ม</span>':(r.em<1?'<span class="tiny" style="color:var(--bad)"> ถูกข่ม</span>':'')}
+        ${r.shielded?'<span class="tiny"> ถูกเกราะกันไว้</span>':''}
+        ${(r.effects&&r.effects.length)?`<div class="tiny">${r.effects.join(' · ')}</div>`:''}</div>`;
+    }
+    return `<div>${r.repeat?'<span class="tiny">ฟันซ้ำ </span>':''}${who} <span class="mono">${r.dmg}</span>
+      ${r.crit?'<span class="tiny" style="color:var(--gold)"> เข้าเต็มแรง</span>':''}
+      ${r.em>1?'<span class="tiny" style="color:var(--ok)"> ธาตุข่ม</span>':(r.em<1?'<span class="tiny" style="color:var(--bad)"> ถูกข่ม</span>':'')}
+      ${r.shielded?'<span class="tiny"> ถูกเกราะกันไว้</span>':''}</div>`;
+  };
+
   let after = '';
   if (DUEL.locked){
     const t = DUEL.log[DUEL.log.length - 1] || {};
     const lines = [];
-    if (t.correct && t.my){
-      if (t.my.dodged) lines.push(`<b style="color:var(--warn)">${esc(foe.name)} หลบทันพอดี</b>`);
-      else lines.push(`<b style="color:var(--ok)">${esc(p.name)} โจมตี ${t.my.dmg} หน่วย${t.my.crit?' · เข้าเต็มแรง':''}</b>`);
-    }
+    if (t.correct && t.my && t.my.length)
+      t.my.forEach(r => lines.push(`<span style="color:var(--ok)">${hitLine(r, esc(p.name) + ' โจมตี')}</span>`));
     else lines.push(`<b style="color:var(--warn)">ตอบผิด ${esc(p.name)} โจมตีไม่เข้า</b>`);
-    if (t.foe){
-      if (t.foe.dodged) lines.push(`<span style="color:var(--ok)">${esc(p.name)} หลบการสวนกลับได้</span>`);
-      else lines.push(`<span style="color:var(--bad)">${esc(foe.name)} สวนกลับ ${t.foe.dmg} หน่วย${t.foe.crit?' · เข้าเต็มแรง':''}</span>`);
-    }
+
+    if (t.foe && t.foe.length)
+      t.foe.forEach(r => lines.push(`<span style="color:var(--bad)">${hitLine(r, esc(foe.name) + ' สวนกลับ')}</span>`));
     else lines.push(`<span class="tiny">${esc(foe.name)} ตอบข้อนี้ไม่ได้ จึงโจมตีไม่เข้า</span>`);
+
+    (t.burn || []).forEach(b => lines.push(
+      `<span class="tiny" style="color:#d88a4a">🔥 ไฟไหม้ทำความเสียหาย ${b.dmg} กับ${b.side==='foe'?esc(foe.name):esc(p.name)}</span>`));
+
     after = `<div class="expl" style="border-left-color:${t.correct?'var(--glaze)':'var(--bad)'}">
-      ${lines.join('<br>')}
-      ${q.exp ? `<div class="tiny" style="margin-top:6px">${esc(q.exp)}</div>` : ''}
+      ${lines.join('')}
+      ${q.exp ? `<div class="tiny" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--line)">${esc(q.exp)}</div>` : ''}
     </div>
     <div class="gap"></div>
     <button class="btn pri block" data-act="duelNext">${(DUEL.hp<=0||DUEL.foeHp<=0||DUEL.round>=DUEL_ROUNDS)?'ดูผลการดวล':'ข้อถัดไป'}</button>`;
   }
 
+  const side = (name, hp, max, gauge, el, otherEl, burn, shield, lv) => `
+    <div class="grow">
+      <div class="row spread"><b style="font-size:calc(14px * var(--fs))">${esc(name)}</b>
+        <span class="mono tiny">${hp}/${max}</span></div>
+      ${hpBar(hp, max)}
+      ${gaugeBar(gauge, GAUGE_MAX)}
+      <div class="tiny">Lv.${lv} · ${ELEMENTS[el].g}${ELEMENTS[el].n} ${elBadge(el, otherEl)}
+        ${burn?'<span class="tiny" style="color:#d88a4a">🔥'+burn.left+'</span>':''}
+        ${shield?'<span class="tiny" style="color:var(--glaze-lt)">🛡️</span>':''}</div>
+    </div>`;
+
   return `
   <div class="card">
     <div class="stage"><canvas id="pot" width="420" height="340" aria-label="สนามดวล"></canvas></div>
-    <div class="row" style="gap:12px;margin-top:4px">
-      <div class="grow">
-        <div class="row spread"><b style="font-size:calc(14px * var(--fs))">${esc(p.name)}</b>
-          <span class="mono tiny">${DUEL.hp}/${DUEL.maxHp}</span></div>
-        ${hpBar(DUEL.hp, DUEL.maxHp)}
-        <div class="tiny">Lv.${p.lv} · ธาตุ${msp.el}</div>
-      </div>
-      <div class="grow">
-        <div class="row spread"><b style="font-size:calc(14px * var(--fs))">${esc(foe.name)}</b>
-          <span class="mono tiny">${DUEL.foeHp}/${DUEL.foeMax}</span></div>
-        ${hpBar(DUEL.foeHp, DUEL.foeMax)}
-        <div class="tiny">Lv.${foe.lv} · ธาตุ${fsp.el} · แม่น ${foe.acc}%</div>
-      </div>
+    <div class="row" style="gap:12px;margin-top:4px;align-items:flex-start">
+      ${side(p.name, DUEL.hp, DUEL.maxHp, DUEL.gauge, myEl, foeEl, DUEL.burn, DUEL.shield, p.lv)}
+      ${side(foe.name, DUEL.foeHp, DUEL.foeMax, DUEL.foeGauge, foeEl, myEl, DUEL.foeBurn, DUEL.foeShield, foe.lv)}
     </div>
+    ${ready ? `<div class="tiny" style="margin-top:6px;color:var(--gold);text-align:center">
+      เกจคาถาเต็มแล้ว ตอบข้อถัดไปถูกจะร่ายคาถาทันที</div>` : ''}
   </div>
   <div class="card">
     <div class="qmeta">
@@ -5254,6 +5751,111 @@ function duelResultSheet(){
     <button class="btn pri block" data-act="closeSheet">ปิด</button>`;
 }
 
+
+/* ===================== เลือกวิญญาณก่อนดวล (ทาง ค) ===================== */
+let DUEL_FOE = null;
+
+function duelPickSheet(foe){
+  DUEL_FOE = foe;
+  const foeEl = petEl(foe), fsp = SPECIES[foe.sp];
+  const all = [S.pet].concat(S.garden || []).filter(Boolean);
+
+  const row = (pet, idx) => {
+    const sp = SPECIES[pet.sp], el = petEl(pet);
+    const l = elLabel(el, foeEl);
+    const hint = l ? `<span class="pill" style="color:${l.c};border-color:${l.c}55">${l.t}</span>` : '<span class="pill">เสมอ</span>';
+    return `<div class="item">
+      <div class="ic" style="background:${sp.dim};border-color:${sp.a(.4)}">${sp.g}</div>
+      <div class="grow">
+        <b>${esc(pet.name)}</b> ${hint}
+        <div class="sub">${formName(pet.sp, pet.stage, pet.branch)} · Lv.${pet.lv} · ${ELEMENTS[el].g}${ELEMENTS[el].n}</div>
+        <div class="tiny">โจมตี ${Math.round(duelAtk(pet, idx===0))} · คาถา ${Math.round(duelMagic(pet, idx===0))} · เลือด ${duelMaxHp(pet, idx===0)}</div>
+        ${l && l.why ? `<div class="tiny" style="color:${l.c}">${l.why}</div>` : ''}
+      </div>
+      <button class="btn sm ${l && l.t==='ข่มได้' ? 'pri' : ''}" data-dpick="${idx}">เลือก</button>
+    </div>`;
+  };
+
+  sheet(`<div class="eyebrow">รับคำท้าจาก ${esc(foe.name)}</div>
+    <h2>เลือกวิญญาณลงสนาม</h2>
+    <div class="sub">คู่ต่อสู้เป็นธาตุ${ELEMENTS[foeEl].n} ${ELEMENTS[foeEl].g} · Lv.${foe.lv} · เลือกตัวที่ข่มธาตุนี้ได้จะเสียเปรียบน้อยลง</div>
+    <div class="gap"></div>
+    <div class="list">${all.map((x,i) => row(x,i)).join('')}</div>
+    <div class="gap"></div>
+    <div class="tiny">เจ้าของรหัสเลือกวิญญาณไม่ได้ ระบบจึงเพิ่มเลือดให้ฝ่ายนั้น 8% เพื่อชดเชยที่เราได้ตีก่อน</div>
+    <div class="gap"></div>
+    <button class="btn block" data-act="duel">ยกเลิก</button>`);
+}
+
+/* สลับวิญญาณที่เลือกมาเป็นตัวหลักชั่วคราวแล้วเริ่มดวล */
+function duelStartWith(idx){
+  if (!DUEL_FOE) return toast('ไม่พบคู่ต่อสู้', 'bad');
+  if (idx > 0){
+    const g = S.garden || [];
+    const pick = g[idx - 1];
+    if (!pick) return toast('ไม่พบวิญญาณตัวนี้', 'bad');
+    g[idx - 1] = S.pet;
+    S.pet = pick;
+    S.garden = g;
+    save();
+  }
+  const foe = DUEL_FOE; DUEL_FOE = null;
+  closeSheet();
+  TAB = 'duel';
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.remove('on'));
+  duelStart(foe, DUEL.subj, QUIZ.grade || S.grade);
+  toast(`${S.pet.name} ลงสนามสู้กับ ${foe.name}`, 'gold');
+}
+
+/* ===================== ตารางธาตุ ===================== */
+function elChartSheet(){
+  const cx = 130, cy = 118, R = 82;
+  const pos = EL_ORDER.map((e, i) => {
+    const a = -Math.PI/2 + i * Math.PI/3;
+    return { e, x: cx + Math.cos(a)*R, y: cy + Math.sin(a)*R };
+  });
+  const arrows = pos.map((p1, i) => {
+    const p2 = pos[(i+1) % 6];
+    const dx = p2.x-p1.x, dy = p2.y-p1.y, L = Math.hypot(dx,dy);
+    const ux = dx/L, uy = dy/L, pad = 20;
+    const x1 = p1.x+ux*pad, y1 = p1.y+uy*pad, x2 = p2.x-ux*pad, y2 = p2.y-uy*pad;
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#7cae9b" stroke-width="1.6" marker-end="url(#ah)" opacity=".75"/>`;
+  }).join('');
+  const nodes = pos.map(p => `
+    <circle cx="${p.x}" cy="${p.y}" r="17" fill="hsla(${ELEMENTS[p.e].h},40%,45%,.30)" stroke="hsl(${ELEMENTS[p.e].h},40%,60%)" stroke-width="1.2"/>
+    <text x="${p.x}" y="${p.y+5}" text-anchor="middle" font-size="15">${ELEMENTS[p.e].g}</text>
+    <text x="${p.x}" y="${p.y+31}" text-anchor="middle" font-size="10" fill="#8ba69c">${ELEMENTS[p.e].n}</text>`).join('');
+
+  const pairRows = Object.keys(EL_WHY).map(k => {
+    const [a, b] = k.split('>');
+    return `<div class="item">
+      <div class="ic" style="background:hsla(${ELEMENTS[a].h},40%,45%,.22)">${ELEMENTS[a].g}</div>
+      <div class="grow"><b>${ELEMENTS[a].n} ข่ม ${ELEMENTS[b].n}</b>
+        <div class="tiny">${EL_WHY[k]}</div></div>
+      <span class="pill" style="color:var(--ok);border-color:var(--ok)55">×${ADV_UP}</span>
+    </div>`;
+  }).join('');
+
+  sheet(`<div class="eyebrow">ตารางธาตุ</div>
+    <h2>ธาตุไหนข่มธาตุไหน</h2>
+    <div class="sub">ธาตุที่ข่มได้จะโจมตีแรงขึ้น ${Math.round((ADV_UP-1)*100)}% ส่วนธาตุที่ถูกข่มจะโจมตีลดลง ${Math.round((1-ADV_DOWN)*100)}%</div>
+    <div class="gap"></div>
+    <div style="text-align:center;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:6px">
+      <svg viewBox="0 0 260 250" style="width:100%;max-width:280px">
+        <defs><marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L7,3 L0,6 Z" fill="#7cae9b"/></marker></defs>
+        ${arrows}${nodes}
+        <text x="130" y="228" text-anchor="middle" font-size="11" fill="#8ba69c">${ELEMENTS.light.g} แสง ↔ เงา ${ELEMENTS.shade.g} ข่มกันทั้งสองทาง</text>
+      </svg>
+    </div>
+    <div class="gap"></div>
+    <div class="list">${pairRows}</div>
+    <div class="gap"></div>
+    <div class="tiny">ธาตุของวิญญาณมาจากหน่วยการเรียนรู้ที่ตอบระหว่างฟักไข่ อยากได้ธาตุไหนให้ดูผังธาตุประจำไข่ในหน้ากระถาง</div>
+    <div class="gap"></div>
+    <button class="btn block" data-act="closeSheet">ปิด</button>`);
+}
+
 /* ===========================================================
    เซฟข้ามเครื่องผ่าน Google Sheets (Apps Script)
    ครูวาง URL ของเว็บแอปที่ CLOUD_API_URL ด้านล่าง หรือให้กรอกในหน้าตั้งค่าก็ได้
@@ -5278,6 +5880,13 @@ async function saveGameToCloud(opt){
 
   S.savedAt = Date.now();
   const acc = S.stats.answered ? Math.round(S.stats.correct / S.stats.answered * 100) : 0;
+
+  /* ย่อผลสัมฤทธิ์รายหน่วยให้กระชับ "วิชา|ชั้น|หน่วย": [ถูก, ผิด] */
+  const prog = {};
+  for (const k in (S.prog || {})){
+    const v = S.prog[k];
+    if ((v.r + v.w) > 0) prog[k] = [v.r, v.w];
+  }
   const payload = {
     studentId: S.cloud.sid,
     spiritName: S.pet ? S.pet.name : 'ยังไม่ฟัก',
@@ -5291,6 +5900,8 @@ async function saveGameToCloud(opt){
       duelWin: (S.duel && S.duel.win) || 0
     },
     savedAt: S.savedAt,
+    grade: S.grade || '',
+    progress: prog,       // ผลสัมฤทธิ์รายหน่วย ใช้ทำแดชบอร์ดของครู
     saveRaw: S            // ก้อนเซฟเต็ม ส่งเป็นอ็อบเจกต์ ฝั่งสคริปต์จะแปลงเป็นข้อความเอง
   };
 
@@ -5450,6 +6061,621 @@ async function cloudDownloadFlow(){
   CLOUD_PENDING = inc;
 }
 let CLOUD_PENDING = null;
+
+/* ===========================================================
+   โหมดจับคู่ — อุ่นเครื่องก่อนสอบ
+   แบบที่ 1 โจทย์ ↔ เฉลย  สร้างจากคลังคำถามที่มีอยู่
+   แบบที่ 2 ศักราช ↔ ปี   สร้างด้วยสูตรเทียบศักราช
+   ตอบผิดไม่หักคะแนน คู่จะเด้งกลับให้ลองใหม่ แต่จับเวลาไว้
+   =========================================================== */
+
+const MATCH_PAIRS = 5;          // จำนวนคู่ต่อหนึ่งชุด
+const MATCH_SETS  = 3;          // จำนวนชุดต่อหนึ่งรอบ
+
+/* เกณฑ์เวลาเพื่อให้รางวัล (วินาทีต่อชุด) */
+const MATCH_TIME = { gold:35, silver:55 };
+
+/* ---------- สร้างชุดจับคู่ ---------- */
+
+/* แบบที่ 1 โจทย์กับเฉลย ตัวลวงคือเฉลยของข้ออื่นในหน่วยเดียวกัน */
+function buildMatchQA(subj, grade){
+  const pool = questionsBy(subj, grade);
+  if (pool.length < MATCH_PAIRS) return null;
+
+  /* จัดกลุ่มตามหน่วย แล้วเลือกหน่วยที่มีข้อพอ */
+  const byUnit = {};
+  pool.forEach(q => (byUnit[q.unit] = byUnit[q.unit] || []).push(q));
+  const units = Object.keys(byUnit).filter(u => byUnit[u].length >= MATCH_PAIRS);
+  const list = units.length
+    ? byUnit[units[Math.floor(Math.random() * units.length)]]
+    : pool;
+
+  const pick = list.slice().sort(() => Math.random() - .5).slice(0, MATCH_PAIRS);
+  return {
+    kind: 'qa',
+    title: units.length ? UNITS[pick[0].unit].n : 'ผสมทุกหน่วย',
+    left:  pick.map((q, i) => ({ id:i, t: q.q })),
+    right: pick.map((q, i) => ({ id:i, t: q.ch[q.ans] })),
+    ids:   pick.map(q => q.id),
+    units: pick.map(q => q.unit),
+    diffs: pick.map(q => q.diff),
+  };
+}
+
+/* แบบที่ 2 เทียบศักราช */
+const ERA_DEFS = [
+  {k:'ms', n:'ม.ศ.', full:'มหาศักราช',      add:621},
+  {k:'js', n:'จ.ศ.', full:'จุลศักราช',      add:1181},
+  {k:'rs', n:'ร.ศ.', full:'รัตนโกสินทร์ศก', add:2324},
+  {k:'cs', n:'ค.ศ.', full:'คริสต์ศักราช',   add:543},
+  {k:'hs', n:'ฮ.ศ.', full:'ฮิจเราะห์ศักราช', add:1122},
+];
+function buildMatchEra(){
+  /* สุ่มศักราชมา 5 คู่ ให้ต่างชนิดกันมากที่สุด */
+  const defs = ERA_DEFS.slice().sort(() => Math.random() - .5);
+  const rows = [];
+  for (let i = 0; i < MATCH_PAIRS; i++){
+    const e = defs[i % defs.length];
+    /* เลือกปีที่แปลงแล้วอยู่ในช่วง พ.ศ. 1800-2600 เพื่อให้เป็นตัวเลขที่เด็กคุ้น */
+    const be = 1800 + Math.floor(Math.random() * 800);
+    const raw = be - e.add;
+    if (raw <= 0){ i--; continue; }
+    rows.push({ era:e, raw, be });
+  }
+  return {
+    kind: 'era',
+    title: 'เทียบศักราชเป็นพุทธศักราช',
+    left:  rows.map((r, i) => ({ id:i, t: `${r.era.n} ${r.raw}` })),
+    right: rows.map((r, i) => ({ id:i, t: `พ.ศ. ${r.be}` })),
+    why:   rows.map(r => `${r.era.full} บวก ${r.era.add}`),
+    diffs: rows.map(() => 2),
+    units: rows.map(() => null),
+  };
+}
+
+/* ---------- สถานะโหมดจับคู่ ---------- */
+const MATCH = {
+  running:false, kind:'qa', subj:'mix', grade:null,
+  set:0, sets:[], cur:null,
+  leftOrder:[], rightOrder:[], sel:null, done:[], wrong:0,
+  startAt:0, times:[], tickId:null, result:null,
+};
+
+function matchStart(kind, subj, grade){
+  MATCH.kind = kind; MATCH.subj = subj; MATCH.grade = grade;
+  MATCH.sets = [];
+  for (let i = 0; i < MATCH_SETS; i++){
+    const s = kind === 'era' ? buildMatchEra() : buildMatchQA(subj, grade);
+    if (!s) break;
+    MATCH.sets.push(s);
+  }
+  if (!MATCH.sets.length) return toast('คำถามในชุดนี้ยังไม่พอสำหรับโหมดจับคู่', 'bad');
+  MATCH.running = true; MATCH.set = 0; MATCH.times = []; MATCH.result = null; MATCH.mqDone = null;
+  matchLoadSet();
+}
+
+function matchLoadSet(){
+  const s = MATCH.sets[MATCH.set];
+  MATCH.cur = s;
+  MATCH.leftOrder  = s.left.map(x => x.id).sort(() => Math.random() - .5);
+  MATCH.rightOrder = s.right.map(x => x.id).sort(() => Math.random() - .5);
+  MATCH.sel = null; MATCH.done = []; MATCH.wrong = 0;
+  MATCH.startAt = Date.now();
+  clearInterval(MATCH.tickId);
+  MATCH.tickId = setInterval(() => {
+    const el = document.getElementById('mclock');
+    if (el) el.textContent = ((Date.now() - MATCH.startAt) / 1000).toFixed(1) + ' วิ';
+  }, 100);
+  render();
+}
+
+/* แตะฝั่งซ้ายหรือขวา */
+function matchTap(side, id){
+  if (!MATCH.running || MATCH.done.includes(id) && side === 'L') return;
+  if (MATCH.done.includes(id)) return;
+
+  if (!MATCH.sel){ MATCH.sel = { side, id }; return render(); }
+  if (MATCH.sel.side === side){ MATCH.sel = { side, id }; return render(); }
+
+  const a = MATCH.sel.id, b = id;
+  MATCH.sel = null;
+  if (a === b){
+    MATCH.done.push(a);
+    const s = MATCH.cur;
+    /* บันทึกผลรายหน่วยเหมือนการตอบคำถามปกติ */
+    if (s.units && s.units[a] && s.ids && s.ids[a]){
+      const q = allQuestions().find(x => x.id === s.ids[a]);
+      if (q){ recordAnswer(q, true); recordProgress(q, true);
+        const md = mqRecord(q, true);
+        if (md) MATCH.mqDone = { m: md, rw: mqReward(md) }; }
+    }
+    S.stats.answered++; S.stats.correct++;
+    wakeProgress(1);
+    if (MATCH.done.length >= MATCH.cur.left.length) return matchFinishSet();
+  } else {
+    MATCH.wrong++;
+    View.bounce = 1;
+  }
+  save(); render();
+}
+
+function matchFinishSet(){
+  clearInterval(MATCH.tickId);
+  const sec = (Date.now() - MATCH.startAt) / 1000;
+  MATCH.times.push({ sec, wrong: MATCH.wrong });
+  MATCH.set++;
+  if (MATCH.set >= MATCH.sets.length) return matchFinish();
+  render();
+  sheet(`<div class="eyebrow">ชุดที่ ${MATCH.set} เสร็จแล้ว</div>
+    <h2>${sec.toFixed(1)} วินาที</h2>
+    <div class="sub">จับผิดไป ${MATCH.wrong} ครั้ง · เหลืออีก ${MATCH.sets.length - MATCH.set} ชุด</div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="matchNext">ชุดถัดไป</button>`);
+}
+
+function matchFinish(){
+  clearInterval(MATCH.tickId);
+  MATCH.running = false;
+  const totSec = MATCH.times.reduce((a, x) => a + x.sec, 0);
+  const totWrong = MATCH.times.reduce((a, x) => a + x.wrong, 0);
+  const avg = totSec / Math.max(1, MATCH.times.length);
+  const rank = avg <= MATCH_TIME.gold ? 'gold' : (avg <= MATCH_TIME.silver ? 'silver' : 'ok');
+
+  const pairs = MATCH.times.length * MATCH_PAIRS;
+  let coin = Math.round(pairs * 6 + (rank === 'gold' ? 60 : rank === 'silver' ? 30 : 0));
+  let crys = rank === 'gold' ? 3 : (rank === 'silver' ? 1 : 0);
+  let xp = Math.round(pairs * 7 * (rank === 'gold' ? 1.3 : 1));
+  if (totWrong === 0){ coin += 40; crys += 1; }
+
+  S.coins += coin; S.crystals += crys;
+  const lv = S.pet ? gainXp(xp).levels : 0;
+  S.match = S.match || { plays:0, best:0 };
+  S.match.plays++;
+  if (!S.match.best || avg < S.match.best) S.match.best = avg;
+
+  MATCH.result = { totSec, totWrong, avg, rank, coin, crys, xp, lv, pairs };
+  save(); render();
+  sheet(matchResultSheet());
+}
+
+function matchResultSheet(){
+  const r = MATCH.result;
+  const title = r.rank === 'gold' ? 'เร็วมาก' : (r.rank === 'silver' ? 'ทำได้ดี' : 'ผ่านแล้ว');
+  const col = r.rank === 'gold' ? 'var(--gold)' : (r.rank === 'silver' ? 'var(--glaze-lt)' : 'var(--mist)');
+  const line = (g, t, s2) => `<div class="item"><div class="ic">${g}</div>
+    <div class="grow"><b>${t}</b>${s2 ? `<div class="sub">${s2}</div>` : ''}</div></div>`;
+  return `<div class="eyebrow">จับคู่เสร็จแล้ว</div>
+    <h2 style="color:${col}">${title}</h2>
+    <div class="sub">จับคู่ได้ ${r.pairs} คู่ · รวม ${r.totSec.toFixed(1)} วินาที · เฉลี่ยชุดละ ${r.avg.toFixed(1)} วินาที · จับผิด ${r.totWrong} ครั้ง</div>
+    <div class="gap"></div>
+    <div class="list">
+      ${line('🪙', `เหรียญ +${r.coin}`, r.rank === 'gold' ? 'โบนัสความเร็ว' : '')}
+      ${r.crys ? line('💠', `ผลึกสมาธิ +${r.crys}`, r.totWrong === 0 ? 'ไม่พลาดเลยสักครั้ง' : '') : ''}
+      ${S.pet ? line('⭐', `ประสบการณ์ +${r.xp}`, r.lv ? `เลื่อนขึ้น ${r.lv} เลเวล` : '') : ''}
+      ${MATCH.mqDone ? line('🎯', `ภารกิจ${esc(UNITS[MATCH.mqDone.m.unit].n)}สำเร็จ`, `ผลึก +${MATCH.mqDone.rw.crys} · เหรียญ +${MATCH.mqDone.rw.coin}`) : ''}
+      ${S.match && S.match.best ? line('⏱️', `สถิติดีที่สุด ${S.match.best.toFixed(1)} วินาทีต่อชุด`) : ''}
+    </div>
+    <div class="gap"></div>
+    <div class="tiny">โหมดนี้ไม่ให้คะแนนไข่ แต่นับเข้าผลสัมฤทธิ์รายหน่วยและช่วยปลุกวิญญาณที่หลับอยู่</div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="closeSheet">เรียบร้อย</button>`;
+}
+
+/* ===================== หน้าจอจับคู่ ===================== */
+function matchIntroSheet(){
+  const grade = QUIZ.grade || S.grade;
+  const n = questionsBy(MATCH.subj, grade).length;
+  sheet(`<div class="eyebrow">โหมดจับคู่</div>
+    <h2>อุ่นเครื่องก่อนสอบ</h2>
+    <div class="sub">ลากสายตาจับคู่ให้ครบ ${MATCH_PAIRS} คู่ต่อชุด รวม ${MATCH_SETS} ชุด ตอบผิดไม่หักคะแนน แต่จับเวลาไว้</div>
+    <div class="gap"></div>
+
+    <div class="eyebrow">ระดับชั้น</div>
+    <div class="chips">${GRADE_KEYS.map(g => {
+      const c = questionsBy('mix', g).length;
+      return `<button class="chip ${g===grade?'on':''}" data-mgrade="${g}" ${c?'':'disabled'}>${GRADES[g].n}</button>`;
+    }).join('')}</div>
+    <div class="gap" style="height:8px"></div>
+    <div class="eyebrow">วิชา</div>
+    <div class="chips">
+      <button class="chip ${MATCH.subj==='mix'?'on':''}" data-msubj="mix">🎲 ผสม</button>
+      ${SUBJ_KEYS.map(k => {
+        const c = questionsBy(k, grade).length;
+        return `<button class="chip ${MATCH.subj===k?'on':''}" data-msubj="${k}" ${c?'':'disabled'}>${SUBJECTS[k].g} ${SUBJECTS[k].short}</button>`;
+      }).join('')}
+    </div>
+    <div class="gap"></div>
+
+    <div class="list">
+      <div class="item"><div class="ic">🔗</div>
+        <div class="grow"><b>โจทย์ จับคู่กับ เฉลย</b>
+          <div class="sub">ยกโจทย์จากหน่วยเดียวกันมา 5 ข้อ ตัวลวงคือเฉลยของข้ออื่นในหน่วยนั้น</div>
+          <div class="tiny">คลังชุดนี้มี ${n} ข้อ</div></div>
+        <button class="btn sm pri" data-mgo="qa" ${n >= MATCH_PAIRS ? '' : 'disabled'}>เริ่ม</button></div>
+      <div class="item"><div class="ic">📅</div>
+        <div class="grow"><b>ศักราช จับคู่กับ พุทธศักราช</b>
+          <div class="sub">ม.ศ. จ.ศ. ร.ศ. ค.ศ. ฮ.ศ. แปลงเป็น พ.ศ. ให้ถูกคู่</div>
+          <div class="tiny">สร้างโจทย์ใหม่ทุกครั้ง ไม่มีวันซ้ำ</div></div>
+        <button class="btn sm gold" data-mgo="era">เริ่ม</button></div>
+    </div>
+    <div class="gap"></div>
+    ${S.match && S.match.best ? `<div class="tiny">สถิติดีที่สุดของเรา ${S.match.best.toFixed(1)} วินาทีต่อชุด · เล่นไปแล้ว ${S.match.plays} รอบ</div><div class="gap"></div>` : ''}
+    <button class="btn block" data-act="closeSheet">ปิด</button>`);
+}
+
+function viewMatch(){
+  if (!MATCH.running) return viewQuiz();
+  const s = MATCH.cur;
+  const left = MATCH.leftOrder.map(id => {
+    const done = MATCH.done.includes(id);
+    const sel = MATCH.sel && MATCH.sel.side === 'L' && MATCH.sel.id === id;
+    return `<button class="mcell ${done?'done':''} ${sel?'sel':''}" data-mtap="L:${id}" ${done?'disabled':''}>
+      ${esc(s.left.find(x => x.id === id).t)}</button>`;
+  }).join('');
+  const right = MATCH.rightOrder.map(id => {
+    const done = MATCH.done.includes(id);
+    const sel = MATCH.sel && MATCH.sel.side === 'R' && MATCH.sel.id === id;
+    return `<button class="mcell ${done?'done':''} ${sel?'sel':''}" data-mtap="R:${id}" ${done?'disabled':''}>
+      ${esc(s.right.find(x => x.id === id).t)}</button>`;
+  }).join('');
+
+  return `<div class="card">
+    <div class="qmeta">
+      <span>ชุดที่ ${MATCH.set + 1}/${MATCH.sets.length} · ${esc(s.title)}</span>
+      <span id="mclock" class="mono">0.0 วิ</span>
+    </div>
+    <div class="row spread" style="margin-top:4px">
+      <span class="tiny">จับคู่แล้ว ${MATCH.done.length}/${s.left.length}</span>
+      <span class="tiny">${MATCH.wrong ? 'จับผิด ' + MATCH.wrong + ' ครั้ง' : 'ยังไม่พลาดเลย'}</span>
+    </div>
+    <div class="bar" style="margin-top:6px"><i style="width:${MATCH.done.length/s.left.length*100}%;background:var(--glaze)"></i></div>
+    <div class="gap" style="height:10px"></div>
+    <div class="mgrid">
+      <div class="mcol">${left}</div>
+      <div class="mcol">${right}</div>
+    </div>
+    ${s.kind === 'era' ? `<div class="gap" style="height:8px"></div>
+      <div class="tiny">ม.ศ.+621 · จ.ศ.+1181 · ร.ศ.+2324 · ค.ศ.+543 · ฮ.ศ.+1122</div>` : ''}
+  </div>
+  <div class="card"><button class="btn sm danger block" data-act="matchQuit">ออกจากโหมดจับคู่</button></div>`;
+}
+
+/* ===========================================================
+   ภารกิจซ่อมจุดบอด
+   - อัตโนมัติ  เกมดู S.prog หาหน่วยที่ทำได้ต่ำสุดแล้วตั้งภารกิจให้เอง
+   - ครูสั่ง    ดึงจากแท็บ Missions ในชีต สั่งเป็นรายห้อง
+   - สำรวจ      ถ้ายังไม่มีจุดบอด ให้ลองหน่วยที่ยังไม่เคยแตะ
+   =========================================================== */
+
+const MQ_PASS   = 70;   // ทำหน่วยนั้นได้ต่ำกว่ากี่เปอร์เซ็นต์จึงถือว่าเป็นจุดบอด
+const MQ_MIN    = 5;    // ต้องเคยตอบในหน่วยนั้นอย่างน้อยกี่ข้อจึงตัดสิน
+const MQ_NEED   = 8;    // ภารกิจกำหนดให้ตอบถูกกี่ข้อ
+const MQ_WINDOW = 12;   // ภายในกี่ข้อที่ตอบในหน่วยนั้น
+
+/* ---------- หาจุดบอดจากผลสัมฤทธิ์ของเด็กคนนี้ ---------- */
+function findWeakSpot(){
+  const rows = [];
+  for (const key in (S.prog || {})){
+    const [subj, grade, unit] = key.split('|');
+    if (!SUBJECTS[subj] || !GRADES[grade] || !UNITS[unit]) continue;
+    const p = S.prog[key];
+    const tot = p.r + p.w;
+    if (tot < MQ_MIN) continue;
+    const acc = Math.round(p.r / tot * 100);
+    if (acc >= MQ_PASS) continue;
+    rows.push({ subj, grade, unit, acc, tot });
+  }
+  rows.sort((a, b) => a.acc - b.acc);
+  return rows[0] || null;
+}
+
+/* หน่วยที่ยังไม่เคยตอบเลย ใช้เป็นภารกิจสำรวจ */
+function findFreshUnit(){
+  const grade = S.grade;
+  const out = [];
+  for (const subj of SUBJ_KEYS){
+    if (!questionsBy(subj, grade).length) continue;
+    for (const unit of Object.keys(UNITS)){
+      if (UNITS[unit].subj !== subj) continue;
+      const key = `${subj}|${grade}|${unit}`;
+      const p = S.prog[key];
+      if (p && p.r + p.w >= MQ_MIN) continue;
+      if (!questionsBy(subj, grade).some(q => q.unit === unit)) continue;
+      out.push({ subj, grade, unit });
+    }
+  }
+  return out.length ? out[Math.floor(Math.random() * out.length)] : null;
+}
+
+/* ---------- สร้างภารกิจประจำวัน ---------- */
+function todayMissions(){
+  S.mq = S.mq || { day:'', list:[], done:[] };
+  const t = todayKey();
+  if (S.mq.day === t && S.mq.list.length) return S.mq.list;
+
+  S.mq.day = t;
+  S.mq.done = [];
+  const list = [];
+
+  /* 1) ภารกิจจากครู ถ้ามีและยังไม่หมดอายุ */
+  (S.teacherMq || []).forEach((m, i) => {
+    if (m.grade && m.grade !== S.grade) return;
+    if (m.until && Date.now() > m.until) return;
+    if (!UNITS[m.unit] || !SUBJECTS[m.subj]) return;
+    list.push({
+      id: 'T' + i, from:'teacher',
+      subj:m.subj, grade:m.grade || S.grade, unit:m.unit,
+      need: m.need || MQ_NEED, win: m.win || MQ_WINDOW,
+      note: m.note || '',
+      r:0, w:0
+    });
+  });
+
+  /* 2) ภารกิจซ่อมจุดบอดของตัวเอง */
+  const weak = findWeakSpot();
+  if (weak && !list.some(x => x.unit === weak.unit && x.subj === weak.subj))
+    list.push({ id:'W', from:'weak', subj:weak.subj, grade:weak.grade, unit:weak.unit,
+                need:MQ_NEED, win:MQ_WINDOW, acc:weak.acc, r:0, w:0 });
+
+  /* 3) ภารกิจสำรวจ ถ้ายังว่างอยู่ */
+  if (list.length < 2){
+    const fresh = findFreshUnit();
+    if (fresh && !list.some(x => x.unit === fresh.unit && x.subj === fresh.subj))
+      list.push({ id:'F', from:'fresh', subj:fresh.subj, grade:fresh.grade, unit:fresh.unit,
+                  need:6, win:10, r:0, w:0 });
+  }
+
+  S.mq.list = list;
+  save();
+  return list;
+}
+
+/* ---------- บันทึกความคืบหน้าเมื่อตอบข้อในหน่วยที่ตรงกับภารกิจ ---------- */
+function mqRecord(q, correct){
+  if (!S.mq || !S.mq.list) return null;
+  let finished = null;
+  S.mq.list.forEach(m => {
+    if (S.mq.done.includes(m.id)) return;
+    if (m.unit !== q.unit) return;
+    if (m.subj !== q.subj || m.grade !== q.grade) return;
+    if (correct) m.r++; else m.w++;
+    if (m.r >= m.need){
+      S.mq.done.push(m.id);
+      finished = m;
+    } else if (m.r + m.w >= m.win){
+      /* ใช้โควตาหมดแล้วยังไม่ถึงเป้า รีเซ็ตให้ลองใหม่ ไม่ลงโทษ */
+      m.r = 0; m.w = 0;
+    }
+  });
+  return finished;
+}
+
+/* รางวัลเมื่อทำภารกิจสำเร็จ */
+function mqReward(m){
+  const crys = m.from === 'teacher' ? 6 : (m.from === 'weak' ? 5 : 3);
+  const coin = m.from === 'teacher' ? 220 : (m.from === 'weak' ? 180 : 120);
+  S.crystals += crys;
+  S.coins += coin;
+  S.mqGauge = true;      // เกจคาถาเต็มทันทีในการดวลครั้งถัดไป
+  save();
+  return { crys, coin };
+}
+
+/* ---------- ดึงภารกิจจากครูผ่านชีต ---------- */
+async function fetchTeacherMissions(){
+  if (!cloudUrl()) return { err:'ยังไม่ได้ตั้งค่าที่อยู่เซิร์ฟเวอร์' };
+  try {
+    const res = await fetch(cloudUrl() + '?missions=1&grade=' + encodeURIComponent(S.grade || ''));
+    const out = await res.json();
+    if (out.status !== 'success') return { err: out.message || 'ดึงภารกิจไม่สำเร็จ' };
+    S.teacherMq = (out.data || []).slice(0, 3);
+    S.mq = S.mq || { day:'', list:[], done:[] };
+    S.mq.day = '';        // บังคับให้สร้างรายการใหม่
+    save();
+    return { ok:true, n: S.teacherMq.length };
+  } catch (e){
+    return { err:'เชื่อมต่อไม่ได้' };
+  }
+}
+
+/* ---------- หน้าจอ ---------- */
+function mqLabel(m){
+  if (m.from === 'teacher') return { t:'ภารกิจจากครู', c:'var(--gold)' };
+  if (m.from === 'weak')    return { t:'ซ่อมจุดบอด',  c:'var(--bad)' };
+  return { t:'ลองหน่วยใหม่', c:'var(--glaze-lt)' };
+}
+
+function mqCard(){
+  const list = todayMissions();
+  if (!list.length) return '';
+  const rows = list.map(m => {
+    const done = S.mq.done.includes(m.id);
+    const L = mqLabel(m);
+    const pct = Math.min(100, m.r / m.need * 100);
+    return `<div class="item">
+      <div class="ic" style="font-size:calc(10px * var(--fs));color:${L.c};text-align:center;line-height:1.25">${L.t}</div>
+      <div class="grow">
+        <b>${done ? '✓ ' : ''}${esc(UNITS[m.unit].n)}</b>
+        <div class="sub">${SUBJECTS[m.subj].short} ${GRADES[m.grade].n} · ตอบถูก ${m.need} ข้อจาก ${m.win} ข้อที่ตอบ${m.acc !== undefined ? ` · ตอนนี้ทำได้ ${m.acc}%` : ''}</div>
+        ${m.note ? `<div class="tiny" style="color:var(--gold)">ครูฝากไว้ — ${esc(m.note)}</div>` : ''}
+        ${done ? '<div class="tiny" style="color:var(--ok)">สำเร็จแล้ววันนี้</div>'
+               : `<div class="bar" style="margin-top:5px"><i style="width:${pct}%;background:${L.c}"></i></div>
+                  <div class="tiny">${m.r}/${m.need} ข้อ</div>`}
+      </div>
+      ${done ? '' : `<button class="btn sm" data-mqgo="${m.subj}:${m.grade}:${m.unit}">ไปทำ</button>`}
+    </div>`;
+  }).join('');
+
+  const allDone = list.every(m => S.mq.done.includes(m.id));
+  return `<div class="card">
+    <div class="row spread">
+      <div class="grow"><div class="eyebrow">ภารกิจวันนี้</div></div>
+      ${cloudUrl() ? '<button class="btn sm" data-act="mqSync">ดึงจากครู</button>' : ''}
+    </div>
+    <div class="list">${rows}</div>
+    ${allDone ? '<div class="tiny" style="color:var(--ok);margin-top:8px">ทำครบทุกภารกิจแล้ว พรุ่งนี้มีใหม่</div>'
+              : '<div class="tiny" style="margin-top:8px">ทำสำเร็จได้ผลึกสมาธิและเกจคาถาเต็มทันทีในการดวลครั้งถัดไป</div>'}
+  </div>`;
+}
+
+function mqDoneSheet(m, rw){
+  const L = mqLabel(m);
+  return `<div class="eyebrow" style="color:${L.c}">${L.t}สำเร็จ</div>
+    <h2>${esc(UNITS[m.unit].n)}</h2>
+    <div class="sub">ตอบถูกครบ ${m.need} ข้อแล้ว${m.acc !== undefined ? ` จากเดิมที่เคยทำได้ ${m.acc}%` : ''}</div>
+    <div class="gap"></div>
+    <div class="list">
+      <div class="item"><div class="ic">💠</div><div class="grow"><b>ผลึกสมาธิ +${rw.crys}</b></div></div>
+      <div class="item"><div class="ic">🪙</div><div class="grow"><b>เหรียญ +${rw.coin}</b></div></div>
+      <div class="item"><div class="ic">✨</div><div class="grow"><b>เกจคาถาเต็มทันที</b>
+        <div class="sub">ใช้ได้ในการดวลครั้งถัดไป ตอบถูกข้อแรกร่ายคาถาได้เลย</div></div></div>
+    </div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="closeSheet">เยี่ยม</button>`;
+}
+
+/* ===========================================================
+   สอนเล่น — พาเด็กใหม่เข้าประตูทีละขั้น
+   ซ่อนแท็บที่ยังไม่ถึงเวลา แล้วเปิดทีละอย่างเมื่อทำขั้นก่อนหน้าสำเร็จ
+   ครูปิดระบบนี้ได้จากหน้าตั้งค่า สำหรับเด็กที่เคยเล่นแล้ว
+   =========================================================== */
+
+const TUTOR_STEPS = [
+  { id:'quiz',  g:'❓', n:'ตอบคำถามรอบแรก',
+    d:'กดแท็บตอบคำถาม เลือกวิชาที่ครูสอน แล้วตอบให้ครบหนึ่งรอบ',
+    hint:'ตอบผิดไม่เป็นไร ข้อที่ผิดจะวนกลับมาให้ทำใหม่จนกว่าจะเข้าใจ',
+    tabs:['pot','quiz'] },
+
+  { id:'hatch', g:'🥚', n:'ฟักไข่ให้เป็นวิญญาณ',
+    d:'ตอบคำถามสะสมคะแนนจนไข่พร้อม แล้วกลับมาที่กระถางเพื่อฟัก',
+    hint:'หน่วยการเรียนรู้ที่ตอบจะกำหนดธาตุของวิญญาณที่จะได้',
+    tabs:['pot','quiz'] },
+
+  { id:'name',  g:'✏️', n:'ตั้งชื่อให้วิญญาณ',
+    d:'ตั้งชื่อที่เราชอบ จะเปลี่ยนภายหลังก็ได้',
+    hint:'ชื่อนี้เพื่อนจะเห็นตอนดวลกัน อย่าใช้ชื่อจริงของเรานะ',
+    tabs:['pot','quiz'] },
+
+  { id:'feed',  g:'🍚', n:'ให้อาหารวิญญาณ',
+    d:'เปิดกระเป๋า เลือกอาหาร แล้วกดใช้ วิญญาณที่อิ่มและอารมณ์ดีจะโตเร็วกว่า',
+    hint:'ซื้ออาหารด้วยเหรียญที่ได้จากการตอบคำถาม',
+    tabs:['pot','quiz','bag'] },
+
+  { id:'duel',  g:'⚔️', n:'ลองดวลกับเพื่อน',
+    d:'สร้างรหัสท้าดวลส่งให้เพื่อน หรือขอรหัสเพื่อนมาวางเพื่อดวล',
+    hint:'ในการดวลต้องตอบถูกเท่านั้นวิญญาณถึงจะโจมตีได้',
+    tabs:['pot','quiz','bag','explore','home','book','sum'] },
+];
+
+function tutorOn(){
+  return !!(S.tutor && !S.tutor.off && S.tutor.step < TUTOR_STEPS.length);
+}
+function tutorStep(){
+  if (!tutorOn()) return null;
+  return TUTOR_STEPS[S.tutor.step] || null;
+}
+/* แท็บที่เปิดให้ใช้ในขั้นนี้ */
+function tutorTabs(){
+  const st = tutorStep();
+  return st ? st.tabs : null;
+}
+/* ทำขั้นนี้สำเร็จ */
+function tutorDone(id, quiet){
+  if (!tutorOn()) return false;
+  const st = tutorStep();
+  if (!st || st.id !== id) return false;
+  S.tutor.step++;
+  S.tutor.at = Date.now();
+  save();
+  const next = tutorStep();
+  applyTabLock();
+  if (quiet){ render(); return true; }
+  sheet(`<div class="eyebrow" style="color:var(--gold)">ทำได้แล้ว</div>
+    <h2>${st.g} ${esc(st.n)}</h2>
+    <div class="sub">${esc(st.hint)}</div>
+    <div class="gap"></div>
+    ${next ? `<div class="list"><div class="item">
+        <div class="ic">${next.g}</div>
+        <div class="grow"><b>ขั้นต่อไป — ${esc(next.n)}</b>
+          <div class="sub">${esc(next.d)}</div></div>
+      </div></div>
+      <div class="gap"></div>
+      <div class="tiny">ทำครบ ${TUTOR_STEPS.length} ขั้นแล้วจะเปิดทุกอย่างในเกมให้</div>`
+    : `<div class="list"><div class="item"><div class="ic">🎉</div>
+        <div class="grow"><b>เปิดครบทุกอย่างแล้ว</b>
+          <div class="sub">สำรวจ บ้าน สมุดสะสม และสรุปผล ใช้ได้หมดแล้ว ลองกดดูได้เลย</div></div>
+      </div></div>`}
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="closeSheet">เข้าใจแล้ว</button>`);
+  render();
+  return true;
+}
+
+/* ซ่อนแท็บที่ยังไม่ถึงเวลา */
+function applyTabLock(){
+  const allow = tutorTabs();
+  document.querySelectorAll('#tabs button').forEach(b => {
+    const ok = !allow || allow.includes(b.dataset.tab);
+    b.classList.toggle('locked', !ok);
+    b.disabled = !ok;
+  });
+}
+
+/* การ์ดบอกขั้นตอนปัจจุบัน แสดงบนสุดของทุกหน้า */
+function tutorCard(){
+  const st = tutorStep();
+  if (!st) return '';
+  const n = S.tutor.step + 1;
+  const dots = TUTOR_STEPS.map((x, i) =>
+    `<span class="tdot ${i < S.tutor.step ? 'done' : (i === S.tutor.step ? 'now' : '')}"></span>`).join('');
+  return `<div class="card tutor">
+    <div class="row spread">
+      <div class="eyebrow" style="color:var(--gold)">สอนเล่น ขั้นที่ ${n} จาก ${TUTOR_STEPS.length}</div>
+      <button class="btn sm" data-act="tutorSkip">ข้าม</button>
+    </div>
+    <div class="row" style="gap:11px;align-items:flex-start;margin-top:2px">
+      <div class="ic" style="flex:none">${st.g}</div>
+      <div class="grow">
+        <b style="font-size:calc(15px * var(--fs))">${esc(st.n)}</b>
+        <div class="sub">${esc(st.d)}</div>
+      </div>
+    </div>
+    <div class="tdots">${dots}</div>
+  </div>`;
+}
+
+/* หน้าต้อนรับครั้งแรกสุด */
+function welcomeSheet(){
+  sheet(`<div class="eyebrow">ยินดีต้อนรับ</div>
+    <h2>ห้องเรียนไร้ขีดจำกัด</h2>
+    <div class="sub">ตอบคำถามในวิชาที่เรียน แล้วเอาคะแนนมาฟักไข่ เลี้ยงวิญญาณ และดวลกับเพื่อน</div>
+    <div class="gap"></div>
+    <div class="list">
+      <div class="item"><div class="ic">❓</div><div class="grow">
+        <b>ตอบคำถามคือหัวใจของเกม</b>
+        <div class="sub">ทุกอย่างในเกมนี้ได้มาจากการตอบคำถามให้ถูก</div></div></div>
+      <div class="item"><div class="ic">🥚</div><div class="grow">
+        <b>หน่วยที่ตอบกำหนดธาตุของวิญญาณ</b>
+        <div class="sub">อยากได้ธาตุไหนต้องตอบหน่วยนั้นให้มาก</div></div></div>
+      <div class="item"><div class="ic">🌱</div><div class="grow">
+        <b>ค่อยๆ เปิดทีละอย่าง</b>
+        <div class="sub">เราจะพาไปทีละขั้น ไม่ต้องรีบทำความเข้าใจทั้งหมดตอนนี้</div></div></div>
+    </div>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="tutorBegin">เริ่มเลย</button>
+    <div class="gap" style="height:8px"></div>
+    <button class="btn sm block" data-act="tutorSkip">เคยเล่นแล้ว ข้ามไปเลย</button>`);
+}
+
+/* หน้ายืนยันตอนกดข้าม */
+function tutorSkipSheet(){
+  sheet(`<h2>ข้ามการสอนเล่น</h2>
+    <div class="sub">ทุกแท็บจะเปิดให้ใช้ทันที เหมาะกับเด็กที่เคยเล่นมาแล้ว</div>
+    <div class="gap"></div>
+    <button class="btn block" data-act="tutorSkipYes">ข้ามและเปิดทุกอย่าง</button>
+    <div class="gap"></div>
+    <button class="btn pri block" data-act="closeSheet">เรียนต่อทีละขั้น</button>`);
+}
 
 </script>
 </body>
