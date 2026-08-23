@@ -15,20 +15,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Trirong:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0d161c;
-  --deep:#152430;
-  --panel:#1b303c;
-  --line:rgba(190,222,210,.14);
-  --glaze:#7cae9b;
-  --glaze-dk:#42705f;
+  /* ธีมทองนำ — พื้นเข้มอมน้ำตาลอุ่น หัวข้อเป็นทอง เขียวศิลาดลเป็นสีรอง */
+  --ink:#12100b;        /* พื้นหลังนอกสุด */
+  --deep:#1c1911;       /* พื้นการ์ด */
+  --panel:#252015;      /* พื้นปุ่มและช่องกรอก */
+  --line:rgba(224,195,124,.30);
+  --glaze:#86b89f;      /* เขียวศิลาดล ใช้เป็นสีรอง */
+  --glaze-dk:#4a7a66;
   --glaze-lt:#a8d3c2;
-  --gold:#d8b04a;
-  --lacquer:#a03b45;
-  --mist:#e6efe9;
-  --dim:#8ba69c;
-  --ok:#7cae9b;
-  --warn:#d8b04a;
-  --bad:#c26a6a;
+  --gold:#e6be60;       /* ทองหลัก */
+  --gold-lt:#f0d089;    /* ทองสว่าง ใช้กับหัวข้อ */
+  --lacquer:#b04a4a;
+  --mist:#efe8da;       /* ตัวหนังสือหลัก */
+  --dim:#a2977f;        /* ตัวหนังสือรอง */
+  --ok:#86b89f;
+  --warn:#e6be60;
+  --bad:#cf7a68;
   --r:14px;
   --tabh:68px;
   --fs:1;              /* ตัวคูณขนาดตัวอักษร ปรับได้จากปุ่ม Aa */
@@ -82,7 +84,7 @@ header.top{
   border:1px solid var(--line);border-radius:var(--r);
   padding:14px;margin-bottom:12px;
 }
-.card h2{font-size:calc(18.5px * var(--fs));margin-bottom:2px}
+.card h2{font-size:calc(18.5px * var(--fs));margin-bottom:2px;color:var(--gold-lt)}
 .sub{font-size:calc(13px * var(--fs));color:var(--dim)}
 .eyebrow{
   font-size:calc(11px * var(--fs));letter-spacing:.18em;text-transform:uppercase;
@@ -151,6 +153,12 @@ button{font-family:inherit;font-size:calc(15px * var(--fs));color:inherit;cursor
 /* ---------- ตอบคำถาม ---------- */
 .qmeta{display:flex;justify-content:space-between;align-items:center;font-size:calc(13px * var(--fs));color:var(--dim);margin-bottom:8px}
 .qtext{font-size:calc(20.5px * var(--fs));line-height:1.65;font-family:'Trirong',serif;font-weight:600;margin:2px 0 14px}
+#visit{
+  text-align:center;padding:14px 0 4px;font-size:calc(11.5px * var(--fs));
+  color:var(--dim);opacity:0;transition:opacity .5s;letter-spacing:.02em;
+}
+#visit.on{opacity:.75}
+#visit .vnum{font-family:'IBM Plex Mono',monospace;font-weight:500;color:var(--gold);font-size:calc(13px * var(--fs))}
 .card.tutor{border-color:rgba(216,176,74,.4);background:linear-gradient(180deg,rgba(216,176,74,.07),transparent)}
 .tdots{display:flex;gap:6px;margin-top:10px}
 .tdot{flex:1;height:4px;border-radius:3px;background:rgba(255,255,255,.1)}
@@ -257,12 +265,12 @@ select.fld{appearance:none}
 #room.lit{background:linear-gradient(180deg,#31485a 0%,#31485a 58%,#3d5350 58%,#334744 100%)}
 .slots{position:absolute;inset:7%;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:4px}
 .slot{
-  border:1px dashed rgba(190,222,210,.16);border-radius:8px;
+  border:1px dashed rgba(224,195,124,.20);border-radius:8px;
   display:grid;place-items:center;font-size:calc(26px * var(--fs));line-height:1;
   transition:background .15s;
 }
 .slot:hover{background:rgba(255,255,255,.05)}
-.slot.filled{border-style:solid;border-color:rgba(190,222,210,.22)}
+.slot.filled{border-style:solid;border-color:rgba(224,195,124,.32)}
 
 /* ---------- book ---------- */
 .book{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
@@ -297,7 +305,7 @@ select.fld{appearance:none}
 #veil.show{display:flex}
 #sheet{
   width:100%;max-width:520px;max-height:86vh;overflow-y:auto;
-  background:linear-gradient(180deg,#1f3543,#152430);
+  background:linear-gradient(180deg,#2a2418,#1c1911);
   border:1px solid var(--line);border-bottom:none;
   border-radius:18px 18px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));
   animation:rise .22s ease;
@@ -379,6 +387,7 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:12px 0}
   </header>
 
   <main id="view"></main>
+  <div id="visit"></div>
 </div>
 
 <nav id="tabs">
@@ -651,6 +660,14 @@ const FURN = {
   nest:   {n:'รังฟางอุ่น',      g:'🪹', cost:1150, eff:{eggBoost:.15}, d:'ไข่ได้รับคะแนนฐานเพิ่มขึ้น 15%'},
   bodhi:  {n:'ต้นโพธิ์ประจำบ้าน', g:'🌲', cost:1600, eff:{moodSlow:.12, rest:2, aff:.10}, d:'ร่มเย็นทั้งบ้าน อารมณ์ลดช้าลง 12% ฟื้นสุขภาพชั่วโมงละ 2 และความสนิท +10%'},
 };
+
+/* ===========================================================
+   คะแนนสายการเลี้ยง — กำหนดว่าวิญญาณจะวิวัฒนาการไปทางไหน
+   ฌาน  มาจากการเอาชนะข้อยาก
+   ระบำ มาจากการตอบเร็ว เล่นจับคู่ และชนะการดวล
+   กายา มาจากการให้อาหาร ดูแล และออกสำรวจ
+   =========================================================== */
+const CARE = { mindHard:4, playFast:2, feed:6, explore:12, match:7, duel:7 };
 
 /* จำนวนช่องวางของตกแต่งในบ้าน */
 const ROOM_SLOTS = 16;
@@ -2254,7 +2271,7 @@ function useItem(key){
     p.hunger = clamp(p.hunger + gain, 0, 100);
     p.mood = clamp(p.mood + (it.mood||0), 0, 100);
     p.aff = clamp(p.aff + (it.aff||0) * (1 + b.aff), 0, 100);
-    p.care.body += 1;
+    p.care.body += CARE.feed;
     gainXp(6);
     let extraMsg = '';
     if (it.boost){ S.boost = (S.boost || 0) + it.boost; extraMsg = ` · ตื่นตัวอีก ${S.boost} รอบ`; }
@@ -2263,7 +2280,7 @@ function useItem(key){
     if (p.hp >= 100 && !(it.cure && p.sick) && !it.guard) return {err:'สุขภาพเต็มอยู่แล้ว'};
     p.hp = clamp(p.hp + it.heal, 0, 100);
     p.mood = clamp(p.mood + (it.mood||0), 0, 100);
-    p.care.body += 2;
+    p.care.body += CARE.feed;
     if (it.cure) p.sick = false;
     if (p.hp >= 60) p.sick = false;
     const extra = [];
@@ -2274,7 +2291,7 @@ function useItem(key){
     const sp = SPECIES[p.sp];
     const key = it.target === 'sub' ? sp.sub : sp.main;
     p.stats[key] += it.up;
-    p.care.body += 1;
+    p.care.body += CARE.feed;
     msg = `${p.name} แข็งแรงขึ้น ${key} +${it.up}`;
   } else if (it.t === 'care'){
     p.care[it.br] = (p.care[it.br] || 0) + it.up;
@@ -2297,7 +2314,7 @@ function useItem(key){
     p.mood = clamp(p.mood + 15, 0, 100);
     p.hp = clamp(p.hp + 8, 0, 100);
     p.sick = false;
-    p.care.body += 2;
+    p.care.body += CARE.feed;
     gainXp(10);
     return {msg:`ถูบ้านจนสะอาด ${p.name} อารมณ์ +15 สุขภาพ +8 และหายป่วย`, keep:true};
   } else if (it.t === 'egg'){
@@ -2659,7 +2676,7 @@ function draw(t){
   /* พื้นหลังวงกลมนุ่ม */
   const g = ctx.createRadialGradient(CW/2, 150, 20, CW/2, 160, 200);
   const warm = (!night || lit);
-  g.addColorStop(0, warm ? 'rgba(124,174,155,.20)' : 'rgba(90,130,170,.16)');
+  g.addColorStop(0, warm ? 'rgba(230,190,96,.18)' : 'rgba(160,140,90,.14)');
   g.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = g; ctx.fillRect(0,0,CW,CH);
 
@@ -2684,13 +2701,13 @@ function drawRing(t){
   const cx = CW/2, cy = 172, R = 128;
   ctx.save();
   ctx.lineWidth = 2;
-  ctx.strokeStyle = 'rgba(190,222,210,.10)';
+  ctx.strokeStyle = 'rgba(224,195,124,.12)';
   ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.stroke();
   if (View.focusing || View.progress > 0){
     ctx.lineWidth = 3.5;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = View.drift ? '#d8b04a' : '#a8d3c2';
-    ctx.shadowColor = View.drift ? 'rgba(216,176,74,.6)' : 'rgba(168,211,194,.55)';
+    ctx.strokeStyle = View.drift ? '#cf7a68' : '#e6be60';
+    ctx.shadowColor = View.drift ? 'rgba(207,122,104,.6)' : 'rgba(230,190,96,.55)';
     ctx.shadowBlur = 12;
     ctx.beginPath();
     ctx.arc(cx, cy, R, -Math.PI/2, -Math.PI/2 + Math.PI*2*clamp(View.progress,0,1));
@@ -2698,7 +2715,7 @@ function drawRing(t){
     ctx.shadowBlur = 0;
     // จุดหัวเส้น
     const a = -Math.PI/2 + Math.PI*2*clamp(View.progress,0,1);
-    ctx.fillStyle = View.drift ? '#e8cf8a' : '#dff0e7';
+    ctx.fillStyle = View.drift ? '#f0b8a8' : '#f7dc9a';
     ctx.beginPath(); ctx.arc(cx + Math.cos(a)*R, cy + Math.sin(a)*R, 4.5, 0, Math.PI*2); ctx.fill();
   }
   ctx.restore();
@@ -2723,9 +2740,9 @@ function drawPot(t){
   body.closePath();
 
   const pg = ctx.createLinearGradient(cx-topR, topY, cx+topR, botY);
-  pg.addColorStop(0, '#8fbba9');
-  pg.addColorStop(.45, '#6d9d8b');
-  pg.addColorStop(1, '#3f6455');
+  pg.addColorStop(0, '#e8d3a0');
+  pg.addColorStop(.45, '#c9ad72');
+  pg.addColorStop(1, '#7d6740');
   ctx.fillStyle = pg; ctx.fill(body);
 
   // เคลือบสะท้อนแสง
@@ -2745,7 +2762,7 @@ function drawPot(t){
     if (!full && partial <= 0) continue;
     const pts = crackle[i];
     const lim = full ? pts.length : Math.max(2, Math.ceil(pts.length * partial));
-    ctx.strokeStyle = View.drift ? 'rgba(216,176,74,.5)' : 'rgba(233,247,240,.42)';
+    ctx.strokeStyle = View.drift ? 'rgba(207,122,104,.5)' : 'rgba(247,220,154,.45)';
     ctx.beginPath();
     ctx.moveTo(pts[0][0], pts[0][1]);
     for (let j=1;j<lim;j++) ctx.lineTo(pts[j][0], pts[j][1]);
@@ -2754,13 +2771,13 @@ function drawPot(t){
   ctx.restore();
 
   // ขอบปากกระถาง
-  ctx.strokeStyle = 'rgba(220,240,232,.35)'; ctx.lineWidth = 1.5; ctx.stroke(body);
-  ctx.fillStyle = '#a9cfbe';
+  ctx.strokeStyle = 'rgba(240,208,137,.38)'; ctx.lineWidth = 1.5; ctx.stroke(body);
+  ctx.fillStyle = '#e8d3a0';
   ctx.beginPath(); ctx.ellipse(cx, topY, topR, 15, 0, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#2c4a3f';
+  ctx.fillStyle = '#4a3c22';
   ctx.beginPath(); ctx.ellipse(cx, topY+3, topR-9, 11, 0, 0, Math.PI*2); ctx.fill();
   // ดิน
-  ctx.fillStyle = '#3a3026';
+  ctx.fillStyle = '#3a2f1e';
   ctx.beginPath(); ctx.ellipse(cx, topY+4, topR-13, 9, 0, 0, Math.PI*2); ctx.fill();
   ctx.restore();
 }
@@ -3003,21 +3020,21 @@ function drawSpirit(t, p, sp, opt){
   // ตา
   const blink = (Math.sin(t*0.9) > 0.985) ? 0.12 : 1;
   const sleepy = p.hp < 35 || p.mood < 20;
-  ctx.fillStyle = '#15242c';
+  ctx.fillStyle = '#1a1610';
   for (const dx of [-R*0.27*side, R*0.27*side]){
     if (sleepy || View.focusing){
-      ctx.strokeStyle = '#15242c'; ctx.lineWidth = 2.6; ctx.lineCap='round';
+      ctx.strokeStyle = '#1a1610'; ctx.lineWidth = 2.6; ctx.lineCap='round';
       ctx.beginPath(); ctx.moveTo(dx - R*0.11, -R*0.06); ctx.quadraticCurveTo(dx, R*0.04, dx + R*0.11, -R*0.06); ctx.stroke();
     } else {
       ctx.beginPath(); ctx.ellipse(dx, -R*0.06, R*0.085, R*0.115*blink, 0, 0, Math.PI*2); ctx.fill();
       ctx.fillStyle = 'rgba(255,255,255,.85)';
       ctx.beginPath(); ctx.arc(dx + R*0.03, -R*0.11, R*0.03, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#15242c';
+      ctx.fillStyle = '#1a1610';
     }
   }
 
   // ปาก
-  ctx.strokeStyle = '#15242c'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+  ctx.strokeStyle = '#1a1610'; ctx.lineWidth = 2; ctx.lineCap = 'round';
   ctx.beginPath();
   if (p.mood > 55){ ctx.moveTo(-R*0.12, R*0.24); ctx.quadraticCurveTo(0, R*0.38, R*0.12, R*0.24); }
   else if (p.mood > 25){ ctx.moveTo(-R*0.10, R*0.28); ctx.lineTo(R*0.10, R*0.28); }
@@ -3090,7 +3107,7 @@ function drawEgg(t, big){
   // รอยร้าวตามความคืบหน้าการฟัก
   if (prog > 0.05){
     const n = Math.floor(prog * 7);
-    ctx.strokeStyle = 'rgba(20,32,40,.55)'; ctx.lineWidth = Math.max(1, R*0.045);
+    ctx.strokeStyle = 'rgba(30,24,14,.55)'; ctx.lineWidth = Math.max(1, R*0.045);
     const cr = rngFrom(hashStr('crack' + e.tier));
     for (let i=0;i<n;i++){
       let x = (cr()-.5)*R*1.2, y = (cr()-.5)*R*1.6;
@@ -3344,7 +3361,6 @@ function viewPot(){
     <div class="eyebrow">ดูแล</div>
     <div class="row wrap">
       <button class="btn" data-act="feed">ให้อาหาร${foods.length?'':' (ไม่มีอาหาร)'}</button>
-      <button class="btn" data-act="play">เล่นด้วยกัน</button>
       <button class="btn" data-act="rest">พาพัก</button>
       <button class="btn pri" data-act="goQuiz">ไปตอบคำถาม</button>
     </div>
@@ -3907,9 +3923,9 @@ function answerQuestion(i){
     S.stats.bestStreak = Math.max(S.stats.bestStreak, QUIZ.streak);
     if (S.pet){
       const p = S.pet;
-      if (q.diff >= 3) p.care.mind += 2;
-      else if (QUIZ.gained.speed > 0.3) p.care.play += 1;
-      else p.care.mind += 1;
+      /* ฌาน มาจากการเอาชนะข้อยาก · ระบำ มาจากการตอบเร็ว เกิดพร้อมกันได้ */
+      if (q.diff >= 3) p.care.mind += CARE.mindHard;
+      if (QUIZ.gained.speed > 0.3) p.care.play += CARE.playFast;
     }
   } else {
     QUIZ.streak = 0;
@@ -4327,7 +4343,7 @@ function collectExplore(half){
   const lv = gainXp(xp).levels;
   S.coins += Math.round(z.min * (half ? .6 : 1.2));
   p.hunger = clamp(p.hunger - z.min / 10, 0, 100);
-  p.care.body += 1;
+  p.care.body += CARE.explore;
 
   let hurt = 0;
   const dodge = (liveStat(p,'AGI') + liveStat(p,'VIT')) / 200 + gearGuardBonus();
@@ -4352,43 +4368,6 @@ function collectExplore(half){
     </div>
     <div class="gap"></div>
     <button class="btn pri block" data-act="closeSheet">ปิด</button>`);
-}
-
-/* ===================== มินิเกม ===================== */
-const RPS = [{k:'rock',n:'ค้อน',g:'✊'},{k:'paper',n:'กระดาษ',g:'✋'},{k:'sci',n:'กรรไกร',g:'✌️'}];
-function playSheet(){
-  const left = 8 - S.daily.plays;
-  sheet(`<div class="eyebrow">เล่นด้วยกัน</div>
-    <h2>เป่ายิงฉุบกับ${esc(S.pet.name)}</h2>
-    <div class="sub">${left > 0 ? `วันนี้ยังได้รางวัลอีก ${left} ครั้ง` : 'วันนี้ครบโควตารางวัลแล้ว เล่นได้แต่ไม่ได้ของ'}</div>
-    <div class="gap"></div>
-    <div class="row" style="gap:8px">
-      ${RPS.map(r => `<button class="btn grow" data-rps="${r.k}" style="font-size:calc(26px * var(--fs));padding:16px 0">${r.g}<div style="font-size:calc(12px * var(--fs))">${r.n}</div></button>`).join('')}
-    </div>
-    <div id="rpsout" class="gap"></div>
-    <button class="btn block" data-act="closeSheet">พอแล้ว</button>`);
-}
-function doRps(k){
-  const mine = RPS.find(r => r.k === k), theirs = pick(RPS);
-  const beats = {rock:'sci', paper:'rock', sci:'paper'};
-  const p = S.pet;
-  let res, coin = 0;
-  if (mine.k === theirs.k) res = 'เสมอ';
-  else if (beats[mine.k] === theirs.k) res = 'คุณชนะ';
-  else res = `${p.name}ชนะ`;
-  p.care.play += 1;
-  if (S.daily.plays < 8){
-    S.daily.plays++;
-    coin = res === 'เสมอ' ? 8 : (res === 'คุณชนะ' ? 18 : 12);
-    S.coins += coin;
-    p.mood = clamp(p.mood + 6, 0, 100);
-    p.aff = clamp(p.aff + 1 * (1 + roomBonus().aff), 0, 100);
-    gainXp(8);
-  } else p.mood = clamp(p.mood + 2, 0, 100);
-  const out = document.getElementById('rpsout');
-  if (out) out.innerHTML = `<div class="item"><div class="ic">${theirs.g}</div>
-    <div class="grow"><b>${res}</b><div class="sub">${p.name}ออก${theirs.n}${coin?` · เหรียญ +${coin} · อารมณ์ +6`:''}</div></div></div>`;
-  save(); paintTop();
 }
 
 /* ===================== สวน ===================== */
@@ -4608,7 +4587,7 @@ function bindView(){
 document.getElementById('fsbtn').addEventListener('click', fsSheet);
 
 document.getElementById('sheet').addEventListener('click', e => {
-  const b = e.target.closest('[data-mqgo],[data-mgo],[data-mgrade],[data-msubj],[data-dpick],[data-qlint2],[data-buyg],[data-equip],[data-dgrade],[data-dsubj],[data-fs],[data-act],[data-rps],[data-feed],[data-swap],[data-free],[data-freeyes],[data-cbuy],[data-qlist],[data-qdel],[data-pick]');
+  const b = e.target.closest('[data-mqgo],[data-mgo],[data-mgrade],[data-msubj],[data-dpick],[data-qlint2],[data-buyg],[data-equip],[data-dgrade],[data-dsubj],[data-fs],[data-act],[data-feed],[data-swap],[data-free],[data-freeyes],[data-cbuy],[data-qlist],[data-qdel],[data-pick]');
   if (!b) return;
   if (b.dataset.fs) return setFS(+b.dataset.fs);
   if (b.dataset.buyg){
@@ -4628,7 +4607,6 @@ document.getElementById('sheet').addEventListener('click', e => {
   }
   if (b.dataset.dgrade){ QUIZ.grade = b.dataset.dgrade; S.grade = b.dataset.dgrade; save(); return duelPasteSheet(); }
   if (b.dataset.dsubj){ DUEL.subj = b.dataset.dsubj; return duelPasteSheet(); }
-  if (b.dataset.rps) return doRps(b.dataset.rps);
   if (b.dataset.pick !== undefined && b.dataset.pick !== ''){ QADD_ANS = +b.dataset.pick; return markPick(); }
   if (b.dataset.qlist) return qlistSheet(b.dataset.qlist);
   if (b.dataset.qlint2) return qlintSheet(b.dataset.qlint2);
@@ -4830,7 +4808,6 @@ function act(a){
         <span class="qty">×${S.bag[k]}</span></button>`).join('')}</div>
       <div class="gap"></div><button class="btn block" data-act="closeSheet">ปิด</button>`);
   }
-  if (a === 'play') return playSheet();
   if (a === 'rest'){
     const gap = Date.now() - (S.lastRest || 0);
     if (gap < 1800000) return toast(`เพิ่งพักไป ลองอีกครั้งใน ${fmtLeft(1800000-gap)}`, 'bad');
@@ -5028,11 +5005,11 @@ async function boot(){
   const firstTime = !S.pet && !S.egg;
   if (firstTime) startEgg(1);
   render();
-  /* เด็กใหม่เจอหน้าต้อนรับของระบบสอนเล่น เด็กเก่าเจอหน้าแนะนำเดิม */
-  if (firstTime){
-    if (S.tutor && !S.tutor.started && !S.tutor.off) welcomeSheet();
-    else intro();
-  }
+  /* ถามเรื่องสอนเล่นทุกครั้งจนกว่าจะเลือก เผื่อเด็กปิดเกมก่อนตัดสินใจ */
+  if (S.tutor && !S.tutor.started && !S.tutor.off) welcomeSheet();
+  else if (firstTime) intro();
+
+  pingVisit();
 
   setInterval(() => {
     if (QUIZ.running) return;
@@ -5540,6 +5517,7 @@ function duelFinish(){
   S.coins += coin; S.crystals += crys;
   const lv = gainXp(xp).levels;
   S.pet.mood = clamp(S.pet.mood + (win ? 8 : 3), 0, 100);
+  if (win) S.pet.care.play += CARE.duel;
   if (S.egg && DUEL.eggPts > 0) eggAddPoints(DUEL.eggPts, DUEL.units);
   DUEL.result = { win, draw, coin, crys, xp, lv, hit, full };
   save();
@@ -6062,6 +6040,37 @@ async function cloudDownloadFlow(){
 }
 let CLOUD_PENDING = null;
 
+
+/* ===========================================================
+   นับจำนวนครั้งที่เปิดเว็บ
+   ส่งแค่สัญญาณเปล่า ไม่มีข้อมูลของเด็กติดไปเลย
+   =========================================================== */
+let VISIT_TOTAL = 0;
+
+function pingVisit(){
+  const url = cloudUrl();
+  if (!url) return;
+  try {
+    fetch(url + '?hit=1', { keepalive: true })
+      .then(r => r.json())
+      .then(out => {
+        if (out && out.status === 'success' && out.total > 0){
+          VISIT_TOTAL = out.total;
+          paintVisit();
+        }
+      })
+      .catch(() => {});
+  } catch (e){}
+}
+
+/* แสดงตัวเลขท้ายหน้า ถ้าดึงไม่ได้ก็ไม่แสดงอะไรเลย */
+function paintVisit(){
+  const el = document.getElementById('visit');
+  if (!el || !VISIT_TOTAL) return;
+  el.innerHTML = `<span class="vnum">${VISIT_TOTAL.toLocaleString('th-TH')}</span> ครั้งที่เปิดเกมนี้`;
+  el.classList.add('on');
+}
+
 /* ===========================================================
    โหมดจับคู่ — อุ่นเครื่องก่อนสอบ
    แบบที่ 1 โจทย์ ↔ เฉลย  สร้างจากคลังคำถามที่มีอยู่
@@ -6228,6 +6237,7 @@ function matchFinish(){
   if (totWrong === 0){ coin += 40; crys += 1; }
 
   S.coins += coin; S.crystals += crys;
+  if (S.pet) S.pet.care.play += CARE.match;
   const lv = S.pet ? gainXp(xp).levels : 0;
   S.match = S.match || { plays:0, best:0 };
   S.match.plays++;
@@ -6644,27 +6654,35 @@ function tutorCard(){
   </div>`;
 }
 
-/* หน้าต้อนรับครั้งแรกสุด */
+/* หน้าต้อนรับครั้งแรกสุด ให้เลือกว่าจะให้สอนหรือไม่ */
 function welcomeSheet(){
   sheet(`<div class="eyebrow">ยินดีต้อนรับ</div>
     <h2>ห้องเรียนไร้ขีดจำกัด</h2>
     <div class="sub">ตอบคำถามในวิชาที่เรียน แล้วเอาคะแนนมาฟักไข่ เลี้ยงวิญญาณ และดวลกับเพื่อน</div>
     <div class="gap"></div>
+
+    <div class="eyebrow">เคยเล่นเกมนี้มาก่อนไหม</div>
     <div class="list">
-      <div class="item"><div class="ic">❓</div><div class="grow">
-        <b>ตอบคำถามคือหัวใจของเกม</b>
-        <div class="sub">ทุกอย่างในเกมนี้ได้มาจากการตอบคำถามให้ถูก</div></div></div>
-      <div class="item"><div class="ic">🥚</div><div class="grow">
-        <b>หน่วยที่ตอบกำหนดธาตุของวิญญาณ</b>
-        <div class="sub">อยากได้ธาตุไหนต้องตอบหน่วยนั้นให้มาก</div></div></div>
-      <div class="item"><div class="ic">🌱</div><div class="grow">
-        <b>ค่อยๆ เปิดทีละอย่าง</b>
-        <div class="sub">เราจะพาไปทีละขั้น ไม่ต้องรีบทำความเข้าใจทั้งหมดตอนนี้</div></div></div>
+      <div class="item" style="border:1px solid var(--glaze);border-radius:12px;padding:12px;margin-bottom:9px;background:rgba(124,174,155,.08)">
+        <div class="ic">🌱</div>
+        <div class="grow">
+          <b>ยังไม่เคยเล่น พาไปทีละขั้น</b>
+          <div class="sub">จะเปิดให้ทีละอย่าง ${TUTOR_STEPS.length} ขั้น ไม่ต้องจำทั้งหมดตอนนี้</div>
+          <div class="tiny">${TUTOR_STEPS.map(x => x.g).join('  ')}</div>
+        </div>
+        <button class="btn pri" data-act="tutorBegin">เลือก</button>
+      </div>
+      <div class="item" style="border:1px solid var(--line);border-radius:12px;padding:12px;background:rgba(255,255,255,.03)">
+        <div class="ic">⚡</div>
+        <div class="grow">
+          <b>เคยเล่นแล้ว เปิดทุกอย่างเลย</b>
+          <div class="sub">ใช้ได้ทั้ง 7 แท็บทันที ไม่ต้องมีคำแนะนำ</div>
+        </div>
+        <button class="btn" data-act="tutorSkipYes">เลือก</button>
+      </div>
     </div>
     <div class="gap"></div>
-    <button class="btn pri block" data-act="tutorBegin">เริ่มเลย</button>
-    <div class="gap" style="height:8px"></div>
-    <button class="btn sm block" data-act="tutorSkip">เคยเล่นแล้ว ข้ามไปเลย</button>`);
+    <div class="tiny">เปลี่ยนใจภายหลังได้ที่ ตั้งค่าและเซฟ ${'\u2192'} สอนเล่น</div>`);
 }
 
 /* หน้ายืนยันตอนกดข้าม */

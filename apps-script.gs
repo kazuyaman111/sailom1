@@ -16,6 +16,7 @@
 
 const SHEET_NAME = 'SaveData';
 const MQ_SHEET   = 'Missions';
+const HIT_SHEET  = 'Visits';      // ตัวนับจำนวนครั้งที่เปิดเว็บ
 const MQ_HEADERS = ['grade', 'subj', 'unit', 'need', 'window', 'note', 'until', 'createdAt'];
 const HEADERS = ['studentId', 'spiritName', 'level', 'coins', 'stats',
                  'lastUpdated', 'saveRaw', 'grade', 'progress'];
@@ -49,6 +50,35 @@ function getMqSheet_() {
   return sh;
 }
 
+/* ชีตนับจำนวนครั้งที่เปิดเว็บ เก็บแค่ตัวเลขรวม ไม่เก็บว่าใครหรือเมื่อไหร่ */
+function getHitSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(HIT_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(HIT_SHEET);
+    sh.getRange('A1:B1').setValues([['รายการ', 'จำนวน']]).setFontWeight('bold');
+    sh.getRange('A2:B2').setValues([['เปิดเว็บทั้งหมด (ครั้ง)', 0]]);
+    sh.getRange('A3:B3').setValues([['เริ่มนับเมื่อ', new Date()]]);
+    sh.setColumnWidth(1, 220);
+  }
+  return sh;
+}
+
+function bumpHit_() {
+  const lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    const cell = getHitSheet_().getRange('B2');
+    const n = Number(cell.getValue()) || 0;
+    cell.setValue(n + 1);
+    return n + 1;
+  } catch (err) {
+    return -1;
+  } finally {
+    try { lock.releaseLock(); } catch (err) {}
+  }
+}
+
 function json_(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
@@ -71,6 +101,11 @@ function findRow_(sh, studentId) {
 function doGet(e) {
   try {
     const p = (e && e.parameter) ? e.parameter : {};
+    /* ---------- นับจำนวนครั้งที่เปิดเว็บ: ?hit=1 ---------- */
+    if (p.hit === '1') {
+      return json_({ status: 'success', total: bumpHit_() });
+    }
+
     const sh = getSheet_();
 
     /* ---------- โหมดแดชบอร์ดครู: ?all=1&key=รหัสผ่าน ---------- */
