@@ -2065,7 +2065,7 @@ function freshSave(){
     stats: { answered:0, correct:0, points:0, rounds:0, best:0, streak:0, bestStreak:0, lastDay:'' },
     daily: { day:'', plays:0 },
     duel: { win:0, lose:0, draw:0, day:'', today:0 },
-    settings: { timed:true, shuffle:true, fs:1 },
+    settings: { timed:true, shuffle:true, fs:1, sound:false },
   };
 }
 
@@ -2176,6 +2176,7 @@ function doEvolve(){
   if (!e || !e.ok) return null;
   const p = S.pet;
   if (e.needStone){ S.bag[e.stoneKey]--; if (!S.bag[e.stoneKey]) delete S.bag[e.stoneKey]; }
+  sfx('evolve');
   p.stage = e.next;
   p.branch = e.next >= 5 ? 'anc' : (e.next >= 3 ? e.br : null);
   for (const k of ['STR','VIT','AGI','INT','LUK']) p.stats[k] += 3;
@@ -3917,6 +3918,7 @@ function answerQuestion(i){
     QUIZ.units[q.unit] = (QUIZ.units[q.unit] || 0) + QUIZ.gained.base;
     QUIZ.correct++;
     QUIZ.streak++;
+    sfx('correct', QUIZ.streak);
     if (wakeProgress(1)) QUIZ.wokeUp = true;
     const mqd = mqRecord(q, true);
     if (mqd) QUIZ.mqDone = { m: mqd, rw: mqReward(mqd) };
@@ -3929,6 +3931,7 @@ function answerQuestion(i){
     }
   } else {
     QUIZ.streak = 0;
+    sfx('wrong');
     if (S.pet) S.pet.mood = clamp(S.pet.mood - 2, 0, 100);
   }
   recordAnswer(q, correct);
@@ -3997,7 +4000,7 @@ function finishQuiz(){
     if (Math.random() < .30 + b.exploreLuck){ const k = pick(pool); addItem(k); got.push(ITEMS[k].n); }
   }
   if (perfect && Math.random() < .25 + b.exploreLuck){
-    const k = pick(['stone_b','stone_m','stone_p']); addItem(k); got.push(ITEMS[k].n);
+    const k = pick(['stone_b','stone_m','stone_p']); addItem(k); got.push(ITEMS[k].n); sfx('loot');
   }
 
   // ป้อนคะแนนให้ไข่
@@ -4008,6 +4011,10 @@ function finishQuiz(){
   if (tutorStep() && tutorStep().id === 'quiz'){
     S.tutor.step++; S.tutor.at = Date.now(); save(); applyTabLock();
   }
+  if (QUIZ.mqDone) sfx('mission');
+  else if (QUIZ.wokeUp) sfx('wake');
+  else if (lv > 0) sfx('levelUp');
+  else sfx('round');
   sheet(quizResultSheet(pts, acc, perfect, xp, coin, aff, cr, got, lv, hatchReady, boosted));
   cloudAutoSync();
 }
@@ -4049,6 +4056,7 @@ function doHatch(){
   if (S.pet && gardenCount() + 1 >= GARDEN_MAX)
     return toast(`สวนเต็ม ${GARDEN_MAX} ตัวแล้ว ปล่อยตัวใดตัวหนึ่งก่อน`, 'bad');
 
+  sfx('hatch');
   const chaos = Math.random() < CHAOS_CHANCE;
   const sp = hatchRoll(chaos);
   const topUnit = eggTopUnit();
@@ -4494,6 +4502,10 @@ function settingsSheet(){
       <div class="item"><div class="ic">🔀</div>
         <div class="grow"><b>สลับตำแหน่งตัวเลือก</b><div class="sub">กันการจำว่าเฉลยอยู่ข้อไหน</div></div>
         <button class="btn sm ${S.settings.shuffle?'on':''}" data-act="togShuf">${S.settings.shuffle?'เปิด':'ปิด'}</button></div>
+      <div class="item"><div class="ic">${S.settings.sound?'🔊':'🔇'}</div>
+        <div class="grow"><b>เสียงประกอบ</b>
+          <div class="sub">${S.settings.sound?'เปิดอยู่ ถ้าอยู่ในห้องเรียนควรใส่หูฟัง':'ปิดอยู่ เปิดได้เมื่ออยู่นอกห้องเรียนหรือใส่หูฟัง'}</div></div>
+        <button class="btn sm ${S.settings.sound?'on':''}" data-act="togSound">${S.settings.sound?'เปิด':'ปิด'}</button></div>
     </div>
       <div class="item"><div class="ic">🧭</div>
         <div class="grow"><b>สอนเล่น</b><div class="sub">${S.tutor && !S.tutor.off && S.tutor.step < TUTOR_STEPS.length ? 'กำลังอยู่ขั้นที่ ' + (S.tutor.step+1) + ' จาก ' + TUTOR_STEPS.length : 'จบแล้ว เปิดทุกอย่างให้ใช้ได้'}</div></div>
@@ -4583,6 +4595,10 @@ function bindView(){
   });
   view().querySelectorAll('[data-act]').forEach(b => b.onclick = () => act(b.dataset.act));
 }
+
+/* เบราว์เซอร์อนุญาตให้เล่นเสียงได้หลังผู้ใช้แตะจอเท่านั้น */
+['pointerdown','keydown'].forEach(ev =>
+  document.addEventListener(ev, () => { initAudio(); wakeAudio(); }, { once:true }));
 
 document.getElementById('fsbtn').addEventListener('click', fsSheet);
 
@@ -4798,6 +4814,12 @@ function act(a){
   if (a === 'settings') return settingsSheet();
   if (a === 'togTimed'){ S.settings.timed = !S.settings.timed; save(); return settingsSheet(); }
   if (a === 'togShuf'){ S.settings.shuffle = !S.settings.shuffle; save(); return settingsSheet(); }
+  if (a === 'togSound'){
+    S.settings.sound = !S.settings.sound;
+    save();
+    if (S.settings.sound){ initAudio(); wakeAudio(); sfx('correct', 3); }
+    return settingsSheet();
+  }
   if (a === 'feed'){
     const foods = Object.keys(S.bag).filter(k => ITEMS[k] && ITEMS[k].t === 'food' && S.bag[k] > 0);
     if (!foods.length) return toast('ไม่มีอาหารเลย ซื้อได้ที่กระเป๋า', 'bad');
@@ -4962,6 +4984,7 @@ function migrateSave(){
   if (typeof S.mopDay !== 'string') S.mopDay = '';
   if (!S.settings || typeof S.settings.timed === 'undefined') S.settings = {timed:true, shuffle:true, fs:1};
   if (typeof S.settings.fs !== 'number' || !(S.settings.fs > 0)) S.settings.fs = 1;
+  if (typeof S.settings.sound !== 'boolean') S.settings.sound = false;
   applyFS();
   if (!S.stats || typeof S.stats.answered === 'undefined')
     S.stats = {answered:0, correct:0, points:0, rounds:0, best:0, streak:0, bestStreak:0, lastDay:''};
@@ -5424,6 +5447,7 @@ function duelAnswer(i){
       /* ร่ายคาถา */
       const sp = pickSpell(p, true);
       DUEL.gauge = 0;
+      sfx('spell');
       const r = duelDamage({ atk:p, def:foe, mineAtk:true, spell:sp, shield:foeShield });
       DUEL.foeHp = Math.max(0, DUEL.foeHp - r.dmg);
       r.effects = applySpellEffect(sp, r.dmg, true);
@@ -5432,6 +5456,7 @@ function duelAnswer(i){
       const r = duelDamage({ atk:p, def:foe, mineAtk:true, diff:q.diff, speed, shield:foeShield });
       DUEL.foeHp = Math.max(0, DUEL.foeHp - r.dmg);
       turn.my.push(r);
+      sfx(r.crit ? 'crit' : 'correct', QUIZ.streak || 3);
       /* AGI: โอกาสฟันซ้ำ */
       if (DUEL.foeHp > 0 && Math.random() < duelExtra(p, true)){
         const r2 = duelDamage({ atk:p, def:foe, mineAtk:true, diff:q.diff, speed:speed*0.6, shield:0 });
@@ -5448,6 +5473,7 @@ function duelAnswer(i){
   } else {
     recordAnswer(q, false);
     S.stats.answered++;
+    sfx('wrong');
   }
 
   /* ตาของเงาคู่ต่อสู้ */
@@ -5520,6 +5546,7 @@ function duelFinish(){
   if (win) S.pet.care.play += CARE.duel;
   if (S.egg && DUEL.eggPts > 0) eggAddPoints(DUEL.eggPts, DUEL.units);
   DUEL.result = { win, draw, coin, crys, xp, lv, hit, full };
+  sfx(win ? 'win' : (draw ? 'round' : 'lose'));
   save();
   if (typeof tutorDone === 'function' && tutorStep() && tutorStep().id === 'duel'){
     S.tutor.step++; S.tutor.at = Date.now(); save(); applyTabLock();
@@ -6190,6 +6217,7 @@ function matchTap(side, id){
   MATCH.sel = null;
   if (a === b){
     MATCH.done.push(a);
+    sfx('match');
     const s = MATCH.cur;
     /* บันทึกผลรายหน่วยเหมือนการตอบคำถามปกติ */
     if (s.units && s.units[a] && s.ids && s.ids[a]){
@@ -6203,6 +6231,7 @@ function matchTap(side, id){
     if (MATCH.done.length >= MATCH.cur.left.length) return matchFinishSet();
   } else {
     MATCH.wrong++;
+    sfx('wrong');
     View.bounce = 1;
   }
   save(); render();
@@ -6244,6 +6273,7 @@ function matchFinish(){
   if (!S.match.best || avg < S.match.best) S.match.best = avg;
 
   MATCH.result = { totSec, totWrong, avg, rank, coin, crys, xp, lv, pairs };
+  sfx(MATCH.mqDone ? 'mission' : (rank === 'gold' ? 'win' : 'round'));
   save(); render();
   sheet(matchResultSheet());
 }
@@ -6545,6 +6575,173 @@ function mqDoneSheet(m, rw){
 }
 
 /* ===========================================================
+   ระบบเสียง — สังเคราะห์ด้วยโค้ดทั้งหมด ไม่มีไฟล์เสียง
+   ปิดเป็นค่าเริ่มต้น เพราะเด็กหลายคนเล่นพร้อมกันในห้องเรียน
+   เริ่มทำงานได้เมื่อผู้ใช้แตะจอครั้งแรกเท่านั้น ตามกฎของเบราว์เซอร์
+   =========================================================== */
+
+let AC = null;              // AudioContext ใช้ร่วมกันทั้งเกม
+let AUDIO_READY = false;
+
+function soundOn(){ return !!(S && S.settings && S.settings.sound); }
+
+/* เตรียมระบบเสียง เรียกตอนผู้ใช้แตะจอครั้งแรก */
+function initAudio(){
+  if (AUDIO_READY) return;
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    AC = new Ctx();
+    AUDIO_READY = true;
+  } catch (e){ AUDIO_READY = false; }
+}
+
+/* ปลุก AudioContext ที่ถูกเบราว์เซอร์พักไว้ */
+function wakeAudio(){
+  if (AC && AC.state === 'suspended') AC.resume().catch(() => {});
+}
+
+/* ---------- ตัวสร้างเสียงพื้นฐาน ----------
+   freq  ความถี่ (เฮิรตซ์)
+   dur   ความยาว (วินาที)
+   type  รูปคลื่น sine นุ่มสุด · triangle ใสขึ้น
+   vol   ความดัง 0-1
+   delay หน่วงก่อนเล่น (วินาที)
+   glide ความถี่ปลายทาง ถ้าใส่จะไล่เสียงจากต้นไปปลาย            */
+function tone(freq, dur, opt){
+  if (!soundOn() || !AUDIO_READY || !AC) return;
+  const o = opt || {};
+  const t0 = AC.currentTime + (o.delay || 0);
+  const vol = (o.vol == null ? .18 : o.vol);
+
+  const osc = AC.createOscillator();
+  const gain = AC.createGain();
+
+  osc.type = o.type || 'sine';
+  osc.frequency.setValueAtTime(freq, t0);
+  if (o.glide) osc.frequency.exponentialRampToValueAtTime(Math.max(40, o.glide), t0 + dur);
+
+  /* ซองเสียงแบบระนาด ขึ้นเร็วแล้วค่อยๆ จาง ไม่มีเสียงคลิกตอนตัด */
+  gain.gain.setValueAtTime(0.0001, t0);
+  gain.gain.exponentialRampToValueAtTime(vol, t0 + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+  osc.connect(gain); gain.connect(AC.destination);
+  osc.start(t0); osc.stop(t0 + dur + 0.02);
+}
+
+/* เล่นหลายโน้ตต่อกันเป็นทำนองสั้นๆ */
+function melody(notes, opt){
+  const o = opt || {};
+  let t = 0;
+  notes.forEach(n => {
+    tone(n.f, n.d, Object.assign({}, o, { delay: t, vol: n.v == null ? o.vol : n.v }));
+    t += n.gap == null ? n.d * 0.72 : n.gap;
+  });
+}
+
+/* บันไดเสียงเพนทาโทนิก ให้ความรู้สึกไทยและไม่มีโน้ตที่ฟังแล้วขัดหู */
+const PENTA = [523.25, 587.33, 659.25, 783.99, 880.00,
+               1046.50, 1174.66, 1318.51, 1567.98, 1760.00];
+
+/* ---------- เสียงประจำเหตุการณ์ ---------- */
+const SFX = {
+  /* ตอบถูก ไล่สูงขึ้นตามจำนวนที่ถูกติดกัน สูงสุด 10 ขั้น */
+  correct(streak){
+    const i = Math.min(Math.max(streak - 1, 0), PENTA.length - 1);
+    tone(PENTA[i], 0.26, { type:'triangle', vol:.16 });
+    tone(PENTA[i] * 2, 0.16, { type:'sine', vol:.05, delay:.02 });
+  },
+
+  /* ตอบผิด ทุ้มนุ่ม ไม่ดุ ไม่ทำให้เด็กรู้สึกถูกดุ */
+  wrong(){
+    tone(196.00, 0.30, { type:'sine', vol:.13, glide:164.81 });
+  },
+
+  /* จบรอบ คอร์ดสั้น */
+  round(){
+    melody([{f:523.25,d:.22},{f:659.25,d:.22},{f:783.99,d:.34}],
+           { type:'triangle', vol:.14 });
+  },
+
+  /* เลื่อนเลเวล */
+  levelUp(){
+    melody([{f:659.25,d:.16},{f:783.99,d:.16},{f:1046.50,d:.30}],
+           { type:'triangle', vol:.15 });
+  },
+
+  /* ฟักไข่ ช่วงพีคของเกม กระดิ่งไล่ระดับ */
+  hatch(){
+    melody([{f:523.25,d:.24},{f:659.25,d:.24},{f:783.99,d:.24},
+            {f:1046.50,d:.30},{f:1318.51,d:.55}],
+           { type:'triangle', vol:.17 });
+    tone(2093.00, 0.7, { type:'sine', vol:.05, delay:.55 });
+  },
+
+  /* วิวัฒนาการ */
+  evolve(){
+    melody([{f:392.00,d:.20},{f:523.25,d:.20},{f:659.25,d:.20},
+            {f:783.99,d:.24},{f:1046.50,d:.60}],
+           { type:'triangle', vol:.17 });
+  },
+
+  /* ร่ายคาถา กังวานยาว */
+  spell(){
+    tone(880.00, 0.55, { type:'triangle', vol:.16, glide:1760.00 });
+    tone(587.33, 0.65, { type:'sine', vol:.09, delay:.05 });
+  },
+
+  /* โจมตีเข้าเต็มแรง */
+  crit(){
+    tone(1174.66, 0.18, { type:'triangle', vol:.15, glide:1567.98 });
+  },
+
+  /* ชนะการดวล */
+  win(){
+    melody([{f:783.99,d:.18},{f:1046.50,d:.18},{f:1318.51,d:.42}],
+           { type:'triangle', vol:.17 });
+  },
+
+  /* แพ้การดวล */
+  lose(){
+    melody([{f:523.25,d:.22},{f:440.00,d:.22},{f:349.23,d:.42}],
+           { type:'sine', vol:.13 });
+  },
+
+  /* ได้ของหายาก */
+  loot(){
+    tone(1318.51, 0.14, { type:'triangle', vol:.13 });
+    tone(1760.00, 0.20, { type:'sine', vol:.09, delay:.09 });
+  },
+
+  /* จับคู่ถูก */
+  match(){
+    tone(880.00, 0.14, { type:'triangle', vol:.13 });
+  },
+
+  /* ภารกิจสำเร็จ */
+  mission(){
+    melody([{f:659.25,d:.18},{f:880.00,d:.18},{f:1174.66,d:.38}],
+           { type:'triangle', vol:.16 });
+  },
+
+  /* วิญญาณตื่นจากหลับ */
+  wake(){
+    melody([{f:392.00,d:.26},{f:523.25,d:.26},{f:659.25,d:.44}],
+           { type:'sine', vol:.15 });
+  },
+};
+
+/* เรียกใช้แบบปลอดภัย ถ้าระบบเสียงมีปัญหาก็เงียบไป ไม่ทำให้เกมพัง */
+function sfx(name, arg){
+  try {
+    if (!soundOn()) return;
+    wakeAudio();
+    if (SFX[name]) SFX[name](arg);
+  } catch (e){}
+}
+
+/* ===========================================================
    สอนเล่น — พาเด็กใหม่เข้าประตูทีละขั้น
    ซ่อนแท็บที่ยังไม่ถึงเวลา แล้วเปิดทีละอย่างเมื่อทำขั้นก่อนหน้าสำเร็จ
    ครูปิดระบบนี้ได้จากหน้าตั้งค่า สำหรับเด็กที่เคยเล่นแล้ว
@@ -6599,6 +6796,7 @@ function tutorDone(id, quiet){
   save();
   const next = tutorStep();
   applyTabLock();
+  sfx(next ? 'round' : 'win');
   if (quiet){ render(); return true; }
   sheet(`<div class="eyebrow" style="color:var(--gold)">ทำได้แล้ว</div>
     <h2>${st.g} ${esc(st.n)}</h2>
