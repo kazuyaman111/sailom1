@@ -424,7 +424,7 @@ const ELEMENTS = {
   light: {n:'แสง',     g:'✨', main:'LUK', h:46,  s:56, l:64},
   shade: {n:'เงา',     g:'🌑', main:'INT', h:232, s:22, l:44},
 };
-const EL_KEYS = Object.keys(ELEMENTS);
+let EL_KEYS = Object.keys(ELEMENTS);
 
 /* ===================== ระดับความหายาก ===================== */
 const RARITY = [
@@ -537,15 +537,15 @@ const STAGE5_NAME = 'ร่างโบราณ';
 function formId(sp, stage, branch){
   return stage <= 2 ? `${sp}:${stage}` : `${sp}:${stage}:${branch}`;
 }
-function formName(sp, stage, branch){
+let formName = function(sp, stage, branch){
   const b = SPECIES[sp].name;
   if (stage <= 2) return `${b} ${STAGE_NAMES[stage]}`;
   if (stage === 3) return `${b} ${STAGE3_NAME[branch]}`;
   if (stage === 4) return `${b} ${STAGE4_NAME[branch]}`;
   return `${b} ${STAGE5_NAME}`;
-}
+};
 // ร่างทั้งหมด: 32 สายพันธุ์ × 10 ร่าง = 320
-const ALL_FORMS = (() => {
+let ALL_FORMS = (() => {
   const out = [];
   for (const sp of SP_KEYS){
     out.push({id:formId(sp,0), sp, stage:0, branch:null});
@@ -559,7 +559,7 @@ const ALL_FORMS = (() => {
   }
   return out;
 })();
-const FORMS_BY_SP = {};
+let FORMS_BY_SP = {};
 for (const f of ALL_FORMS){ (FORMS_BY_SP[f.sp] = FORMS_BY_SP[f.sp] || []).push(f); }
 
 /* ===================== ไอเทม ===================== */
@@ -728,7 +728,7 @@ const TIER_COLOR = [null,'#9fb6ac','#7fb6c9','#c9a24a','#c98ad4','#e8b4d8'];
    วงจรธาตุข่มกัน — 6 ธาตุหมุนเป็นวง ส่วนแสงกับเงาข่มกันเอง
    ไม้ → ลม → ดิน → สายฟ้า → น้ำ → ไฟ → ไม้
    =========================================================== */
-const EL_BEATS = {
+let EL_BEATS = {
   wood: ['wind'],   // ป่าไม้บังกำลังลม
   wind: ['earth'],  // ลมกัดเซาะหน้าดิน
   earth:['bolt'],   // ดินนำประจุลงสู่พื้น
@@ -738,7 +738,7 @@ const EL_BEATS = {
   light:['shade'],  // แสงสลายเงา
   shade:['light'],  // เงากลืนแสง
 };
-const EL_WHY = {
+let EL_WHY = {
   'wood>wind':'ป่าไม้บังกำลังลม',
   'wind>earth':'ลมกัดเซาะหน้าดิน',
   'earth>bolt':'ดินนำประจุไฟฟ้าลงสู่พื้น',
@@ -1989,6 +1989,282 @@ function bankCount(subj, grade){
   return QBANK_BUILTIN.filter(q => q.subj === subj && q.grade === grade).length;
 }
 
+/* ===========================================================
+   ระบบภาพตัวละคร
+   โหลดภาพจากโฟลเดอร์ art/ เฉพาะตัวที่ใช้จริง เกมจึงยังเบา
+   ถ้าโหลดไม่ได้จะถอยไปวาดด้วยโค้ดแบบเดิมอัตโนมัติ
+
+   วิธีเพิ่มตัวใหม่ — ไม่ต้องแก้โค้ดเลย
+   1. สร้างโฟลเดอร์ art/<ชื่ออังกฤษ>/ แล้วใส่ 1.png 2.png ...
+   2. เติมข้อมูลใน ART_BOOK ด้านล่างนี้
+   =========================================================== */
+
+/* ที่อยู่ของโฟลเดอร์ภาพ เทียบกับไฟล์ index.html */
+const ART_BASE = 'art/';
+
+/* ทะเบียนตัวละครที่มีภาพแล้ว
+   key      ชื่อโฟลเดอร์
+   n        ชื่อไทยที่แสดงในเกม
+   skill    ทักษะ (จดจำ ค้นคว้า เชื่อมโยง แยกแยะ กล้าหาญ รับผิดชอบ)
+   rarity   ความหายาก 1-4
+   main/sub ค่าสถานะหลักและรอง
+   stages   ชื่อแต่ละขั้น จำนวนขั้นนับจากความยาวรายการนี้             */
+const ART_BOOK = {
+  bandit: {
+    n:'บัณฑิต', skill:'memory', rarity:3, main:'INT', sub:'VIT',
+    stages:[
+      { n:'ลบเลือน',       d:'ยางลบน้อยที่ยอมหายไปทีละนิดเพื่อให้คนอื่นได้เริ่มใหม่' },
+      { n:'โต๊ะร้าง',      d:'โต๊ะเรียนตัวเปล่าที่รอใครสักคนมานั่ง' },
+      { n:'โต๊ะตำรา',      d:'เริ่มมีหนังสือวางแล้ว ความรู้ค่อยๆ สะสม' },
+      { n:'โต๊ะรัตติกาล',  d:'มีโคมไฟส่องถึงดึก คนที่ไม่ยอมหยุดเรียนรู้' },
+      { n:'พลไม้เนื้ออ่อน', d:'ลุกขึ้นยืนได้แล้ว ยังไม่แข็งแรงแต่กล้าสู้' },
+      { n:'ขุนพลปากกา',    d:'ถืออาวุธเป็นดินสอ มีโล่หัวปากกา' },
+      { n:'ราชันอักษร',    d:'สวมมงกุฎ ปกครองด้วยความรู้ไม่ใช่กำลัง' },
+      { n:'เทพวิทยาธร',    d:'ปีกเป็นหน้าหนังสือ ดาบเป็นปากกา' },
+    ],
+  },
+  bag: {
+    n:'เป้ภาระ', skill:'duty', rarity:2, main:'VIT', sub:'STR',
+    stages:[
+      { n:'กระเป๋าผ้า',  d:'ใบเล็กที่ใส่ได้แค่สมุดเล่มเดียว แต่ไม่เคยทำหาย' },
+      { n:'เป้นักเรียน', d:'มีช่องแยกเป็นระเบียบ เริ่มแบกของได้มากขึ้น' },
+      { n:'เป้เดินป่า',  d:'ไปได้ไกลขึ้น แบกได้หนักขึ้น ไม่บ่นสักคำ' },
+      { n:'เป้ยุทธวิธี', d:'พร้อมทุกสถานการณ์ มีของที่จำเป็นครบเสมอ' },
+      { n:'เป้คริสตัล',  d:'แบกความรับผิดชอบจนกลายเป็นเกราะของตัวเอง' },
+    ],
+  },
+  ruler: {
+    n:'มาตรา', skill:'judge', rarity:2, main:'STR', sub:'INT',
+    stages:[
+      { n:'ไม้บรรทัดไม้',   d:'เครื่องมือวัดชิ้นแรกของเด็กทุกคน' },
+      { n:'ไม้บรรทัดเหล็ก', d:'แข็งแรงขึ้น ขีดเส้นได้ตรงกว่าเดิม' },
+      { n:'วงเวียน',        d:'วัดได้ทั้งระยะและมุม เริ่มเห็นสิ่งที่ตาเปล่าไม่เห็น' },
+      { n:'เครื่องวัดเลเซอร์', d:'ความเที่ยงตรงระดับที่ไม่มีใครเถียงได้' },
+      { n:'ดาบมาตรฐาน',    d:'ความเที่ยงตรงที่กลายเป็นอาวุธ ตัดสิ่งผิดออกจากสิ่งถูก' },
+    ],
+  },
+};
+
+/* ทักษะทั้งหก แทนที่ระบบธาตุเดิม */
+const SKILLS = {
+  memory:  { n:'จดจำ',      g:'🧠', h:266, s:38, l:62 },
+  search:  { n:'ค้นคว้า',   g:'🔍', h:205, s:40, l:60 },
+  link:    { n:'เชื่อมโยง', g:'🔗', h:152, s:34, l:56 },
+  judge:   { n:'แยกแยะ',    g:'⚖️', h:38,  s:58, l:58 },
+  brave:   { n:'กล้าหาญ',   g:'🔥', h:12,  s:56, l:58 },
+  duty:    { n:'รับผิดชอบ', g:'🛡️', h:96,  s:22, l:52 },
+};
+
+/* วงจรข่มกัน — เรียงตามลำดับการเรียนรู้จริง
+   จดจำ → ค้นคว้า → เชื่อมโยง → แยกแยะ → กล้าหาญ → รับผิดชอบ → จดจำ */
+const SKILL_BEATS = {
+  memory:['search'], search:['link'], link:['judge'],
+  judge:['brave'],   brave:['duty'],  duty:['memory'],
+};
+const SKILL_WHY = {
+  'memory>search':'ถ้าจำข้อมูลพื้นฐานไม่ได้ ค้นเท่าไรก็ไม่เข้าใจ',
+  'search>link'  :'เชื่อมโยงโดยไม่มีข้อมูลคือการเดา',
+  'link>judge'   :'ต้องเห็นภาพรวมก่อนจึงแยกแยะถูกผิดได้',
+  'judge>brave'  :'กล้าโดยไม่แยกแยะคือความหุนหัน',
+  'brave>duty'   :'รู้หน้าที่แต่ไม่กล้าทำก็ไม่เกิดอะไรขึ้น',
+  'duty>memory'  :'ความรับผิดชอบทำให้กลับมาทบทวนซ้ำจนจำได้จริง',
+};
+
+/* ---------- คลังภาพที่โหลดแล้ว ---------- */
+const ART_CACHE = {};      // 'bandit:3' -> Image | 'fail'
+
+function artPath(key, stage){ return `${ART_BASE}${key}/${stage + 1}.png`; }
+
+/* มีภาพสำหรับตัวนี้ขั้นนี้ไหม */
+function hasArt(key, stage){
+  const b = ART_BOOK[key];
+  if (!b) return false;
+  return stage >= 0 && stage < b.stages.length;
+}
+
+/* ขอภาพ ถ้ายังไม่โหลดจะเริ่มโหลดแล้วคืน null ไปก่อน
+   เมื่อโหลดเสร็จจะวาดใหม่เอง */
+function getArt(key, stage){
+  if (!hasArt(key, stage)) return null;
+  const id = key + ':' + stage;
+  const hit = ART_CACHE[id];
+  if (hit === 'fail') return null;
+  if (hit) return hit.complete && hit.naturalWidth > 0 ? hit : null;
+
+  const img = new Image();
+  ART_CACHE[id] = img;
+  img.onerror = () => { ART_CACHE[id] = 'fail'; };
+  img.onload = () => { if (typeof render === 'function') render(); };
+  img.src = artPath(key, stage);
+  return null;
+}
+
+/* โหลดภาพขั้นถัดไปล่วงหน้า เพื่อให้ตอนวิวัฒนาการไม่กระตุก */
+function preloadNextArt(key, stage){
+  if (hasArt(key, stage + 1)) getArt(key, stage + 1);
+}
+
+/* ---------- ข้อมูลตัวละครสำหรับใช้ในเกม ---------- */
+function artSpecies(key){
+  const b = ART_BOOK[key];
+  if (!b) return null;
+  const sk = SKILLS[b.skill];
+  return {
+    key, name: b.n, rarity: b.rarity, main: b.main, sub: b.sub,
+    skill: b.skill, art: true,
+    g: sk.g,
+    h: sk.h, s: sk.s, l: sk.l,
+    dim: `hsla(${sk.h},${sk.s}%,${sk.l}%,.30)`,
+    a: (o) => `hsla(${sk.h},${sk.s}%,${sk.l + 18}%,${o})`,
+    stages: b.stages,
+    maxStage: b.stages.length - 1,
+  };
+}
+function artStageName(key, stage){
+  const b = ART_BOOK[key];
+  if (!b || !b.stages[stage]) return '';
+  return b.stages[stage].n;
+}
+function artStageDesc(key, stage){
+  const b = ART_BOOK[key];
+  if (!b || !b.stages[stage]) return '';
+  return b.stages[stage].d;
+}
+
+/* ตัวคูณความเสียหายจากทักษะข่มกัน ใช้ค่าเดียวกับระบบธาตุเดิม */
+function skillMul(a, b){
+  if (!a || !b) return 1;
+  if ((SKILL_BEATS[a] || []).includes(b)) return ADV_UP;
+  if ((SKILL_BEATS[b] || []).includes(a)) return ADV_DOWN;
+  return 1;
+}
+function skillLabel(a, b){
+  const m = skillMul(a, b);
+  if (m > 1) return { t:'ข่มได้', c:'var(--ok)', why: SKILL_WHY[a + '>' + b] || '' };
+  if (m < 1) return { t:'ถูกข่ม', c:'var(--bad)', why: SKILL_WHY[b + '>' + a] || '' };
+  return null;
+}
+
+/* ---------- วาดภาพตัวละครลงแคนวาส ----------
+   คืน true ถ้าวาดด้วยภาพสำเร็จ คืน false ถ้าต้องถอยไปวาดด้วยโค้ด */
+function drawArtSpirit(t, p, sp, opt){
+  const key = p.sp;
+  if (!ART_BOOK[key]) return false;
+  const img = getArt(key, p.stage);
+  if (!img) return false;
+
+  const o = opt || {};
+  const cx = o.cx || CW / 2;
+  const scale = (o.scale || 1);
+  const happy = p.mood > 60 && p.hp > 40;
+  const breathe = Math.sin(t * 1.6) * 2.5;
+  const hop = happy ? Math.abs(Math.sin(t * 2.2)) * 5 : 0;
+
+  /* ขนาดโตขึ้นตามขั้น แต่ไม่เกินกรอบ */
+  const b = ART_BOOK[key];
+  const step = b.stages.length > 1 ? p.stage / (b.stages.length - 1) : 0;
+  const H = (128 + step * 78) * scale;
+  const W = H * (img.naturalWidth / img.naturalHeight);
+
+  /* เท้าอยู่บนเส้นพื้นเดียวกันเสมอ ไม่ว่าตัวจะโตแค่ไหน */
+  const groundY = 246;
+  const cy = groundY - H + breathe * 0.5 - hop + View.bounce;
+
+  ctx.save();
+  if (p === S.pet && typeof isAsleep === 'function' && isAsleep()) ctx.globalAlpha = 0.45;
+
+  /* เงาใต้เท้า */
+  ctx.save();
+  ctx.globalAlpha *= 0.30;
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.ellipse(cx, groundY + 3, W * 0.34, H * 0.045, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  /* แสงเรืองสำหรับตัวหายาก */
+  if (sp && sp.rarity >= 3){
+    ctx.shadowColor = sp.a(.55);
+    ctx.shadowBlur = 14 + sp.rarity * 4;
+  }
+
+  ctx.translate(cx, cy + H / 2);
+  if (o.flip) ctx.scale(-1, 1);
+  ctx.imageSmoothingEnabled = false;      /* รักษาความคมของพิกเซลอาร์ต */
+  ctx.drawImage(img, -W / 2, -H / 2, W, H);
+  ctx.restore();
+
+  preloadNextArt(key, p.stage);
+  return true;
+}
+
+
+/* ===========================================================
+   ลงทะเบียนตัวละครที่มีภาพเข้าระบบสายพันธุ์เดิม
+   ทำให้ทุกอย่างที่มีอยู่ใช้ได้ทันที ทั้งฟักไข่ ดวล สวน สมุดสะสม
+   =========================================================== */
+(function registerArtSpecies(){
+  if (typeof SPECIES === 'undefined') return;
+  for (const key in ART_BOOK){
+    const b = ART_BOOK[key];
+    const sk = SKILLS[b.skill];
+    const h = sk.h, s = sk.s, l = sk.l;
+    const hsl  = (H,S,L) => `hsl(${H},${S}%,${L}%)`;
+    const hsla = (H,S,L,A) => `hsla(${H},${S}%,${L}%,${A})`;
+
+    SPECIES[key] = {
+      id:key, name:b.n,
+      art:true,                       // ธงบอกว่าตัวนี้ใช้ภาพ ไม่ใช่วาดด้วยโค้ด
+      skill:b.skill,
+      elk:b.skill, el:sk.n, g:sk.g,   // ใช้ช่องธาตุเดิมเก็บทักษะ ระบบอื่นจึงทำงานต่อได้
+      main:b.main, sub:b.sub, rarity:b.rarity,
+      desc:b.stages[0].d,
+      hue:h, sat:s, lum:l,
+      c1:hsl(h,s,l), c2:hsl(h+6,s+8,l-20), accent:hsl(h-6,s-6,l+22),
+      dim:hsla(h,s,l,.30),
+      a: al => hsla(h-6,s-6,l+22,al),
+      maxStage: b.stages.length - 1,
+      traits:{ body:'round', horn:'none', ear:'none', tail:'none', mark:'none', halo:b.rarity>=4 },
+    };
+    if (typeof SP_KEYS !== 'undefined' && !SP_KEYS.includes(key)) SP_KEYS.push(key);
+    if (typeof ELEMENTS !== 'undefined' && !ELEMENTS[b.skill])
+      ELEMENTS[b.skill] = { n:sk.n, g:sk.g, main:b.main, h, s, l };
+  }
+})();
+
+/* สร้างทะเบียนร่างให้ตัวที่มีภาพ เพื่อให้สมุดสะสมและระบบอื่นทำงานได้ */
+(function registerArtForms(){
+  if (typeof FORMS_BY_SP === 'undefined') return;
+  for (const key in ART_BOOK){
+    const b = ART_BOOK[key];
+    const forms = b.stages.map((st, i) => ({ id:`${key}:${i}`, sp:key, stage:i, branch:null }));
+    FORMS_BY_SP[key] = forms;
+    if (typeof ALL_FORMS !== 'undefined') forms.forEach(f => ALL_FORMS.push(f));
+    if (typeof EL_KEYS !== 'undefined' && !EL_KEYS.includes(b.skill)) EL_KEYS.push(b.skill);
+  }
+})();
+
+/* รวมวงจรทักษะเข้ากับวงจรธาตุเดิม เพื่อให้ระบบดวลที่มีอยู่ใช้ได้ทันที
+   ทั้งสองวงจรแยกกันอิสระ ธาตุข่มธาตุ ทักษะข่มทักษะ ข้ามกันไม่ได้ */
+(function mergeSkillCycle(){
+  if (typeof EL_BEATS === 'undefined') return;
+  for (const k in SKILL_BEATS){
+    if (!EL_BEATS[k]) EL_BEATS[k] = SKILL_BEATS[k].slice();
+  }
+  if (typeof EL_WHY !== 'undefined'){
+    for (const k in SKILL_WHY) if (!EL_WHY[k]) EL_WHY[k] = SKILL_WHY[k];
+  }
+})();
+
+/* ให้ชื่อร่างของตัวที่มีภาพใช้ชื่อจากทะเบียน ไม่ใช่ชื่อร่างมาตรฐาน */
+if (typeof formName === 'function'){
+  const _formName = formName;
+  formName = function(sp, stage, branch){
+    if (ART_BOOK[sp]) return artStageName(sp, Math.min(stage, ART_BOOK[sp].stages.length - 1));
+    return _formName(sp, stage, branch);
+  };
+}
+
 /* ===================== เซฟข้อมูล ===================== */
 const MEM = {};
 const Store = {
@@ -2162,6 +2438,20 @@ function dominantBranch(){
 function evoCheck(){
   const p = S.pet; if (!p) return null;
   const next = p.stage + 1;
+
+  /* ตัวที่มีภาพ มีจำนวนขั้นของตัวเองและไม่แตกสาย */
+  const book = (typeof ART_BOOK !== 'undefined') ? ART_BOOK[p.sp] : null;
+  if (book){
+    const maxStage = book.stages.length - 1;
+    if (next > maxStage) return null;
+    /* กระจายเกณฑ์เลเวลและความสนิทให้ทั่วตามจำนวนขั้นที่มีจริง */
+    const f = next / maxStage;
+    const needLv  = Math.max(2, Math.round(2 + f * 46));
+    const needAff = Math.round(f * 85);
+    const ok = p.lv >= needLv && p.aff >= needAff;
+    return { next, needLv, needAff, needStone:false, stoneKey:null, br:null, ok, art:true };
+  }
+
   if (next > 5) return null;
   const needLv = STAGE_LV[next];
   const needAff = [0, 10, 25, 45, 65, 85][next];
@@ -2178,7 +2468,7 @@ function doEvolve(){
   if (e.needStone){ S.bag[e.stoneKey]--; if (!S.bag[e.stoneKey]) delete S.bag[e.stoneKey]; }
   sfx('evolve');
   p.stage = e.next;
-  p.branch = e.next >= 5 ? 'anc' : (e.next >= 3 ? e.br : null);
+  p.branch = e.art ? null : (e.next >= 5 ? 'anc' : (e.next >= 3 ? e.br : null));
   for (const k of ['STR','VIT','AGI','INT','LUK']) p.stats[k] += 3;
   p.mood = clamp(p.mood + 20, 0, 100);
   p.hp = 100;
@@ -2922,6 +3212,8 @@ function drawMarks(kind, R, sp, seed){
 }
 
 function drawSpirit(t, p, sp, opt){
+  /* ถ้าตัวนี้มีภาพให้ใช้ ให้วาดด้วยภาพ ถ้าไม่มีค่อยวาดด้วยโค้ดแบบเดิม */
+  if (typeof drawArtSpirit === 'function' && drawArtSpirit(t, p, sp, opt)) return;
   const T = sp.traits;
   const cx = (opt && opt.cx) || CW/2;
   const scale = [0.55, 0.68, 0.82, 1.0, 1.16, 1.3][p.stage] * ((opt && opt.scale) || 1);
@@ -3227,7 +3519,7 @@ function eggBlock(){
   const key = {1:'seed_r',2:'seed_g',3:'seed_m'}[e.tier];
   const prog = clamp(e.pts / e.need * 100, 0, 100);
   const odds = hatchOddsByEl();
-  const rows = Object.entries(odds).sort((a,b)=>b[1]-a[1]).slice(0, 5).map(([el, v]) =>
+  const rows = Object.entries(odds).filter(([el]) => ELEMENTS[el]).sort((a,b)=>b[1]-a[1]).slice(0, 5).map(([el, v]) =>
     `<div class="odd">
       <span class="nm">${ELEMENTS[el].g} ${ELEMENTS[el].n}</span>
       <span class="tr"><i style="width:${(v*100).toFixed(1)}%;background:hsl(${ELEMENTS[el].h},52%,58%)"></i></span>
@@ -3240,7 +3532,7 @@ function eggBlock(){
       <b class="mono">${Math.min(e.pts, e.need)}/${e.need}</b></div>
     <div class="gap" style="height:6px"></div>
     <div class="eggbar"><i style="width:${prog}%"></i></div>
-    ${topUnit ? `<div class="tiny" style="margin-top:8px">หน่วยที่สะสมมากที่สุด — ${UNITS[topUnit].n} → ธาตุ${ELEMENTS[unitEl(topUnit)].n} ${ELEMENTS[unitEl(topUnit)].g}</div>` : `<div class="tiny" style="margin-top:8px">ยังไม่มีหน่วยใดนำ ตอบคำถามเพื่อกำหนดธาตุของไข่</div>`}
+    ${(topUnit && ELEMENTS[unitEl(topUnit)]) ? `<div class="tiny" style="margin-top:8px">หน่วยที่สะสมมากที่สุด — ${UNITS[topUnit].n} → ธาตุ${ELEMENTS[unitEl(topUnit)].n} ${ELEMENTS[unitEl(topUnit)].g}</div>` : `<div class="tiny" style="margin-top:8px">ยังไม่มีหน่วยใดนำ ตอบคำถามเพื่อกำหนดธาตุของไข่</div>`}
     <div class="odds">${rows}</div>
     <div class="tiny" style="margin-top:6px">ไข่โตจากคะแนนฐานของข้อที่ตอบถูก ไม่รวมโบนัสความเร็วและตัวคูณต่อเนื่อง · ไข่ใบนี้สุ่มผังธาตุมาเองแล้ว ${Math.round(CHAOS_CHANCE*100)}% ที่ตอนฟักจะแปรปรวนไม่สนผัง</div>
     <div class="gap" style="height:6px"></div>
@@ -3340,15 +3632,15 @@ function viewPot(){
     const lines = [
       `เลเวล ${p.lv}/${e.needLv}`,
       `ความสนิท ${Math.round(p.aff)}/${e.needAff}`,
-      e.needStone ? `${ITEMS[e.stoneKey].n} ${(S.bag[e.stoneKey]||0)}/1` : null
+      (e.needStone && ITEMS[e.stoneKey]) ? `${ITEMS[e.stoneKey].n} ${(S.bag[e.stoneKey]||0)}/1` : null
     ].filter(Boolean).join(' · ');
     evoHtml = `<div class="card">
       <div class="eyebrow">ร่างถัดไป</div>
       <div class="row spread">
         <div class="grow">
-          <b>${formName(p.sp, e.next, e.next>=5?'anc':(e.next>=3?e.br:null))}</b>
+          <b>${formName(p.sp, e.next, e.art ? null : (e.next>=5?'anc':(e.next>=3?e.br:null)))}</b>
           <div class="sub">${lines}</div>
-          ${p.stage < 3 ? `<div class="tiny" style="margin-top:4px">สายที่นำอยู่ตอนนี้: <b style="color:var(--glaze-lt)">${BRANCHES[dom]}</b> — วิธีดูแลจะเป็นตัวกำหนดร่างที่แตกออกไป</div>` : ''}
+          ${(!e.art && p.stage < 3) ? `<div class="tiny" style="margin-top:4px">สายที่นำอยู่ตอนนี้: <b style="color:var(--glaze-lt)">${BRANCHES[dom]}</b> — วิธีดูแลจะเป็นตัวกำหนดร่างที่แตกออกไป</div>` : ''}
         </div>
         <button class="btn ${e.ok?'pri':''}" data-act="evolve" ${e.ok?'':'disabled'}>วิวัฒนาการ</button>
       </div>
@@ -3654,10 +3946,11 @@ function viewSummary(){
     }).join('');
 
   const unitRows = Object.values(byUnit)
+    .filter(x => UNITS[x.unit] && SUBJECTS[x.subj] && GRADES[x.grade])
     .sort((a,b) => (b.p.r + b.p.w) - (a.p.r + a.p.w))
     .map(x => {
       const b = accBar(x.p.r, x.p.w);
-      const el = ELEMENTS[UNITS[x.unit].el];
+      const el = ELEMENTS[UNITS[x.unit].el] || { n:'ไม่ระบุ', g:'❔' };
       return `<div class="prow">
         <div class="lab">
           <b>${UNITS[x.unit].n}</b>
@@ -3706,8 +3999,8 @@ function viewSummary(){
     <div class="sub">ตอบคำถามสักรอบแล้วกลับมาดูผลสัมฤทธิ์รายหน่วยได้ที่นี่</div></div>`}
   ${weak.length ? `<div class="card">
     <div class="eyebrow">ควรทบทวน</div>
-    <div class="list">${weak.map(x => `<div class="item">
-      <div class="ic">${ELEMENTS[UNITS[x.unit].el].g}</div>
+    <div class="list">${weak.filter(x => UNITS[x.unit]).map(x => `<div class="item">
+      <div class="ic">${(ELEMENTS[UNITS[x.unit].el] || {g:'❔'}).g}</div>
       <div class="grow"><b>${UNITS[x.unit].n}</b>
         <div class="sub">${SUBJECTS[x.subj].short} ${GRADES[x.grade].n} · ทำได้ ${Math.round(x.pct)}%</div></div>
     </div>`).join('')}</div>
@@ -5591,7 +5884,7 @@ function duelMineSheet(){
       <div class="item"><div class="ic" style="background:${sp.dim};border-color:${sp.a(.4)}">${sp.g}</div>
         <div class="grow"><b>เลือดสูงสุด ${duelMaxHp(p, true)}</b>
           <div class="tiny">โจมตี ${Math.round(duelAtk(p,true))} · คาถา ${Math.round(duelMagic(p,true))} · เกราะ ${Math.round(duelDefRaw(p,true))} · ตีซ้ำ ${Math.round(duelExtra(p,true)*100)}% · เต็มแรง ${Math.round(duelCrit(p,true)*100)}%</div>
-          <div class="tiny">ธาตุ${ELEMENTS[petEl(p)].n} ${ELEMENTS[petEl(p)].g} · ข่ม${ELEMENTS[EL_BEATS[petEl(p)][0]].n} · แพ้ทาง${ELEMENTS[Object.keys(EL_BEATS).find(k=>EL_BEATS[k].includes(petEl(p)))].n}</div></div></div>
+          <div class="tiny">${elLine(petEl(p))}</div></div></div>
     </div>
     <div class="gap"></div>
     <textarea id="duelOut" class="fld" readonly style="min-height:96px;font-family:'IBM Plex Mono',monospace;font-size:calc(12px * var(--fs));word-break:break-all">${code}</textarea>
@@ -5640,6 +5933,20 @@ function gaugeBar(cur, max){
   const full = pct >= 100;
   return `<div class="bar gauge ${full?'full':''}" style="height:6px;margin-top:3px">
     <i style="width:${pct}%;background:${full?'var(--gold)':'#7fa8c9'}"></i></div>`;
+}
+
+/* ข้อความบอกธาตุหรือทักษะ พร้อมคู่ที่ข่มได้และแพ้ทาง ปลอดภัยแม้ข้อมูลไม่ครบ */
+function elLine(el){
+  const E = ELEMENTS[el];
+  if (!E) return '';
+  const isSkill = typeof SKILLS !== 'undefined' && SKILLS[el];
+  const word = isSkill ? 'ทักษะ' : 'ธาตุ';
+  const up = (EL_BEATS[el] || [])[0];
+  const dn = Object.keys(EL_BEATS).find(k => (EL_BEATS[k] || []).includes(el));
+  const parts = [`${word}${E.n} ${E.g}`];
+  if (up && ELEMENTS[up]) parts.push(`ข่ม${ELEMENTS[up].n}`);
+  if (dn && ELEMENTS[dn]) parts.push(`แพ้ทาง${ELEMENTS[dn].n}`);
+  return parts.join(' · ');
 }
 
 function elBadge(a, b){
@@ -5783,7 +6090,7 @@ function duelPickSheet(foe){
 
   sheet(`<div class="eyebrow">รับคำท้าจาก ${esc(foe.name)}</div>
     <h2>เลือกวิญญาณลงสนาม</h2>
-    <div class="sub">คู่ต่อสู้เป็นธาตุ${ELEMENTS[foeEl].n} ${ELEMENTS[foeEl].g} · Lv.${foe.lv} · เลือกตัวที่ข่มธาตุนี้ได้จะเสียเปรียบน้อยลง</div>
+    <div class="sub">คู่ต่อสู้เป็น${(typeof SKILLS!=='undefined'&&SKILLS[foeEl])?'ทักษะ':'ธาตุ'}${ELEMENTS[foeEl].n} ${ELEMENTS[foeEl].g} · Lv.${foe.lv} · เลือกตัวที่ข่มได้จะเสียเปรียบน้อยลง</div>
     <div class="gap"></div>
     <div class="list">${all.map((x,i) => row(x,i)).join('')}</div>
     <div class="gap"></div>
@@ -5831,7 +6138,10 @@ function elChartSheet(){
     <text x="${p.x}" y="${p.y+5}" text-anchor="middle" font-size="15">${ELEMENTS[p.e].g}</text>
     <text x="${p.x}" y="${p.y+31}" text-anchor="middle" font-size="10" fill="#8ba69c">${ELEMENTS[p.e].n}</text>`).join('');
 
-  const pairRows = Object.keys(EL_WHY).map(k => {
+  const pairRows = Object.keys(EL_WHY).filter(k => {
+    const [a,b] = k.split('>');
+    return ELEMENTS[a] && ELEMENTS[b];
+  }).map(k => {
     const [a, b] = k.split('>');
     return `<div class="item">
       <div class="ic" style="background:hsla(${ELEMENTS[a].h},40%,45%,.22)">${ELEMENTS[a].g}</div>
