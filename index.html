@@ -2244,11 +2244,11 @@ function drawArtSpirit(t, p, sp, opt){
   /* ขนาดโตขึ้นตามขั้น แต่ไม่เกินกรอบ */
   const b = ART_BOOK[key];
   const step = b.stages.length > 1 ? p.stage / (b.stages.length - 1) : 0;
-  const H = (128 + step * 78) * scale;
+  const H = (150 + step * 92) * scale;      /* ไม่มีกระถางบังแล้ว วาดใหญ่ขึ้นได้ */
   const W = H * (img.naturalWidth / img.naturalHeight);
 
   /* เท้าอยู่บนเส้นพื้นเดียวกันเสมอ ไม่ว่าตัวจะโตแค่ไหน */
-  const groundY = 246;
+  const groundY = 252;                     /* ยืนบนเส้นพื้นเดียวกันทุกขั้น */
   const cy = groundY - H + breathe * 0.5 - hop + View.bounce;
 
   ctx.save();
@@ -3057,6 +3057,9 @@ function draw(t){
   /* วงแหวนโฟกัส */
   drawRing(t);
 
+  /* พื้นยืนสำหรับตัวละครแบบภาพ ใช้แทนกระถาง */
+  if (!View.duel && p && usesArt(p)) drawGround(t);
+
   /* วิญญาณ หรือไข่ */
   if (View.duel && p){
     drawSpirit(t, p, sp, {cx: CW*0.28, scale: 0.82});
@@ -3066,8 +3069,31 @@ function draw(t){
     if (S.egg) drawEgg(t, !p);
   }
 
-  /* กระถาง */
-  drawPot(t);
+  /* กระถาง — ตัวละครแบบภาพยืนบนพื้น ไม่ได้อยู่ในกระถาง จึงไม่ต้องวาด */
+  if (!usesArt(p)) drawPot(t);
+}
+
+/* วิญญาณตัวนี้ใช้ภาพหรือวาดด้วยโค้ด */
+function usesArt(p){
+  return !!(p && typeof ART_BOOK !== 'undefined' && ART_BOOK[p.sp]);
+}
+
+/* ---- พื้นยืน วาดแทนกระถางสำหรับตัวละครแบบภาพ ---- */
+function drawGround(t){
+  const cx = CW/2, y = 250;
+  ctx.save();
+  /* วงแสงนุ่มๆ ใต้เท้า */
+  const g = ctx.createRadialGradient(cx, y, 4, cx, y, 120);
+  g.addColorStop(0, 'rgba(230,190,96,.16)');
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.ellipse(cx, y, 120, 26, 0, 0, Math.PI*2); ctx.fill();
+
+  /* เส้นพื้นบางๆ */
+  ctx.strokeStyle = 'rgba(224,195,124,.22)';
+  ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.ellipse(cx, y, 96, 17, 0, 0, Math.PI*2); ctx.stroke();
+  ctx.restore();
 }
 
 /* ---- วงแหวนรอบกระถาง แสดงความคืบหน้าโฟกัส ---- */
