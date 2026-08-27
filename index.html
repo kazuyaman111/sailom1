@@ -1999,6 +1999,13 @@ function bankCount(subj, grade){
    2. เติมข้อมูลใน ART_BOOK ด้านล่างนี้
    =========================================================== */
 
+/* ===========================================================
+   ตัวคูณโอกาสฟักตระกูลที่มีภาพ
+   ตั้งไว้สูงในช่วงแรกเพื่อให้เด็กได้เจอตัวใหม่เร็วขึ้น
+   ปรับเป็น 1 เมื่อภาพครบทุกสายพันธุ์แล้ว
+   =========================================================== */
+const ART_HATCH_BOOST = 8;
+
 /* ที่อยู่ของโฟลเดอร์ภาพ เทียบกับไฟล์ index.html */
 const ART_BASE = 'art/';
 
@@ -2025,7 +2032,7 @@ const ART_BOOK = {
     ],
   },
   book: {
-    n:'บันทึก', skill:'memory', rarity:2, main:'INT', sub:'LUK',
+    n:'บันทึก', skill:'memory', rarity:1, main:'INT', sub:'LUK',
     stages:[
       { n:'สมุดเล่มบาง',   d:'ยังว่างเปล่า รอให้ใครสักคนเขียนลงไป' },
       { n:'สมุดจดเลข',     d:'เริ่มมีร่องรอยการคิดอยู่ในนั้น' },
@@ -2055,7 +2062,7 @@ const ART_BOOK = {
 
   /* ---------- แยกแยะ ---------- */
   ruler: {
-    n:'มาตรา', skill:'judge', rarity:2, main:'STR', sub:'INT',
+    n:'มาตรา', skill:'judge', rarity:1, main:'STR', sub:'INT',
     stages:[
       { n:'ไม้บรรทัดไม้',   d:'เครื่องมือวัดชิ้นแรกของเด็กทุกคน' },
       { n:'ไม้บรรทัดเหล็ก', d:'แข็งแรงขึ้น ขีดเส้นได้ตรงกว่าเดิม' },
@@ -2065,7 +2072,7 @@ const ART_BOOK = {
     ],
   },
   scissor: {
-    n:'ตัดสิน', skill:'judge', rarity:3, main:'AGI', sub:'STR',
+    n:'ตัดสิน', skill:'judge', rarity:2, main:'AGI', sub:'STR',
     stages:[
       { n:'กรรไกรเล็ก',    d:'ตัดได้แค่กระดาษบางๆ แต่ตัดตรงเสมอ' },
       { n:'กรรไกรทอง',     d:'คมขึ้น มั่นใจขึ้น' },
@@ -2080,7 +2087,7 @@ const ART_BOOK = {
 
   /* ---------- กล้าหาญ ---------- */
   sharp: {
-    n:'เหลาคม', skill:'brave', rarity:3, main:'STR', sub:'AGI',
+    n:'เหลาคม', skill:'brave', rarity:2, main:'STR', sub:'AGI',
     stages:[
       { n:'กบเหลาน้อย',    d:'ตัวเล็กแต่ทำให้ดินสอทื่อกลับมาคมได้' },
       { n:'กบเหลากลม',     d:'โตขึ้น เหลาได้ลึกขึ้น' },
@@ -2105,7 +2112,7 @@ const ART_BOOK = {
     ],
   },
   cup: {
-    n:'ชโลม', skill:'duty', rarity:2, main:'VIT', sub:'INT',
+    n:'ชโลม', skill:'duty', rarity:1, main:'VIT', sub:'INT',
     stages:[
       { n:'แก้วใบเล็ก',   d:'จิบทีละนิด แต่ไม่เคยลืมดื่ม' },
       { n:'แก้วมีหูจับ',  d:'ถือง่ายขึ้น ดูแลตัวเองได้ดีขึ้น' },
@@ -2918,7 +2925,9 @@ function hatchWeights(ignoreAffinity){
     if (!pool.length) continue;
     const ws = {}; let sum = 0;
     for (const k of pool){
-      const a = 1 + AFFINITY_K * (share[SPECIES[k].elk] || 0);
+      let a = 1 + AFFINITY_K * (share[SPECIES[k].elk] || 0);
+      /* ตระกูลที่มีภาพวาดสวยงาม ให้โอกาสออกมากกว่าในช่วงที่ยังมีไม่ครบทุกสายพันธุ์ */
+      if (typeof ART_BOOK !== 'undefined' && ART_BOOK[k]) a *= ART_HATCH_BOOST;
       ws[k] = a; sum += a;
     }
     for (const k of pool) w[k] += p * ws[k] / sum;
